@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>엑셀 업로드</title>
+</head>
+
+<body>
+<form th:action="@{/excel/area/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="지역 제출" />
+</form>
+
+<form th:action="@{/excel/hashtags/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="기본 해시태그 제출" />
+</form>
+
+<form th:action="@{/excel/contentType/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관광지 타입 제출" />
+</form>
+
+<form th:action="@{/excel/touristData/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관광지/음식 제출" />
+</form>
+
+<form th:action="@{/excel/nearTouristData/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="주변 관광지/음식 제출" />
+</form>
+
+<form th:action="@{/excel/touristDataHashTag/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관광지 해시태그 제출" />
+</form>
+
+<form th:action="@{/excel/wtArea/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="날씨 지역 제출" />
+</form>
+
+<form th:action="@{/excel/wtToday/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="오늘의 날씨 제출" />
+</form>
+
+<form th:action="@{/excel/constellation/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="별자리 제출" />
+</form>
+
+<form th:action="@{/excel/horoscope/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="별자리 운세 제출" />
+</form>
+
+<form th:action="@{/excel/observationData/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관측지 정보 제출" />
+</form>
+
+<form th:action="@{/excel/observationHashTag/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관측지 해쉬태그 제출" />
+</form>
+
+<form th:action="@{/excel/observationFee/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관측지 이용료 제출" />
+</form>
+
+<form th:action="@{/excel/observationImage/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관측지 이미지 제출" />
+</form>
+
+<form th:action="@{/excel/observationCourse/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="관측지 코스 제출" />
+</form>
+
+<form th:action="@{/excel/searchFirst/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="검색 기본 제출" />
+</form>
+
+<form th:action="@{/excel/notice/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="공지사항 제출" />
+</form>
+
+<form th:action="@{/excel/alarm/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="알림 제출" />
+</form>
+
+<form th:action="@{/excel/increaseOverviewSim/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="한줄개요 늘리기" />
+</form>
+
+</body>
+
+<!--다른 엑셀 추가하고 싶으면 위에 form 복사해서 body안에 붙여넣고, action에 url고치고 ExcelController로 ㄱㄱ-->
+
+</html>
