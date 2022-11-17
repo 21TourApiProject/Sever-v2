@@ -1,0 +1,78 @@
+spring:
+  profiles:
+    group:
+      "local": "localdb,common,security"
+      "prod":  "proddb,common,security"
+
+---
+spring: #local DB??
+  config:
+    activate:
+      on-profile: "localdb"
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: 'sa'
+    password: '0000'
+    url: jdbc:h2:tcp://localhost/~/tourApiProject
+  jpa:
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: update
+
+---
+spring: #공통
+  config:
+    activate:
+      on-profile: "common"
+  sql:
+    init:
+      mode: always
+  servlet:
+    multipart:
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
+server:
+  tomcat:
+    connection-timeout: 5000
+
+---
+spring: #local로깅
+  config:
+    activate:
+      on-profile: "localLog"
+logging:
+  file:
+    path: ./logs
+    name: app-local
+  logback:
+    rollingpolicy:
+      max-history: 7
+      total-size-cap: 10MB
+---
+spring: #prod로깅
+  config:
+    activate:
+      on-profile: "prodLog"
+logging:
+  file:
+    path: logs
+    name: app-prod
+  logback:
+    rollingpolicy:
+      max-history: 60
+      total-size-cap: 3GB
+
+---
+spring: #사용자보안
+  config:
+    activate:
+      on-profile: "security"
+  mail:
+    host: smtp.gmail.com
+    port: '587'
+    username: starsufers@gmail.com
+    password: gphtiblybikncidz
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+
