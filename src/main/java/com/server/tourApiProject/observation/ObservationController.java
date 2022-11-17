@@ -6,7 +6,6 @@ import com.server.tourApiProject.observation.observeFee.ObserveFeeService;
 import com.server.tourApiProject.observation.observeHashTag.ObserveHashTagService;
 import com.server.tourApiProject.observation.observeImage.ObserveImageParams2;
 import com.server.tourApiProject.observation.observeImage.ObserveImageService;
-import com.server.tourApiProject.touristPoint.touristData.TouristDataCourseParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,7 @@ public class ObservationController {
     private final ObserveImageService observeImageService;
     private final ObserveFeeService observeFeeService;
     private final CourseService courseService;
+
 
     @ApiOperation(value = "모든 관측지 조회", notes = "모든 관측지를 조회한다")
     @GetMapping(value = "observations")

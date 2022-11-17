@@ -2,7 +2,7 @@ package com.server.tourApiProject.search;
 
 import com.server.tourApiProject.bigPost.post.PostParams6;
 import com.server.tourApiProject.bigPost.post.PostService;
-import com.server.tourApiProject.observation.ObservationService;
+import com.server.tourApiProject.observation.ObservationServiceImpl;
 import com.server.tourApiProject.touristPoint.touristData.TouristDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,14 +34,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchController {
 
-    private final ObservationService observationService;
+    private final ObservationServiceImpl observationServiceImpl;
     private final TouristDataService touristDataService;
     private final PostService postService;
 
     @ApiOperation(value = "관측지 검색결과 ", notes = "검색어와 필터로 관측지 검색결과를 조회한다")
     @PostMapping(value = "search/observation")
     public List<SearchParams1> getObservationWithFilter(@RequestBody SearchKey searchKey){
-        return observationService.getObservationWithFilter(searchKey.getFilter(), searchKey.getKeyword());
+        return observationServiceImpl.getObservationWithFilter(searchKey.getFilter(), searchKey.getKeyword());
     }
 
     @ApiOperation(value = "관광지 검색결과 ", notes = "검색어와 필터로 관광지 검색결과를 조회한다")

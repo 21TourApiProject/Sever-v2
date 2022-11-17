@@ -6,6 +6,7 @@ import com.server.tourApiProject.observation.observeFee.ObserveFee;
 import com.server.tourApiProject.observation.observeHashTag.ObserveHashTag;
 import com.server.tourApiProject.observation.observeImage.ObserveImage;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -88,12 +89,15 @@ public class Observation {
     private Long areaCode;  //지역코드
 
     @OneToMany(mappedBy = "observation")
+    @BatchSize(size = 10)
     private List<ObserveFee> observeFees=new ArrayList<>();
 
-   @OneToMany(mappedBy = "observation")
+    @OneToMany(mappedBy = "observation")
+    @BatchSize(size = 20)
     private List<ObserveHashTag> observeHashTags=new ArrayList<>();
 
     @OneToMany(mappedBy = "observation")
+    @BatchSize(size = 10)
     private List<ObserveImage> observeImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "observation")
