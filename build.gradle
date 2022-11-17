@@ -10,15 +10,15 @@ sourceCompatibility = '11'
 
 //프로젝트 단위 변수 설정
 ext {
-//	profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
-	profile = 'prod'
+	profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
+//	profile = 'prod'
 }
 //리소스 폴더 지정
 sourceSets{
 	main{
 		resources{
-			srcDirs "src/main/resources", "src/main/resources-prod"
-//			srcDirs "src/main/resources", "src/main/resources-${profile}"
+//			srcDirs "src/main/resources", "src/main/resources-prod"
+			srcDirs "src/main/resources", "src/main/resources-${profile}"
 		}
 	}
 }
