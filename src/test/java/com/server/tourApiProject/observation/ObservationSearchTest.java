@@ -15,12 +15,12 @@ public class ObservationSearchTest {
     @Autowired
     ObservationService observationService;
 
-    @Test
-    void searchTest(){
-        Filter f = new Filter();
-        String searchKey = "";
-        List<SearchParams1> result = observationService.getObservationWithFilter(f, searchKey);
-        Assertions.assertThat(result.size()).isEqualTo(2);
-    }
+//    @Test
+//    void searchTest(){
+//        Filter f = new Filter();
+//        String searchKey = "";
+//        List<SearchParams1> result = observationService.getObservationWithFilter(f, searchKey);
+//        Assertions.assertThat(result.size()).isEqualTo(2);
+//    }
 
 }
