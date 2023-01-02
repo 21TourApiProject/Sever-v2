@@ -471,15 +471,6 @@ public class ExcelController {
             data.setConstStory(row.getCell(2).getStringCellValue());
             data.setConstMtd(row.getCell(3).getStringCellValue());
             data.setConstBestMonth(row.getCell(4).getStringCellValue());
-            data.setConstFeature1(row.getCell(5).getStringCellValue());
-            if (data.getConstFeature1().equals("null"))
-                data.setConstFeature1(null);
-            data.setConstFeature2(row.getCell(6).getStringCellValue());
-            if (data.getConstFeature2().equals("null"))
-                data.setConstFeature2(null);
-            data.setConstFeature3(row.getCell(7).getStringCellValue());
-            if (data.getConstFeature3().equals("null"))
-                data.setConstFeature3(null);
             data.setStartDate1(row.getCell(8).getStringCellValue());
             data.setEndDate1(row.getCell(9).getStringCellValue());
             data.setStartDate2(row.getCell(10).getStringCellValue());

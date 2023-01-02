@@ -1,5 +1,11 @@
 package com.server.tourApiProject.star.constellation;
 
+import com.server.tourApiProject.bigPost.post.Post;
+import com.server.tourApiProject.bigPost.post.PostParams;
+import com.server.tourApiProject.bigPost.postHashTag.PostHashTag;
+import com.server.tourApiProject.search.Filter;
+import com.server.tourApiProject.star.starHashTag.StarHashTag;
+import com.server.tourApiProject.star.starHashTag.StarHashTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +36,7 @@ import java.util.List;
  */
 public class ConstellationService {
     private final ConstellationRepository constellationRepository;
+    private final StarHashTagRepository starHashTagRepository;
 
     /**
      * TODO 별자리 생성
@@ -49,6 +56,16 @@ public class ConstellationService {
         List<Constellation> list = constellationRepository.findAll();
 
         return getConstellationParams(result, list);
+    }
+
+    /**
+     * TODO 별자리 id로 별자리 조회
+     * @param constId - 별자리 id
+     * @return Constellation
+     */
+    public Constellation getConstellationById(Long constId) {
+        Constellation constellation = constellationRepository.findById(constId).orElseThrow(IllegalAccessError::new);;
+        return constellation;
     }
 
   /**
@@ -135,7 +152,7 @@ public class ConstellationService {
     }
 
     /**
-     * TODO 별자리 이름으로 별자리 정보 조회
+     * 별자리 이름으로 별자리 정보 조회
      * @param constName - 별자리 이름
      * @return Constellation
      */
@@ -143,5 +160,59 @@ public class ConstellationService {
         Constellation constellation = constellationRepository.findByConstName(constName);
         return constellation;
     }
+    /**
+     * 해시태그 및 검색어로 별자리 정보 조회
+     * @param  filter - 검색 필터
+     * @param searchKey - 검색어
+     * @return List<ConstellationParams>
+     */
+    public List<ConstellationParams> getConstDataWithFilter(Filter filter, String searchKey) {
+        List<ConstellationParams> result = new ArrayList<>();
+        List<Long> hashTagIdList= filter.getHashTagIdList();//해시태그 리스트
+        List<Long> constIdList = new ArrayList<>();
+        List<Constellation> keyList = new ArrayList<>();
+        List<Constellation> searchList = new ArrayList<>();
+
+        //해시태그 목록으로 별자리 id 리스트 불러오기
+        for (Long hashTagId: hashTagIdList){
+            List<StarHashTag> starHashTagList= starHashTagRepository.findByHashTagId(hashTagId);
+            for (StarHashTag starHashTag : starHashTagList){
+                Long constId = starHashTag.getConstId();
+                if (!constIdList.contains(constId)){
+                    constIdList.add(constId);
+                }
+            }
+        }
+
+        if(searchKey!=null){
+            searchList= constellationRepository.findByConstNameContainingAndConstEngContaining(searchKey,searchKey);
+            keyList= constellationRepository.findByConstNameContainingAndConstEngContaining(searchKey,searchKey);
+            if (!hashTagIdList.isEmpty()) {
+                //필터 받은게 없으면 그냥 검색결과 전달, 있으면 중첩 검색
+                for (Constellation constellation : keyList) {
+                    //전체 검색어 결과 돌면서
+                    if (!constIdList.contains(constellation.getConstId())) {
+                        //필터결과에 검색어 결과 없으면 필터+검색어검색결과에서 삭제
+                        searchList.remove(constellation);
+                    }
+                }
+            }
+        }else{
+            for (Long id: constIdList){
+                searchList.add(getConstellationById(id));
+            }
+        }
+
+        for(Constellation constellation: searchList){
+            ConstellationParams constellationParams = new ConstellationParams();
+            constellationParams.setConstId(constellation.getConstId());
+            constellationParams.setConstName(constellation.getConstName());
+            constellationParams.setConstEng(constellation.getConstEng());
+            result.add(constellationParams);
+        }
+
+        return result;
+    }
+
 }
 
