@@ -1,10 +1,14 @@
 package com.server.tourApiProject.star.constellation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.server.tourApiProject.star.starHashTag.StarHashTag;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Builder
@@ -45,12 +49,6 @@ public class Constellation {
     @Column(nullable = false)
     private String constBestMonth; // 가장 보기 좋은 달
 
-    private String constFeature1; // 별자리 특징(배너 형식)
-
-    private String constFeature2; // 별자리 특징(배너 형식)
-
-    private String constFeature3; // 별자리 특징(배너 형식)
-
     @Column(nullable = false)
     @DateTimeFormat(pattern = "MM-dd")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd", timezone = "Asia/Seoul")
@@ -71,4 +69,8 @@ public class Constellation {
 
     @Column(nullable = false)
     private String constEng;  //별자리 이름
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "constellation", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StarHashTag> starHashTags=new ArrayList<>();
 }
