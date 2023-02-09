@@ -7,6 +7,7 @@ import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.observation.Observation;
 import com.server.tourApiProject.user.User;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Table(name="post")
 /** 
 * @className : Post.java
@@ -108,5 +110,4 @@ public class Post {
 
     @Column
     private Long areaCode;  //지역코드
-
 }

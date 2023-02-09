@@ -3,6 +3,7 @@ package com.server.tourApiProject.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.server.tourApiProject.bigPost.post.Post;
+import com.server.tourApiProject.like.Like;
 import com.server.tourApiProject.myHashTag.MyHashTag;
 import com.server.tourApiProject.myWish.MyWish;
 import lombok.*;
@@ -89,6 +90,10 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<MyWish> myWishes = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Like> myLike = new ArrayList<>();
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
