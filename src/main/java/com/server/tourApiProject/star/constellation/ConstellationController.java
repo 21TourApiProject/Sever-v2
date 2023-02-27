@@ -1,5 +1,8 @@
 package com.server.tourApiProject.star.constellation;
 
+import com.server.tourApiProject.bigPost.post.Post;
+import com.server.tourApiProject.bigPost.post.PostParams6;
+import com.server.tourApiProject.search.SearchKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,12 @@ public class ConstellationController {
         constellationService.createConstellation(constellation);
     }
 
+    @ApiOperation(value = "별자리 정보 조회", notes = "별자리 아이디로 별자리를 조회한다")
+    @GetMapping(value = "constellations/{constId}")
+    public Constellation getConstellationById(@PathVariable("constId") Long constId) {
+        return constellationService.getConstellationById(constId);
+    }
+
     @ApiOperation(value = "모든 별자리 조회", notes = "모든 별자리를 조회한다")
     @GetMapping(value = "constellations")
     public List<ConstellationParams> getConstellation() {
@@ -64,6 +73,12 @@ public class ConstellationController {
     @GetMapping(value = "constellation/{constName}")
     public Constellation getDetailConst(@PathVariable("constName") String constName) {
         return constellationService.getDetailConst(constName);
+    }
+
+    @ApiOperation(value = "별자리 정보 필터로 조회", notes = "필터로 걸러진 별자리을 조회한다")
+    @PostMapping(value = "search/constellation")
+    public List<ConstellationParams> getConstellationWithFilter(@RequestBody SearchKey searchKey){
+        return constellationService.getConstDataWithFilter(searchKey.getFilter(),searchKey.getKeyword());
     }
 
 }

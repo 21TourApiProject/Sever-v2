@@ -5,7 +5,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ConstellationRepository extends JpaRepository<Constellation, Long> {
+public interface ConstellationRepository extends JpaRepository< Constellation, Long> {
 
     /**
      * 쿼리명: findByStartDate1LessThanEqualAndEndDate1GreaterThanEqual
@@ -24,5 +24,13 @@ public interface ConstellationRepository extends JpaRepository<Constellation, Lo
      * result type = Constellation
      */
     Constellation findByConstName(@Param("constName") String constName);
+
+    /**
+     * 쿼리명: ConstellationRepository.java
+     * 설명: 별자리 검색 필터
+     * parameter type = String, String
+     * result type = List<Constellation>
+     */
+    List<Constellation> findByConstNameContainingAndConstEngContaining(@Param("constName") String constName,@Param("constEng") String constEng);
 }
 
