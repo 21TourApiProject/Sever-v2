@@ -22,6 +22,7 @@ import java.util.List;
      ====개정이력(Modification Information)====      
   수정일        수정자        수정내용    ----------------------------------------- 
    2022-08-27       gyul chyoung       주석최초생성
+    2023-02-27      gyul chyoung        저장횟수 추가
  */
 
 @Builder
@@ -87,6 +88,9 @@ public class Observation {
 
     @Column
     private Long areaCode;  //지역코드
+
+    @Column
+    private Long saved;     //저장횟수
 
     @OneToMany(mappedBy = "observation")
     @BatchSize(size = 10)

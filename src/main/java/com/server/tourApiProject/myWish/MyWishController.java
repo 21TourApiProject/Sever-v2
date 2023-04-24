@@ -72,4 +72,10 @@ public class MyWishController {
     public List<MyWishParams3> getMyWish3(@PathVariable("userId") Long userId){
         return myWishService.getMyWish3(userId);
     }
+
+    @ApiOperation(value = "찜개수 초기화" , notes = "게시글과 관측지의 찜한 개수를 업데이트 한다.")
+    @GetMapping(value = "myWish/updateSaved")
+    public Integer updateSavedCount(){
+        return myWishService.updateSavedCount();
+    }
 }

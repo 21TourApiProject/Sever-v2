@@ -1,26 +1,23 @@
 package com.server.tourApiProject.observation;
 
-import com.server.tourApiProject.search.Filter;
-import com.server.tourApiProject.search.SearchParams1;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
-import java.util.List;
+import java.util.Arrays;
 
 @SpringBootTest
 public class ObservationSearchTest {
 
     @Autowired
-    ObservationService observationService;
+    ApplicationContext ctx;
 
-//    @Test
-//    void searchTest(){
-//        Filter f = new Filter();
-//        String searchKey = "";
-//        List<SearchParams1> result = observationService.getObservationWithFilter(f, searchKey);
-//        Assertions.assertThat(result.size()).isEqualTo(2);
-//    }
+    @Test
+    void searchTest(){
+         Environment environment = ctx.getEnvironment();
+        System.out.println(Arrays.toString(environment.getActiveProfiles()));
+    }
 
 }

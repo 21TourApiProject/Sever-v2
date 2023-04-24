@@ -33,6 +33,7 @@ import java.util.List;
   수정일        수정자        수정내용   
    -----------------------------------------    
    2022-08-05       jinhyeok       주석 수정
+    2023-02-20      gyulchyoung     컬럼값 추가
  
  */
 public class Post {
@@ -68,6 +69,8 @@ public class Post {
     @Column
     private String optionHashTag10;
 
+    @Column
+    private Long saved;     //저장횟수, 좋아요수
 
     @Column
     private String optionObservation;

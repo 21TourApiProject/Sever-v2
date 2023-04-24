@@ -1,6 +1,7 @@
 package com.server.tourApiProject.myWish;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface MyWishRepository extends JpaRepository<MyWish, Long> {
     Optional<MyWish> findByUserIdAndItemIdAndWishType(@Param("userId") Long userId, @Param("itemId") Long itemId, @Param("wishType") Integer wishType);
 
     void deleteByItemIdAndWishType(@Param("itemId") Long itemId, @Param("wishType") Integer wishType);
+
+    @Query("select w.itemId as itemId, w.wishType as wishType, count(w.myWishId) as count from MyWish w where w.wishType <> 1 group by w.wishType, w.itemId")
+    List<WishCountParams.WishCount> findWishCount();
 }
