@@ -92,6 +92,9 @@ public class Observation {
     @Column
     private Long saved;     //저장횟수
 
+    @Column
+    private String reserve; //예약페이지 주소
+
     @OneToMany(mappedBy = "observation")
     @BatchSize(size = 10)
     private List<ObserveFee> observeFees=new ArrayList<>();

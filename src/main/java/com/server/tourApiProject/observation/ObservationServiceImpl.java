@@ -64,6 +64,8 @@ public class ObservationServiceImpl implements ObservationService {
         observation.setParking(observationParams.getParking());
         observation.setObserveType(observationParams.getObserveType());
         observation.setOutline(observationParams.getOutline());
+        observation.setSaved(0L);
+
         observationRepository.save(observation);
     }
 

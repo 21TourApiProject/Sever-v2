@@ -78,13 +78,14 @@ public class MyWishService {
      * @param itemId   - 컨텐츠 id
      * @param wishType - 컨텐츠 타입 (0 - 관측지, 1 - 관광지, 2 - 게시물)
      */
+    @Transactional
     public void createMyWish(Long userId, Long itemId, Integer wishType) {
 
         MyWish myWish = new MyWish();
 
         switch(wishType) {
             case 0: //관측지
-                observationRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 관측지 id가 없으면 오류 발생
+                Observation observation = observationRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 관측지 id가 없으면 오류 발생
                 myWish.setUserId(userId);
                 myWish.setUser(userRepository.findById(userId).orElseThrow(IllegalAccessError::new));
                 myWish.setWishType(0); // 관측지
@@ -92,6 +93,7 @@ public class MyWishService {
                 String now0 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
                 myWish.setWishTime(Long.parseLong(now0));
                 myWishRepository.save(myWish);
+                observation.setSaved(observation.getSaved()+1);
                 break;
             case 1: //관광지
                 touristDataRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 관광지 id가 없으면 오류 발생
@@ -105,7 +107,7 @@ public class MyWishService {
                 myWishRepository.save(myWish);
                 break;
             case 2: //게시물
-                postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 게시물 id가 없으면 오류 발생
+                Post post = postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 게시물 id가 없으면 오류 발생
                 myWish.setUserId(userId);
                 myWish.setUser(userRepository.findById(userId).orElseThrow(IllegalAccessError::new));
                 myWish.setWishType(2); // 게시물
@@ -113,6 +115,7 @@ public class MyWishService {
                 String now2 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
                 myWish.setWishTime(Long.parseLong(now2));
                 myWishRepository.save(myWish);
+                post.setSaved(post.getSaved()+1);
                 break;
         }
     }
@@ -138,11 +141,24 @@ public class MyWishService {
      * @param itemId   - 컨텐츠 id
      * @param wishType - 컨텐츠 타입 (0 - 관측지, 1 - 관광지, 2 - 게시물)
      */
+    @Transactional
     public void deleteMyWish(Long userId, Long itemId, Integer wishType) {
 
         Optional<MyWish> myWishOp = myWishRepository.findByUserIdAndItemIdAndWishType(userId, itemId, wishType);
         MyWish myWish = myWishOp.get();
         myWishRepository.delete(myWish);
+        switch(wishType) {
+            case 0: //관측지
+                Observation observation = observationRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 관측지 id가 없으면 오류 발생
+                observation.setSaved(observation.getSaved()-1);
+                break;
+            case 1: //관광지
+                break;
+            case 2: //게시물
+                Post post = postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 게시물 id가 없으면 오류 발생
+                post.setSaved(post.getSaved()-1);
+                break;
+        }
     }
 
     /**
