@@ -32,4 +32,9 @@ public class WeatherObservationController {
         return weatherObservationService.getLightPollution(latitude, longitude);
     }
 
+    @ApiOperation(value = "주소 조회", notes = "해당 지역의 주소 정보(미세먼지 기준)를 조회한다")
+    @GetMapping(value = "observation/address/{observationId}")
+    public WeatherObservation getWeatherObservation(@PathVariable Long observationId){
+        return weatherObservationService.getWeatherObservation(observationId);
+    }
 }

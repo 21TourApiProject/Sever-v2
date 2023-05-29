@@ -9,26 +9,26 @@ public class Daily {
     @JsonProperty("dt")
     private String dt;
 
-//    @JsonProperty("sunrise")
-//    private String sunrise;
-//
-//    @JsonProperty("sunset")
-//    private String sunset;
-//
-//    @JsonProperty("moonrise")
-//    private String moonrise;
-//
-//    @JsonProperty("moonset")
-//    private String moonset;
+    @JsonProperty("sunrise")
+    private String sunrise;
+
+    @JsonProperty("sunset")
+    private String sunset;
+
+    @JsonProperty("moonrise")
+    private String moonrise;
+
+    @JsonProperty("moonset")
+    private String moonset;
 
     @JsonProperty("moon_phase")
     private Double moonPhase;
 
-//    @JsonProperty("temp")
-//    private Temp temp;
-//
-//    @JsonProperty("feels_like")
-//    private FeelsLike feelsLike;
+    @JsonProperty("temp")
+    private Temp temp;
+
+    @JsonProperty("feels_like")
+    private FeelsLike feelsLike;
 //
 //    @JsonProperty("pressure")
 //    private String pressure;
@@ -51,11 +51,11 @@ public class Daily {
 //    @JsonProperty("weather")
 //    private List<Weather> weather;
 //
-//    @JsonProperty("clouds")
-//    private String clouds;
-//
-//    @JsonProperty("pop")
-//    private String pop;
+    @JsonProperty("clouds")
+    private Double clouds;
+
+    @JsonProperty("pop")
+    private String pop;
 //
 //    @JsonProperty("rain")
 //    private Double rain;

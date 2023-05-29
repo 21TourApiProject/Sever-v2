@@ -30,4 +30,8 @@ public class WeatherObservationService {
         list.add(2L);
         return weatherObservationRepository.findAllById(list);
     }
+
+    public WeatherObservation getWeatherObservation(Long observationId) {
+        return weatherObservationRepository.findById(observationId).get();
+    }
 }

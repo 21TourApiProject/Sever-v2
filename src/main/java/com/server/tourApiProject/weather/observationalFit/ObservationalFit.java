@@ -15,7 +15,7 @@ public class ObservationalFit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long observationFitId;
+    private Long observationalFitId;
 
     @Column(nullable = false)
     private Long observationCode; // 관측지 id
@@ -24,5 +24,5 @@ public class ObservationalFit {
     private String date; // 20221103
 
     @Column(nullable = false)
-    private Double bestObservationFit; // 관측적합도
+    private Double bestObservationalFit; // 관측적합도
 }

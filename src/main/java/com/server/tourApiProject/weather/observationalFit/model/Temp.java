@@ -10,9 +10,9 @@ public class Temp {
     private String day;
 
     @JsonProperty("min")
-    private String min;
+    private Double min;
 
     @JsonProperty("max")
-    private String max;
+    private Double max;
 
 }

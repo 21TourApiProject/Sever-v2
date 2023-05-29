@@ -3,6 +3,8 @@ package com.server.tourApiProject.weather.observationalFit.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Hourly {
 
@@ -18,8 +20,8 @@ public class Hourly {
 //    @JsonProperty("pressure")
 //    private String pressure;
 //
-//    @JsonProperty("humidity")
-//    private String humidity;
+    @JsonProperty("humidity")
+    private String humidity;
 //
 //    @JsonProperty("dew_point")
 //    private Double dewPoint;
@@ -33,8 +35,8 @@ public class Hourly {
 //    @JsonProperty("visibility")
 //    private String visibility;
 //
-//    @JsonProperty("wind_speed")
-//    private Double windSpeed;
+    @JsonProperty("wind_speed")
+    private Double windSpeed;
 //
 //    @JsonProperty("wind_deg")
 //    private String windDeg;
@@ -42,8 +44,8 @@ public class Hourly {
 //    @JsonProperty("wind_gust")
 //    private Double windGust;
 //
-//    @JsonProperty("weather")
-//    private List<Weather> weather;
+    @JsonProperty("weather")
+    private List<Weather> weather;
 
     @JsonProperty("pop")
     private String pop;
