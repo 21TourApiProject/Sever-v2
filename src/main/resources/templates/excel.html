@@ -116,6 +116,11 @@
     <input th:type="submit" value="날씨 관측지 제출" />
 </form>
 
+<form th:action="@{/excel/weather/description/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="날씨 설명 제출" />
+</form>
+
 <form th:action="@{/excel/increaseOverviewSim/read}" method="POST" enctype="multipart/form-data">
     <input type="file" th:name="file">
     <input th:type="submit" value="한줄개요 늘리기" />

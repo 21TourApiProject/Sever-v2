@@ -1,7 +1,7 @@
 package com.server.tourApiProject.weather.observationalFit;
 
 import com.server.tourApiProject.weather.observationalFit.model.AreaTimeDTO;
-import com.server.tourApiProject.weather.observationalFit.model.ObservationalInfo;
+import com.server.tourApiProject.weather.observationalFit.model.WeatherInfo;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class ObservationalFitController {
      * 앱 관측적합도 상세 페이지를 위한 실시간 날씨 정보 제공
      */
     @PostMapping("/observationalFit/app")
-    public Mono<ObservationalInfo> getObservationalInfo(@RequestBody AreaTimeDTO areaTime) {
+    public Mono<WeatherInfo> getWeatherInfo(@RequestBody AreaTimeDTO areaTime) {
         return observationalFitService.getWeatherInfo(areaTime);
     }
 

@@ -3,6 +3,7 @@ package com.server.tourApiProject.weather.observationalFit;
 import com.server.tourApiProject.common.Const;
 import com.server.tourApiProject.weather.area.WeatherArea;
 import com.server.tourApiProject.weather.area.WeatherAreaService;
+import com.server.tourApiProject.weather.description.DescriptionRepository;
 import com.server.tourApiProject.weather.fineDust.FineDustService;
 import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationService;
@@ -30,6 +31,7 @@ public class ObservationalFitService {
     private final WeatherAreaService weatherAreaService;
     private final WeatherObservationService weatherObservationService;
     private final ObservationalFitRepository observationalFitRepository;
+    private final DescriptionRepository descriptionRepository;
     private final WebClient webClient;
 
     private static final String OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/onecall";
@@ -38,7 +40,7 @@ public class ObservationalFitService {
     private static final String OPEN_WEATHER_UNITS = "metric";
     private static final String OPEN_WEATHER_LANG = "kr";
 
-    public Mono<ObservationalInfo> getWeatherInfo(AreaTimeDTO areaTime) {
+    public Mono<WeatherInfo> getWeatherInfo(AreaTimeDTO areaTime) {
         return Mono.zip(Mono.just(fineDustService.getFineDustMap(areaTime.getDate())),
                         getOpenWeather(areaTime.getLat(), areaTime.getLon()))
                 .flatMap(zip -> {
@@ -63,12 +65,13 @@ public class ObservationalFitService {
                     }
 
                     // 상세 날씨 정보
-                    ObservationalInfo.DetailWeather detailWeather = new ObservationalInfo.DetailWeather();
+                    WeatherInfo.DetailWeather detailWeather = new WeatherInfo.DetailWeather();
 
                     Hourly hourly = openWeatherResponse.getHourly().get(0); // 현재 Hour 기준 날씨
                     Daily daily = openWeatherResponse.getDaily().get(0); // 현재 Date 기준 날씨
 
-                    detailWeather.setWeatherText(hourly.getWeather().get(0).getDescription());
+//                    detailWeather.setWeatherText(hourly.getWeather().get(0).getDescription());
+                    detailWeather.setWeatherText(getDescription(hourly.getWeather().get(0).getId()));
                     detailWeather.setTempHighest(String.valueOf(Math.round(daily.getTemp().getMax())));
                     detailWeather.setTempLowest(String.valueOf(Math.round(daily.getTemp().getMin())));
                     detailWeather.setRainfallProbability(Double.parseDouble(hourly.getPop()) * 100 + Const.Weather.PERCENT);
@@ -83,12 +86,16 @@ public class ObservationalFitService {
                     detailWeather.setMoonset(getHHmm(daily.getMoonset()));
 
                     // 시간별 관측적합도 정보
-                    List<ObservationalInfo.HourObservationalFit> hourList = new ArrayList<>();
+                    List<WeatherInfo.HourObservationalFit> hourList = new ArrayList<>();
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
                     int idx = 0;
-                    if(areaTime.getHour() < 18) idx = 17 - areaTime.getHour();
+                    if (areaTime.getHour() < 18) idx = 17 - areaTime.getHour();
+
+                    int bestTime = 18; // 최고 관측적합도 시각
+                    double minObservationalFit = 0D; // 최고 관측적합도
+                    double maxObservationalFit = 0D; // 최소 관측적합도
 
                     for (int i = 0; i < 13; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
@@ -112,13 +119,20 @@ public class ObservationalFitService {
                                     lightPollution
                             );
                         }
-                        hourList.add(ObservationalInfo.HourObservationalFit.builder()
-                                .hour(String.valueOf(i + 18 < 24 ? i + 18 : i - 6))
+                        if (maxObservationalFit < observationalFit) {
+                            maxObservationalFit = observationalFit;
+                            bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                        }
+                        if (minObservationalFit > observationalFit) {
+                            minObservationalFit = observationalFit;
+                        }
+                        hourList.add(WeatherInfo.HourObservationalFit.builder()
+                                .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
                     }
 
                     // 일일별 관측적합도 정보
-                    List<ObservationalInfo.DayObservationalFit> dayList = new ArrayList<>();
+                    List<WeatherInfo.DayObservationalFit> dayList = new ArrayList<>();
                     Map<Integer, String[]> dayDateMap = getDayDateMap();
                     for (int i = 0; i < 7; i++) {
                         Daily D_daily = openWeatherResponse.getDaily().get(i);
@@ -132,16 +146,53 @@ public class ObservationalFitService {
                                 Double.valueOf(D_daily.getPop()),
                                 lightPollution
                         );
-                        dayList.add(ObservationalInfo.DayObservationalFit.builder()
+                        dayList.add(WeatherInfo.DayObservationalFit.builder()
                                 .day(dayDateMap.get(i)[0])
                                 .date(dayDateMap.get(i)[1])
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
                     }
 
-                    return Mono.just(ObservationalInfo.builder().detailWeather(detailWeather)
+                    String[] todaySentence = getTodaySentence(bestTime, maxObservationalFit);
+
+                    return Mono.just(WeatherInfo.builder().detailWeather(detailWeather)
                             .hourObservationalFitList(hourList)
-                            .dayObservationalFitList(dayList).build());
+                            .dayObservationalFitList(dayList)
+                            .lightPollutionLevel(getLightPollutionLevel(lightPollution))
+                            .todaySentence1(todaySentence[0])
+                            .todaySentence2(todaySentence[1])
+                            .bestObservationalFit((int) Math.round(maxObservationalFit))
+                            .bestTime(bestTime).build());
                 });
+    }
+
+    // 기상 상태 번역
+    public String getDescription(String id) {
+        return descriptionRepository.findById(id).getResult();
+    }
+
+    // 광공해 값 -> 0 ~ 4 변환
+    // 0: 매우좋음, 1: 좋음, 2: 보통, 3: 나쁨, 4: 매우나쁨
+    public Integer getLightPollutionLevel(Double lightPollution) {
+        if (lightPollution <= 1) return 0;
+        else if (lightPollution <= 15) return 1;
+        else if (lightPollution <= 45) return 2;
+        else if (lightPollution <= 80) return 3;
+        else return 4;
+    }
+
+    public String[] getTodaySentence(int bestTime, double bestObservationalFit) {
+        int round = (int) Math.round(bestObservationalFit);
+        if (round >= 85) {
+            return new String[]{"오늘은 하루종일", "별 보기 최고에요"};
+        } else if (round >= 70) {
+            return new String[]{"오늘 " + bestTime + "시가", "별 보기 가장 좋아요"};
+        } else if (round >= 60) {
+            return new String[]{"오늘 " + bestTime + "시가", "별 보기 적당해요"};
+        } else if (round >= 40) {
+            return new String[]{"오늘은 하루종일", "별 보기 조금 아쉬워요"};
+        } else {
+            return new String[]{"오늘은 하루종일", "별 보기 어려워요"};
+        }
     }
 
     public static Map<Integer, String[]> getDayDateMap() {
@@ -331,7 +382,7 @@ public class ObservationalFitService {
         uriBuilder.queryParam("exclude", OPEN_WEATHER_EXCLUDE);
         uriBuilder.queryParam("appid", OPEN_WEATHER_API_KEY);
         uriBuilder.queryParam("units", OPEN_WEATHER_UNITS);
-        uriBuilder.queryParam("lang", OPEN_WEATHER_LANG);
+//        uriBuilder.queryParam("lang", OPEN_WEATHER_LANG);
 
         return webClient.get()
                 .uri(uriBuilder.build().toUri())

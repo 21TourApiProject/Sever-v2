@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
-public class ObservationalInfo {
+public class WeatherInfo {
 
     @JsonProperty
     public DetailWeather detailWeather;
@@ -17,6 +17,16 @@ public class ObservationalInfo {
     public List<HourObservationalFit> hourObservationalFitList;
     @JsonProperty
     public List<DayObservationalFit> dayObservationalFitList;
+    @JsonProperty
+    public Integer lightPollutionLevel;
+    @JsonProperty
+    public String todaySentence1; // 오늘 23시에
+    @JsonProperty
+    public String todaySentence2; // 관측하면 가장 좋아요
+    @JsonProperty
+    public Integer bestObservationalFit;
+    @JsonProperty
+    public Integer bestTime;
 
     @Setter
     @NoArgsConstructor
@@ -40,7 +50,7 @@ public class ObservationalInfo {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class HourObservationalFit{
+    public static class HourObservationalFit {
         public String hour;
         public String observationalFit;
     }
@@ -49,7 +59,7 @@ public class ObservationalInfo {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DayObservationalFit{
+    public static class DayObservationalFit {
         public String day;
         public String date;
         public String observationalFit;

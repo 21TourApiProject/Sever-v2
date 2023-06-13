@@ -34,6 +34,8 @@ import com.server.tourApiProject.touristPoint.touristDataHashTag.TouristDataHash
 import com.server.tourApiProject.touristPoint.touristDataHashTag.TouristDataHashTagRepository;
 import com.server.tourApiProject.weather.area.WeatherArea;
 import com.server.tourApiProject.weather.area.WeatherAreaRepository;
+import com.server.tourApiProject.weather.description.Description;
+import com.server.tourApiProject.weather.description.DescriptionRepository;
 import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
 import org.apache.commons.io.FilenameUtils;
@@ -88,10 +90,11 @@ public class ExcelController {
     private final AlarmRepository alarmRepository;
     private final WeatherAreaRepository weatherAreaRepository;
     private final WeatherObservationRepository weatherObservationRepository;
+    private final DescriptionRepository descriptionRepository;
 
 
     public ExcelController(TouristDataService touristDataService, AreaService areaService, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
-                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository) {
+                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository) {
         this.touristDataService = touristDataService;
         this.areaService = areaService;
         this.contentTypeService = contentTypeService;
@@ -111,6 +114,7 @@ public class ExcelController {
         this.alarmRepository = alarmRepository;
         this.weatherAreaRepository = weatherAreaRepository;
         this.weatherObservationRepository = weatherObservationRepository;
+        this.descriptionRepository = descriptionRepository;
     }
 
     @GetMapping("/excel")
@@ -818,6 +822,35 @@ public class ExcelController {
                     .latitude(row.getCell(3).getNumericCellValue())
                     .longitude(row.getCell(4).getNumericCellValue())
                     .lightPollution(row.getCell(5).getNumericCellValue())
+                    .build());
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    @PostMapping("/excel/weather/description/read")
+    public String readWeatherDescriptionExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 0; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            descriptionRepository.save(Description.builder()
+                    .id(String.valueOf((int) row.getCell(0).getNumericCellValue()))
+                    .main(row.getCell(1).getStringCellValue())
+                    .description(row.getCell(2).getStringCellValue())
+                    .result(row.getCell(3).getStringCellValue())
                     .build());
         }
         System.out.println("엑셀 완료");
