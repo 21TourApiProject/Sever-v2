@@ -20,13 +20,15 @@ public class WeatherInfo {
     @JsonProperty
     public Integer lightPollutionLevel;
     @JsonProperty
-    public String todaySentence1; // 오늘 23시에
+    public String todayComment1; // 오늘 23시에
     @JsonProperty
-    public String todaySentence2; // 관측하면 가장 좋아요
+    public String todayComment2; // 관측하면 가장 좋아요
     @JsonProperty
     public Integer bestObservationalFit;
     @JsonProperty
     public Integer bestTime;
+    @JsonProperty
+    public String mainEffect;
 
     @Setter
     @NoArgsConstructor

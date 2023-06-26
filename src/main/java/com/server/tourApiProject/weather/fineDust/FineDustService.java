@@ -4,7 +4,6 @@ import com.server.tourApiProject.common.Const;
 import com.server.tourApiProject.weather.fineDust.model.AirKoreaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -13,6 +12,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,11 @@ public class FineDustService {
      * 해당 date 의 미세먼지 예보 호출 메서드
      */
     public Map<String, String> getFineDustMap(String date) {
+
+        // 오전 5시 이전에 호출하면 실패. -> 오전 5시 이전 요청은 하루 전 날짜로 요청 필요
+        String hour = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
+        if (hour.startsWith("0") && Integer.parseInt(hour.substring(0, 1)) < 6)
+            date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));  // 2021/06/17
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(AIR_KOREA_URL);
         uriBuilder.queryParam("searchDate", date);
