@@ -1,10 +1,12 @@
 package com.server.tourApiProject.bigPost.postComment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.server.tourApiProject.user.User;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -35,4 +37,5 @@ public class PostCommentParams {
     private String comment;
 
     private Long userId;
+
 }

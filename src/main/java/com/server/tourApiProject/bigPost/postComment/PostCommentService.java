@@ -1,13 +1,16 @@
 package com.server.tourApiProject.bigPost.postComment;
 
+import ch.qos.logback.core.pattern.PostCompileProcessor;
 import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.post.PostRepository;
+import com.server.tourApiProject.user.User;
 import com.server.tourApiProject.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -60,12 +63,50 @@ public class PostCommentService {
             postComment.setUserId(postCommentParams.getUserId());
             postComment.setYearDate(postCommentParams.getYearDate());
             postComment.setTime(postCommentParams.getTime());
-            postComment.setLike("0");
             postCommentRepository.save(postComment);
+    }
+    /**
+     * description:게시물 아이디로 게시물 댓글 가져오는 메소드.
+     *
+     * @param postId            - the post id
+     * @return List<PostCommentParams> - the postCommentParams list
+     */
+    public List<PostCommentParams> getPostCommentById(Long postId){
+        List<PostComment> postComments = postCommentRepository.findByPostId(postId);
+        List<PostCommentParams> result = new ArrayList<>();
+        for(PostComment postComment : postComments){
+            PostCommentParams postCommentParams = new PostCommentParams();
+            postCommentParams.setComment(postComment.getComment());
+            postCommentParams.setUserId(postComment.getUserId());
+            postCommentParams.setTime(postComment.getTime());
+            postCommentParams.setYearDate(postComment.getYearDate());
+            result.add(postCommentParams);
+        }
+        return result;
+    }
+    /**
+     * description:게시물 댓글 좋아요 유저 리스트 추가하는 메소드.
+     *
+     * @param userId            - the user id
+     * @param postCommentId - the postComment id
+     */
+    public void addLove(Long userId, Long postCommentId){
+        PostComment postComment = postCommentRepository.findById(postCommentId).orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+    }
+    /**
+     * description:게시물 댓글 좋아요 유저 리스트 삭제하는 메소드.
+     *
+     * @param userId            - the user id
+     * @param postCommentId - the postComment id
+     */
+    public void removeLove(Long userId, Long postCommentId){
+        PostComment postComment = postCommentRepository.findById(postCommentId).orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
     }
 
     /**
      * description:게시물 댓글 삭제하는 메소드.
      */
-    public void deletePostComment(){postCommentRepository.deleteAll();}
+    public void deletePostComment(Long postCommentId){postCommentRepository.deleteById(postCommentId);}
 }

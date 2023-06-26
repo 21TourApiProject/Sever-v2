@@ -1,6 +1,9 @@
 package com.server.tourApiProject.bigPost.postComment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 /**
  * className : com.server.tourApiProject.bigPost.postComment
@@ -16,4 +19,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * 2023-01-25       jinhyeok       최초생성
  */
 public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
+    List<PostComment> findByPostId (@Param("postId") Long postId);
 }
