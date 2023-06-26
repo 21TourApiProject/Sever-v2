@@ -1,7 +1,7 @@
 -- -- 초기화 스크립트, 매번 db구동시 변하지 않는 값을 등록
 --
 -- -- 사용자
--- INSERT INTO USER(USER_ID, REAL_NAME, SEX, BIRTH_DAY, IS_MARKETING, MOBILE_PHONE_NUMBER, EMAIL, PASSWORD, NICK_NAME, SIGN_UP_DT, KAKAO, PROFILE_IMAGE) VALUES(1, '이세인', false , '2000-02-11', true, '01094069717', 'test1@gmail.com', 'dltpdls00*', '23in', '2021-08-01T15:41:20', false, '"PI1_1632875360677.jpg"');
+INSERT INTO USER(USER_ID, REAL_NAME, SEX, BIRTH_DAY, IS_MARKETING, MOBILE_PHONE_NUMBER, EMAIL, PASSWORD, NICK_NAME, SIGN_UP_DT, KAKAO, PROFILE_IMAGE) VALUES(1, '이세인', false , '2000-02-11', true, '01094069717', 'test1@gmail.com', 'ppppp00*', '23in', '2021-08-01T15:41:20', false, '"PI1_1632875360677.jpg"');
 -- INSERT INTO USER(USER_ID, REAL_NAME, SEX, BIRTH_DAY, IS_MARKETING, MOBILE_PHONE_NUMBER, EMAIL, PASSWORD, NICK_NAME, SIGN_UP_DT, KAKAO, PROFILE_IMAGE) VALUES(2, null, true, '2000-02-11', false, null, 'test2@gmail.com', null, '마로', '2021-08-01T15:41:20', true, 'http://tong.visitkorea.or.kr/cms/resource/21/2657021_image2_1.jpg');
 --
 --
@@ -86,9 +86,6 @@
 -- --별자리 운세
 -- --     INSERT INTO HOROSCOPE (HOR_ID, HOR_IMAGE, HOR_ENG_TITLE, HOR_KR_TITLE, HOR_PERIOD, HOR_DESC1, HOR_DESC2, HOR_DESC3, HOR_DESC4, HOR_DESC5, HOR_DESC6, HOR_DESC7, HOR_DESC8, HOR_DESC9, HOR_DESC10, HOR_DESC11, HOR_DESC12) VALUES (0, 'https://cdn.pixabay.com/photo/2015/02/17/08/25/horoscope-639127_960_720.jpg', 'SAGITTARIUS', '물병자리', '1.20 ~ 2.18', '1월 별자리 운세', '2월 별자리 운세', '3월 별자리 운세', '4월 별자리 운세', '5월 별자리 운세', '6월 별자리 운세', '7월 별자리 운세', '8월 별자리 운세', '9월 별자리 운세1', '10월 별자리 운세', '11월 별자리 운세', '12월 별자리 운세');
 -- --     INSERT INTO HOROSCOPE (HOR_ID, HOR_IMAGE, HOR_ENG_TITLE, HOR_KR_TITLE, HOR_PERIOD, HOR_DESC1, HOR_DESC2, HOR_DESC3, HOR_DESC4, HOR_DESC5, HOR_DESC6, HOR_DESC7, HOR_DESC8, HOR_DESC9, HOR_DESC10, HOR_DESC11, HOR_DESC12) VALUES (1, 'https://cdn.pixabay.com/photo/2015/02/17/08/25/horoscope-639127_960_720.jpg', 'SAGITTARIUS', '물고기자리', '2.20 ~ 3.18', '1월 별자리 운세', '2월 별자리 운세', '3월 별자리 운세', '4월 별자리 운세', '5월 별자리 운세', '6월 별자리 운세', '7월 별자리 운세', '8월 별자리 운세', '9월 별자리 운세', '10월 별자리 운세', '11월 별자리 운세', '12월 별자리 운세');
---
--- --날씨 지역
---     INSERT INTO WT_AREA (WT_AREA_ID, CITY_NAME, PROV_NAME, LATITUDE, LONGITUDE, MIN_LIGHT_POL, MAX_LIGHT_POL) VALUES (0, '서울', '강남구', 37.5006, 127.0508, 2.9, 2.2);
 --
 -- --오늘의 날씨
 -- --     INSERT INTO WT_TODAY (WT_TODAY_ID, TODAY_WT_ID, TODAY_WT_NAME1, TODAY_WT_NAME2) VALUES (0, 804, '천둥번개와', '비바람');
