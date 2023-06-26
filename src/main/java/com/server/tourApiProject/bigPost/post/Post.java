@@ -2,11 +2,13 @@ package com.server.tourApiProject.bigPost.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.server.tourApiProject.bigPost.postComment.PostComment;
 import com.server.tourApiProject.bigPost.postHashTag.PostHashTag;
 import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.observation.Observation;
 import com.server.tourApiProject.user.User;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -21,6 +23,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Table(name="post")
 /** 
 * @className : Post.java
@@ -48,28 +51,6 @@ public class Post {
     private String postTitle;
 
     @Column
-    private String optionHashTag;
-    @Column
-    private String optionHashTag2;
-    @Column
-    private String optionHashTag3;
-    @Column
-    private String optionHashTag4;
-    @Column
-    private String optionHashTag5;
-    @Column
-    private String optionHashTag6;
-    @Column
-    private String optionHashTag7;
-    @Column
-    private String optionHashTag8;
-    @Column
-    private String optionHashTag9;
-    @Column
-    private String optionHashTag10;
-
-
-    @Column
     private String optionObservation;
 
     @Column(nullable = false)
@@ -78,13 +59,17 @@ public class Post {
     private LocalDate yearDate;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime time;
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostHashTag> postHashTags=new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostComment> postComments=new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -108,5 +93,4 @@ public class Post {
 
     @Column
     private Long areaCode;  //지역코드
-
 }
