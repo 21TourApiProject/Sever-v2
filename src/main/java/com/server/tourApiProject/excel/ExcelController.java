@@ -22,7 +22,6 @@ import com.server.tourApiProject.star.Horoscope.Horoscope;
 import com.server.tourApiProject.star.Horoscope.HoroscopeRepository;
 import com.server.tourApiProject.star.constellation.Constellation;
 import com.server.tourApiProject.star.constellation.ConstellationRepository;
-import com.server.tourApiProject.touristPoint.area.AreaParams;
 import com.server.tourApiProject.touristPoint.area.AreaService;
 import com.server.tourApiProject.touristPoint.contentType.ContentType;
 import com.server.tourApiProject.touristPoint.contentType.ContentTypeService;
@@ -33,11 +32,12 @@ import com.server.tourApiProject.touristPoint.touristData.TouristDataRepository;
 import com.server.tourApiProject.touristPoint.touristData.TouristDataService;
 import com.server.tourApiProject.touristPoint.touristDataHashTag.TouristDataHashTag;
 import com.server.tourApiProject.touristPoint.touristDataHashTag.TouristDataHashTagRepository;
-import com.server.tourApiProject.weather.WtArea.WtArea;
-import com.server.tourApiProject.weather.WtArea.WtAreaRepository;
-import com.server.tourApiProject.weather.WtArea.WtAreaService;
-import com.server.tourApiProject.weather.WtToday.WtToday;
-import com.server.tourApiProject.weather.WtToday.WtTodayRepository;
+import com.server.tourApiProject.weather.area.WeatherArea;
+import com.server.tourApiProject.weather.area.WeatherAreaRepository;
+import com.server.tourApiProject.weather.description.Description;
+import com.server.tourApiProject.weather.description.DescriptionRepository;
+import com.server.tourApiProject.weather.observation.WeatherObservation;
+import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -57,18 +57,17 @@ import java.util.Optional;
 //일단 readTouristDataExcel함수 복사 붙여넣기하고 함수명 수정, 아까 action에 쓴 url로 수정 그리고 for문 안에 내용 수정하면 됨
 
 /**
+ * @author : sein
+ * @version : 1.0
+ * <p>
+ * ====개정이력(Modification Information)====
+ * 수정일        수정자        수정내용
+ * -----------------------------------------
+ * 2022-08-28     sein        주석 생성
  * @className : ExcelController.java
  * @description : 엑셀 controller 입니다.
  * @modification : 2022-08-28(sein) 수정
- * @author : sein
  * @date : 2022-08-28
- * @version : 1.0
-
-    ====개정이력(Modification Information)====
-        수정일        수정자        수정내용
-    -----------------------------------------
-      2022-08-28     sein        주석 생성
-
  */
 @Controller
 public class ExcelController {
@@ -78,8 +77,6 @@ public class ExcelController {
     private final TouristDataRepository touristDataRepository;
     private final NearTouristDataRepository nearTouristDataRepository;
     private final TouristDataHashTagRepository touristDataHashTagRepository;
-    private final WtAreaRepository wtAreaRepository;
-    private final WtTodayRepository wtTodayRepository;
     private final ConstellationRepository constellationRepository;
     private final HoroscopeRepository horoscopeRepository;
     private final ObservationRepository observationRepository;
@@ -91,17 +88,19 @@ public class ExcelController {
     private final SearchFirstRepository searchFirstRepository;
     private final NoticeRepository noticeRepository;
     private final AlarmRepository alarmRepository;
+    private final WeatherAreaRepository weatherAreaRepository;
+    private final WeatherObservationRepository weatherObservationRepository;
+    private final DescriptionRepository descriptionRepository;
 
 
-    public ExcelController(TouristDataService touristDataService, AreaService areaService, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, WtAreaService wtAreaService, WtAreaRepository wtAreaRepository, WtTodayRepository wtTodayRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository) {
+    public ExcelController(TouristDataService touristDataService, AreaService areaService, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
+                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository) {
         this.touristDataService = touristDataService;
         this.areaService = areaService;
         this.contentTypeService = contentTypeService;
         this.touristDataRepository = touristDataRepository;
-        this.wtTodayRepository = wtTodayRepository;
         this.nearTouristDataRepository = nearTouristDataRepository;
         this.touristDataHashTagRepository = touristDataHashTagRepository;
-        this.wtAreaRepository = wtAreaRepository;
         this.constellationRepository = constellationRepository;
         this.horoscopeRepository = horoscopeRepository;
         this.observationRepository = observationRepository;
@@ -113,41 +112,13 @@ public class ExcelController {
         this.searchFirstRepository = searchFirstRepository;
         this.noticeRepository = noticeRepository;
         this.alarmRepository = alarmRepository;
+        this.weatherAreaRepository = weatherAreaRepository;
+        this.weatherObservationRepository = weatherObservationRepository;
+        this.descriptionRepository = descriptionRepository;
     }
 
     @GetMapping("/excel")
     public String main() {
-        return "excel";
-    }
-
-    @PostMapping("/excel/area/read")
-    public String readAreaExcel(@RequestParam("file") MultipartFile file, Model model)
-            throws IOException {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (!extension.equals("xlsx") && !extension.equals("xls")) {
-            throw new IOException("엑셀파일만 업로드 해주세요.");
-        }
-        Workbook workbook = null;
-
-        if (extension.equals("xlsx")) {
-            workbook = new XSSFWorkbook(file.getInputStream());
-        } else if (extension.equals("xls")) {
-            workbook = new HSSFWorkbook(file.getInputStream());
-        }
-
-        Sheet worksheet = workbook.getSheetAt(0);
-        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-            Row row = worksheet.getRow(i);
-            AreaParams data = new AreaParams();
-
-            data.setCode1((long) row.getCell(1).getNumericCellValue());
-            data.setName1(row.getCell(2).getStringCellValue());
-            data.setCode2((long) row.getCell(3).getNumericCellValue());
-            data.setName2(row.getCell(4).getStringCellValue());
-
-            areaService.createArea(data);
-        }
-        System.out.println("엑셀 완료");
         return "excel";
     }
 
@@ -360,83 +331,6 @@ public class ExcelController {
 
                 touristDataHashTagRepository.save(data);
             }
-        }
-        System.out.println("엑셀 완료");
-        return "excel";
-    }
-
-    @PostMapping("/excel/wtArea/read")
-    public String readWtAreaExcel(@RequestParam("file") MultipartFile file, Model model)
-            throws IOException {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (!extension.equals("xlsx") && !extension.equals("xls")) {
-            throw new IOException("엑셀파일만 업로드 해주세요.");
-        }
-        Workbook workbook = null;
-
-        if (extension.equals("xlsx")) {
-            workbook = new XSSFWorkbook(file.getInputStream());
-        } else if (extension.equals("xls")) {
-            workbook = new HSSFWorkbook(file.getInputStream());
-        }
-
-        Sheet worksheet = workbook.getSheetAt(0);
-        System.out.println(worksheet.getPhysicalNumberOfRows());
-        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-            Row row = worksheet.getRow(i);
-            WtArea data = new WtArea();
-
-            if (row.getCell(0) == null) {
-                break;
-            }
-
-            data.setWtAreaId((long) row.getCell(0).getNumericCellValue());
-            data.setCityName(row.getCell(1).getStringCellValue());
-            System.out.println(row.getCell(1).getStringCellValue());
-            data.setProvName(row.getCell(2).getStringCellValue());
-            data.setLatitude(row.getCell(3).getNumericCellValue());
-            data.setLongitude(row.getCell(4).getNumericCellValue());
-            data.setMinLightPol(row.getCell(5).getNumericCellValue());
-            data.setMaxLightPol(row.getCell(6).getNumericCellValue());
-
-            wtAreaRepository.save(data);
-        }
-        System.out.println("엑셀 완료");
-        return "excel";
-    }
-
-    @PostMapping("/excel/wtToday/read")
-    public String readWtTodayExcel(@RequestParam("file") MultipartFile file, Model model)
-            throws IOException {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (!extension.equals("xlsx") && !extension.equals("xls")) {
-            throw new IOException("엑셀파일만 업로드 해주세요.");
-        }
-        Workbook workbook = null;
-
-        if (extension.equals("xlsx")) {
-            workbook = new XSSFWorkbook(file.getInputStream());
-        } else if (extension.equals("xls")) {
-            workbook = new HSSFWorkbook(file.getInputStream());
-        }
-
-        Sheet worksheet = workbook.getSheetAt(0);
-        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-            Row row = worksheet.getRow(i);
-            WtToday data = new WtToday();
-
-            if (row.getCell(0) == null) {
-                break;
-            }
-
-            data.setWtTodayId((long) row.getCell(0).getNumericCellValue());
-            data.setTodayWtId((int) row.getCell(1).getNumericCellValue());
-            data.setTodayWtName1(row.getCell(2).getStringCellValue());
-            data.setTodayWtName2(row.getCell(3).getStringCellValue());
-            if (data.getTodayWtName2().equals("null"))
-                data.setTodayWtName2(null);
-
-            wtTodayRepository.save(data);
         }
         System.out.println("엑셀 완료");
         return "excel";
@@ -833,6 +727,7 @@ public class ExcelController {
         System.out.println("엑셀 완료");
         return "excel";
     }
+
     @PostMapping("/excel/alarm/read")
     public String readAlarmExcel(@RequestParam("file") MultipartFile file, Model model)
             throws IOException {
@@ -858,6 +753,96 @@ public class ExcelController {
             alarm.setAlarmDate(row.getCell(3).getStringCellValue());
 
             alarmRepository.save(alarm);
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    @PostMapping("/excel/weather/area/read")
+    public String readWeatherAreaExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            WeatherArea weatherArea = WeatherArea.builder().EMD(row.getCell(4).getStringCellValue())
+                    .longitude(row.getCell(8).getNumericCellValue())
+                    .latitude(row.getCell(9).getNumericCellValue())
+                    .SGG(row.getCell(10).getStringCellValue())
+                    .lightPollution(Double.valueOf(row.getCell(13).getStringCellValue()))
+                    .build();
+            if (row.getCell(11) != null) weatherArea.setSGG2(row.getCell(11).getStringCellValue());
+            weatherAreaRepository.save(weatherArea);
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    @PostMapping("/excel/weather/observation/read")
+    public String readWeatherObservationExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            weatherObservationRepository.save(WeatherObservation.builder()
+                    .name(row.getCell(1).getStringCellValue())
+                    .address(row.getCell(2).getStringCellValue())
+                    .latitude(row.getCell(3).getNumericCellValue())
+                    .longitude(row.getCell(4).getNumericCellValue())
+                    .lightPollution(row.getCell(5).getNumericCellValue())
+                    .build());
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    @PostMapping("/excel/weather/description/read")
+    public String readWeatherDescriptionExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 0; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            descriptionRepository.save(Description.builder()
+                    .id(String.valueOf((int) row.getCell(0).getNumericCellValue()))
+                    .main(row.getCell(1).getStringCellValue())
+                    .description(row.getCell(2).getStringCellValue())
+                    .result(row.getCell(3).getStringCellValue())
+                    .build());
         }
         System.out.println("엑셀 완료");
         return "excel";
