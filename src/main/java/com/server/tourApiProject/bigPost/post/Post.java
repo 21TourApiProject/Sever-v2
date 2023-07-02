@@ -8,7 +8,6 @@ import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.observation.Observation;
 import com.server.tourApiProject.user.User;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -23,7 +22,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicUpdate
 @Table(name="post")
 /** 
 * @className : Post.java
@@ -74,6 +72,9 @@ public class Post {
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostImage> postImages=new ArrayList<>();
+
+    @Column
+    private Long saved;     //저장횟수, 좋아요수
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

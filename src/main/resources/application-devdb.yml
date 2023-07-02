@@ -1,0 +1,13 @@
+spring: #develop DB??
+  config:
+    activate:
+      on-profile: "devdb"
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    url: jdbc:mysql://starry-night-dev-db.cjqbonn4adgf.ap-northeast-2.rds.amazonaws.com:3306/starrynight?serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    password: starrydev1103
+  jpa:
+    show-sql: 'false'
+    hibernate:
+      ddl-auto: update

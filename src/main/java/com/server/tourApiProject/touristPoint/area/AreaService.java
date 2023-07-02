@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -42,4 +44,17 @@ public class AreaService {
         area.setSigunguName(areaParams.getName2());
         areaRepository.save(area);
     }
+
+    public List<AreaFilterParams> findAreaFilter(){
+        List<AreaFilterParams.AreaFilter> filterArea = areaRepository.findFilterArea();
+
+        List<AreaFilterParams> result = new ArrayList<>();
+        for (AreaFilterParams.AreaFilter areaFilter : filterArea) {
+            System.out.println(areaFilter.getName());
+            result.add(new AreaFilterParams(areaFilter.getId(), areaFilter.getName(), "AREA"));
+        }
+
+        return result;
+    }
+
 }

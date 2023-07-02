@@ -2,6 +2,8 @@ package com.server.tourApiProject.observation;
 
 import lombok.*;
 
+import javax.persistence.Column;
+
 /**
 * @className : ObservationParams.java
 * @description : 관측지 생성에 사용하는 DTO
@@ -43,6 +45,9 @@ public class ObservationParams {
     private String intro;   //한줄소개
 
     private String observeType;    //관측지 타입(천문대,등등), 추후 enum으로 수정가능?
+
     private String outline; //개요
+
+    private String reserve; //
 
 }

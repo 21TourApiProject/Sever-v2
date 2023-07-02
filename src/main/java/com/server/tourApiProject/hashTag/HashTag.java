@@ -34,4 +34,9 @@ public class HashTag {
 
     @Column(nullable = false, unique = true)
     private String hashTagName;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private HashTagCategory category;
+
 }

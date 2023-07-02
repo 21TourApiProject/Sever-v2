@@ -6,6 +6,7 @@ import com.server.tourApiProject.observation.observeFee.ObserveFee;
 import com.server.tourApiProject.observation.observeHashTag.ObserveHashTag;
 import com.server.tourApiProject.observation.observeImage.ObserveImage;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
      ====개정이력(Modification Information)====      
   수정일        수정자        수정내용    ----------------------------------------- 
    2022-08-27       gyul chyoung       주석최초생성
+    2023-02-27      gyul chyoung        저장횟수 추가
  */
 
 @Builder
@@ -87,13 +89,22 @@ public class Observation {
     @Column
     private Long areaCode;  //지역코드
 
+    @Column
+    private Long saved;     //저장횟수
+
+    @Column
+    private String reserve; //예약페이지 주소
+
     @OneToMany(mappedBy = "observation")
+    @BatchSize(size = 10)
     private List<ObserveFee> observeFees=new ArrayList<>();
 
-   @OneToMany(mappedBy = "observation")
+    @OneToMany(mappedBy = "observation")
+    @BatchSize(size = 20)
     private List<ObserveHashTag> observeHashTags=new ArrayList<>();
 
     @OneToMany(mappedBy = "observation")
+    @BatchSize(size = 10)
     private List<ObserveImage> observeImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "observation")

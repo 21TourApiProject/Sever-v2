@@ -2,10 +2,12 @@ package com.server.tourApiProject.observation;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ObservationRepository extends JpaRepository<Observation, Long> {
+public interface ObservationRepository extends JpaRepository<Observation, Long>, JpaSpecificationExecutor<Observation> {
 
     /**
      * 쿼리명: findByObservationName
@@ -31,4 +33,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
      */
     List<Observation> findByObservationNameContainingOrOutlineContaining(String observationName, String outline);
 //    반환형 findBy제목ContainingOr개요또는내용Containing(String 제목검색어, String 내용검색어);
+
+
+//
 }
