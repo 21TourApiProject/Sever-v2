@@ -2,6 +2,7 @@ package com.server.tourApiProject.bigPost.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.server.tourApiProject.bigPost.postComment.PostComment;
 import com.server.tourApiProject.bigPost.postHashTag.PostHashTag;
 import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.observation.Observation;
@@ -71,6 +72,9 @@ public class Post {
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostImage> postImages=new ArrayList<>();
+
+    @Column
+    private Long saved;     //저장횟수, 좋아요수
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
