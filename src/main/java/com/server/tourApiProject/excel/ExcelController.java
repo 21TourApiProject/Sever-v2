@@ -586,8 +586,18 @@ public class ExcelController {
                 data.setNature(true);
             else
                 data.setNature(false);
+
             data.setAreaCode((long) row.getCell(16).getNumericCellValue());
+
             data.setCourseOrder((int) row.getCell(17).getNumericCellValue());
+            if (data.getCourseOrder()==100){
+                data.setCourseOrder(null);
+            }
+
+            data.setReserve(row.getCell(18).getStringCellValue());
+            if (data.getLink().equals("null"))
+                data.setLink(null);
+
             observationRepository.save(data);
         }
         System.out.println("엑셀 완료");

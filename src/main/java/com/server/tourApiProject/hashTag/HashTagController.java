@@ -1,5 +1,6 @@
 package com.server.tourApiProject.hashTag;
 
+import com.server.tourApiProject.touristPoint.area.AreaFilterParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -41,4 +42,8 @@ public class HashTagController {
     public void createHashTag(@RequestBody HashTag hashTag){
         hashTagService.createHashTag(hashTag);
     }
+
+    @ApiOperation(value = "필터용 해시태그 조회", notes = "필터를 위한 해시태그를 조회한다")
+    @GetMapping(value = "hashTags/filter")
+    public List<AreaFilterParams> getFilterHashTags(){ return hashTagService.getFilterHashTag(); }
 }

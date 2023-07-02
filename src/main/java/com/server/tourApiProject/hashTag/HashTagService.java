@@ -1,10 +1,12 @@
 package com.server.tourApiProject.hashTag;
 
+import com.server.tourApiProject.touristPoint.area.AreaFilterParams;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -46,4 +48,16 @@ public class HashTagService {
     public void createHashTag(HashTag hashTag) {
         hashTagRepository.save(hashTag);
     }
+
+    public List<AreaFilterParams> getFilterHashTag() {
+        List<HashTag> hashTagList = hashTagRepository.findAll();
+        List<AreaFilterParams> result = new ArrayList<>();
+
+        for (HashTag h : hashTagList) {
+            result.add(new AreaFilterParams(h.getHashTagId(), h.getHashTagName(), h.getCategory().toString()));
+        }
+
+        return result;
+    }
+
 }
