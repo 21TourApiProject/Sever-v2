@@ -69,16 +69,6 @@ public class PostService {
         Long observationId = observation.getObservationId();
         post.setPostContent(postParams.getPostContent());
         post.setPostTitle(postParams.getPostTitle());
-        post.setOptionHashTag(postParams.getOptionHashTag());
-        post.setOptionHashTag2(postParams.getOptionHashTag2());
-        post.setOptionHashTag3(postParams.getOptionHashTag3());
-        post.setOptionHashTag4(postParams.getOptionHashTag4());
-        post.setOptionHashTag5(postParams.getOptionHashTag5());
-        post.setOptionHashTag6(postParams.getOptionHashTag6());
-        post.setOptionHashTag7(postParams.getOptionHashTag7());
-        post.setOptionHashTag8(postParams.getOptionHashTag8());
-        post.setOptionHashTag9(postParams.getOptionHashTag9());
-        post.setOptionHashTag10(postParams.getOptionHashTag10());
         post.setOptionObservation(postParams.getOptionObservation());
         post.setYearDate(postParams.getYearDate());
         post.setTime(postParams.getTime());
@@ -260,14 +250,8 @@ public class PostService {
                     hashTagName.add(postHashTag.getHashTagName());
                 }
                 hashPostParams.setHashTags(hashTagName);
-                if(hashPost.getOptionHashTag()!=null){ hashPostParams.setOptionHashTag(hashPost.getOptionHashTag());}
-                if(hashPost.getOptionHashTag2()!=null){ hashPostParams.setOptionHashTag2(hashPost.getOptionHashTag2());}
-                if(hashPost.getOptionHashTag3()!=null){ hashPostParams.setOptionHashTag3(hashPost.getOptionHashTag3());}
             } else {
                 hashPostParams.setHashTags(null);
-                hashPostParams.setOptionHashTag(hashPost.getOptionHashTag());
-                hashPostParams.setOptionHashTag2(hashPost.getOptionHashTag2());
-                hashPostParams.setOptionHashTag3(hashPost.getOptionHashTag3());
             }
             hashPostParams.setHashTags(hashTagName);
             List<PostImage> hashImageList = postImageRepository.findByPostId(hashPost.getPostId());
@@ -316,14 +300,8 @@ public class PostService {
                         mainHashTagName.add(postHashTag.getHashTagName());
                     }
                     postParams4.setHashTags(mainHashTagName);
-                    if(post.getOptionHashTag()!=null){ postParams4.setOptionHashTag(post.getOptionHashTag());}
-                    if(post.getOptionHashTag2()!=null){ postParams4.setOptionHashTag2(post.getOptionHashTag2());}
-                    if(post.getOptionHashTag3()!=null){ postParams4.setOptionHashTag3(post.getOptionHashTag3());}
                 } else {
                     postParams4.setHashTags(null);
-                    postParams4.setOptionHashTag(post.getOptionHashTag());
-                    postParams4.setOptionHashTag2(post.getOptionHashTag2());
-                    postParams4.setOptionHashTag3(post.getOptionHashTag3());
                 }
                 result.add(postParams4);
             }

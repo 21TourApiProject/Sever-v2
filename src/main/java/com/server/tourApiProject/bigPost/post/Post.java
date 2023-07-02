@@ -33,7 +33,6 @@ import java.util.List;
   수정일        수정자        수정내용   
    -----------------------------------------    
    2022-08-05       jinhyeok       주석 수정
-    2023-02-20      gyulchyoung     컬럼값 추가
  
  */
 public class Post {
@@ -49,30 +48,6 @@ public class Post {
     private String postTitle;
 
     @Column
-    private String optionHashTag;
-    @Column
-    private String optionHashTag2;
-    @Column
-    private String optionHashTag3;
-    @Column
-    private String optionHashTag4;
-    @Column
-    private String optionHashTag5;
-    @Column
-    private String optionHashTag6;
-    @Column
-    private String optionHashTag7;
-    @Column
-    private String optionHashTag8;
-    @Column
-    private String optionHashTag9;
-    @Column
-    private String optionHashTag10;
-
-    @Column
-    private Long saved;     //저장횟수, 좋아요수
-
-    @Column
     private String optionObservation;
 
     @Column(nullable = false)
@@ -81,13 +56,17 @@ public class Post {
     private LocalDate yearDate;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime time;
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostHashTag> postHashTags=new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostComment> postComments=new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -111,5 +90,4 @@ public class Post {
 
     @Column
     private Long areaCode;  //지역코드
-
 }
