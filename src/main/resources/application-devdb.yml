@@ -12,3 +12,4 @@ spring: #develop DB??
     generate-ddl: 'true'
     hibernate:
       ddl-auto: create
+
