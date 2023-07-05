@@ -76,8 +76,8 @@ public class ObservationalFitService {
                     Daily daily = openWeatherResponse.getDaily().get(0); // 현재 Date 기준 날씨
 
                     detailWeather.setWeatherText(getDescription(hourly.getWeather().get(0).getId()));
-                    detailWeather.setTempHighest(String.valueOf(Math.round(daily.getTemp().getMax())));
-                    detailWeather.setTempLowest(String.valueOf(Math.round(daily.getTemp().getMin())));
+                    detailWeather.setTempHighest("최고 " + Math.round(daily.getTemp().getMax()) + "°");
+                    detailWeather.setTempLowest("최저 " + Math.round(daily.getTemp().getMin()) + "°");
                     detailWeather.setRainfallProbability(Math.round(Double.parseDouble(hourly.getPop()) * 100) + Const.Weather.PERCENT);
                     detailWeather.setHumidity(hourly.getHumidity() + Const.Weather.PERCENT);
                     detailWeather.setCloud(Math.round(hourly.getClouds()) + Const.Weather.PERCENT);
@@ -94,15 +94,21 @@ public class ObservationalFitService {
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
+                    Integer hour = areaTime.getHour();
                     int idx = 0;
-                    if (areaTime.getHour() < 18) idx = 17 - areaTime.getHour();
+                    if (hour < 18) idx = 17 - hour;
 
                     int bestTime = 18; // 최고 관측적합도 시각
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double maxEffect = 0D; // 최대 관측적합도의 주요 원인
 
-                    for (int i = 0; i < 13; i++) {
+                    // 0    1   2   3   4   5   6   7   8   9   10  11  12
+                    // 18   19  20  21  22  23  0   1   2   3   4   5   6
+                    int start;
+                    if (hour >= 18) start = hour - 18;
+                    else start = hour + 6;
+                    for (int i = start; i < 13; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
                         double observationalFit;
                         double effect;
@@ -420,6 +426,113 @@ public class ObservationalFitService {
                 });
     }
 
+    public Mono<MainInfo> getMainInfo(AreaTimeDTO areaTime) {
+
+        System.out.println("areaTime = " + areaTime.toString());
+        Long areaId = getAreaId(areaTime.getAddress());
+        System.out.println("areaId = " + areaId);
+
+        return Mono.zip(Mono.just(fineDustService.getFineDustMap(areaTime.getDate())),
+                        getOpenWeather(areaTime.getLat(), areaTime.getLon()))
+                .flatMap(zip -> {
+                    Map<String, String> fineDustMap = zip.getT1();
+                    OpenWeatherResponse openWeatherResponse = zip.getT2();
+
+                    String fineDust;
+                    Double lightPollution;
+
+                    WeatherArea area = weatherAreaService.getWeatherArea(areaId);
+                    if (Objects.equals(area.getSGG(), "강원") || Objects.equals(area.getSGG(), "경기")) {
+                        fineDust = fineDustMap.getOrDefault(area.getSGG2(), "보통");
+                    } else {
+                        fineDust = fineDustMap.getOrDefault(area.getSGG(), "보통");
+                    }
+                    lightPollution = area.getLightPollution();
+
+                    Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
+                    Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
+
+                    int idx = 0;
+                    if (areaTime.getHour() < 18) idx = 17 - areaTime.getHour();
+
+                    int bestTime = 18; // 최고 관측적합도 시각
+                    double minObservationalFit = 0D; // 최소 관측적합도
+                    double maxObservationalFit = 0D; // 최대 관측적합도
+
+                    for (int i = 0; i < 13; i++) {
+                        Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
+                        double observationalFit;
+                        if (i < 6) { // 금일 18 ~ 23시 (6개)
+                            double[] observationFit = getObservationFit(
+                                    H_hourly.getClouds(),
+                                    H_daily1.getMoonPhase(),
+                                    H_hourly.getFeelsLike(),
+                                    fineDust,
+                                    Double.valueOf(H_hourly.getPop()),
+                                    lightPollution
+                            );
+                            observationalFit = observationFit[0];
+                        } else { // 명일 0시 ~ 6시 (7개)
+                            double[] observationFit = getObservationFit(
+                                    H_hourly.getClouds(),
+                                    H_daily2.getMoonPhase(),
+                                    H_hourly.getFeelsLike(),
+                                    fineDust,
+                                    Double.valueOf(H_hourly.getPop()),
+                                    lightPollution
+                            );
+                            observationalFit = observationFit[0];
+                        }
+                        if (maxObservationalFit < observationalFit) {
+                            maxObservationalFit = observationalFit;
+                            bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                        }
+                        if (minObservationalFit > observationalFit) {
+                            minObservationalFit = observationalFit;
+                        }
+                    }
+
+                    String bestTimeString;
+                    if (bestTime <= 6) {
+                        bestTimeString = "추천 관측시간 내일 0" + bestTime + "시";
+                    } else {
+                        bestTimeString = "추천 관측시간 " + bestTime + "시";
+                    }
+                    MainInfo mainInfo = MainInfo.builder()
+                            .comment(areaTime.getAddress().split(" ")[2] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit))
+                            .bestObservationalFit("관측 적합도 ~" + (int) Math.round(maxObservationalFit) + "%")
+                            .bestTime(bestTimeString)
+                            .areaId(areaId)
+                            .build();
+
+                    return Mono.just(mainInfo);
+                });
+    }
+
+
+    // https://maps.googleapis.com/maps/api/geocode/json?latlng=37.573427,126.910140&key=AIzaSyB6QyRBRuKS6tleI_eyalLIXnkHGEyw0Kc&language=kr
+    //8e9d0698ed2d448e4b441ff77ccef198
+
+    public Long getAreaId(String address) {
+        return weatherAreaService.getAreaIdByAddress(address);
+    }
+
+    public String getMainComment(double minObservationalFit, double maxObservationalFit) {
+        int min = (int) Math.round(minObservationalFit);
+        int max = (int) Math.round(maxObservationalFit);
+
+        if (min >= 85) {
+            return "별 보기 최고의 날이네요!";
+        } else if (max >= 70) {
+            return "별 보기 좋은 날이네요!";
+        } else if (max >= 60) {
+            return "별 보기 괜찮은 날이네요!";
+        } else if (max >= 40) {
+            return "오늘은 별 보기 조금 아쉽네요";
+        } else {
+            return "오늘은 별을 보기 어려워요";
+        }
+    }
 }
 
 
