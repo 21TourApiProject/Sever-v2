@@ -8,6 +8,7 @@ import com.server.tourApiProject.myWish.MyWishRepository;
 import com.server.tourApiProject.observation.Observation;
 import com.server.tourApiProject.observation.ObservationRepository;
 import com.server.tourApiProject.search.Filter;
+import com.server.tourApiProject.search.SearchParams1;
 import com.server.tourApiProject.user.User;
 import com.server.tourApiProject.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -316,10 +317,10 @@ public class PostService {
      * @param searchKey the search key
      * @return List<PostParams6>
      */
-    public List<PostParams6>getPostDataWithFilter(Filter filter, String searchKey){
+    public List<SearchParams1>getPostDataWithFilter(Filter filter, String searchKey){
         List<Long> areaCodeList = filter.getAreaCodeList();
         List<Long> hashTagIdList= filter.getHashTagIdList();//해시태그 리스트
-        List<PostParams6>result = new ArrayList<>();
+        List<SearchParams1>result = new ArrayList<>();
         List<Long>postIdList = new ArrayList<>();
         List<Long> filterIdList = new ArrayList<>();
         List<Post> searchList = new ArrayList<>();
@@ -378,15 +379,9 @@ public class PostService {
             }
         }
         for (Post post : searchList){
-            PostParams6 postParams6 = new PostParams6();
+            SearchParams1 postParams6 = new SearchParams1();
             postParams6.setItemId(post.getPostId());
             postParams6.setTitle(post.getPostTitle());
-            Optional<User> userOp = userRepository.findById(post.getUserId());
-            if (userOp.isPresent()){
-                User user = userOp.get();
-                postParams6.setNickName(user.getNickName());
-                postParams6.setProfileImage(user.getProfileImage());
-            }
             List<String> hashTagName = new ArrayList<>();
             List<PostHashTag> list = postHashTagRepository.findByPostId(post.getPostId());
             int k = 0;
@@ -404,6 +399,7 @@ public class PostService {
             } else{
                 postParams6.setThumbnail(null);
             }
+            postParams6.setSaved(post.getSaved());
             result.add(postParams6);
         }
         return result;

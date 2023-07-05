@@ -29,4 +29,5 @@ public class PostParams6 {
     private String nickName;
     private String profileImage;
     private List<String> hashTagNames;
+    private Long saved;
 }
