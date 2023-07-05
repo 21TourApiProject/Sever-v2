@@ -1,4 +1,4 @@
-package com.server.tourApiProject.like;
+package com.server.tourApiProject.likes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.server.tourApiProject.user.User;
@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="like")
+@Table(name="likes")
 
 /**
  * className : com.server.tourApiProject.like
@@ -27,7 +27,7 @@ import javax.persistence.*;
  * -----------------------------------------
  * 2023-02-08       jinhyeok       최초생성
  */
-public class Like {
+public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;

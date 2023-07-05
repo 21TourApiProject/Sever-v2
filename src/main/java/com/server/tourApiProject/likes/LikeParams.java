@@ -1,4 +1,4 @@
-package com.server.tourApiProject.like;
+package com.server.tourApiProject.likes;
 
 import lombok.*;
 
