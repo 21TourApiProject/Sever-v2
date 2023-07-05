@@ -1,10 +1,10 @@
-package com.server.tourApiProject.like;
+package com.server.tourApiProject.likes;
 
+import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.post.PostRepository;
 import com.server.tourApiProject.bigPost.postHashTag.PostHashTagRepository;
 import com.server.tourApiProject.bigPost.postImage.PostImageRepository;
-import com.server.tourApiProject.myWish.MyWish;
-import com.server.tourApiProject.myWish.MyWishRepository;
+import com.server.tourApiProject.observation.Observation;
 import com.server.tourApiProject.observation.ObservationRepository;
 import com.server.tourApiProject.observation.observeHashTag.ObserveHashTagRepository;
 import com.server.tourApiProject.observation.observeImage.ObserveImageRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +62,7 @@ public class LikeService {
      */
     public void createLike(Long userId, Long itemId, Integer likeType) {
 
-        Like like = new Like();
+        Likes like = new Likes();
 
         switch(likeType) {
             case 0: //관측지
@@ -88,7 +87,7 @@ public class LikeService {
                 likeRepository.save(like);
                 break;
             case 2: //게시물
-                postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 게시물 id가 없으면 오류 발생
+                Post post =postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 게시물 id가 없으면 오류 발생
                 like.setUserId(userId);
                 like.setUser(userRepository.findById(userId).orElseThrow(IllegalAccessError::new));
                 like.setLikeType(2); // 게시물
@@ -96,6 +95,7 @@ public class LikeService {
                 String now2 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
                 like.setLikeTime(Long.parseLong(now2));
                 likeRepository.save(like);
+                post.setLiked(post.getLiked()+1);
                 break;
         }
     }
@@ -106,11 +106,11 @@ public class LikeService {
      * @param userId - 사용자 id
      * @param itemId - 컨텐츠 id
      * @param likeType - 컨텐츠 타입 (0 - 관측지, 1 - 관광지, 2 - 게시물)
-     * @return true - 이미 찜 되어 있음 / false - 찜 되어 있지 않음
+     * @return true - 이미 좋아요 되어 있음 / false - 좋아요 되어 있지 않음
      */
     public Boolean isThereLike(Long userId, Long itemId, Integer likeType) {
 
-        Optional<Like> like = likeRepository.findByUserIdAndItemIdAndLikeType(userId, itemId, likeType);
+        Optional<Likes> like = likeRepository.findByUserIdAndItemIdAndLikeType(userId, itemId, likeType);
         return like.isPresent();
     }
 
@@ -123,9 +123,11 @@ public class LikeService {
      */
     public void deleteLike(Long userId, Long itemId, Integer likeType) {
 
-        Optional<Like> likeOp = likeRepository.findByUserIdAndItemIdAndLikeType(userId, itemId, likeType);
-        Like like =likeOp.get();
+        Optional<Likes> likeOp = likeRepository.findByUserIdAndItemIdAndLikeType(userId, itemId, likeType);
+        Likes like =likeOp.get();
         likeRepository.delete(like);
+        Post post = postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);  //itemId에 해당하는 게시물 id가 없으면 오류 발생
+        post.setLiked(post.getLiked()-1);
     }
 
     /**
@@ -134,12 +136,9 @@ public class LikeService {
      * @param itemId - 컨텐츠 id
      * @param likeType - 컨텐츠 타입 (0 - 관측지, 1 - 관광지, 2 - 게시물)
      */
-    public LikeParams getLikeCount(Long itemId, Integer likeType){
+    public Long getLikeCount(Long itemId, Integer likeType){
 
-        LikeParams likeParams = new LikeParams();
-        List<Like> likeList = likeRepository.findByItemIdAndLikeType(itemId,likeType);
-        likeParams.setLikeCount(likeList.size());
-        likeParams.setItemid(itemId);
-        return likeParams;
+        Post post = postRepository.findById(itemId).orElseThrow(IllegalAccessError::new);
+        return post.getLiked();
     }
 }

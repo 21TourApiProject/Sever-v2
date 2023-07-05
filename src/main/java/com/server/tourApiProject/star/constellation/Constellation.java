@@ -44,6 +44,9 @@ public class Constellation {
     private String constStory;    // 별자리 설화
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    private String summary;    // 별자리 요약
+
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String constMtd;    // 별자리 관측법
 
     @Column(nullable = false)

@@ -1,4 +1,4 @@
-package com.server.tourApiProject.like;
+package com.server.tourApiProject.likes;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +51,7 @@ public class LikeController {
     }
     @ApiOperation(value = "아이템 좋아요 수 조회", notes = "좋아요한 것(관측지 또는 관광지 또는 게시물)의 좋아요 수를 조회한다")
     @GetMapping(value = "like/{itemId}/{likeType}")
-    public LikeParams getLikeCount( @PathVariable("itemId") Long itemId,
+    public Long getLikeCount( @PathVariable("itemId") Long itemId,
                            @PathVariable("likeType") Integer likeType){
         return likeService.getLikeCount( itemId, likeType);
     }
