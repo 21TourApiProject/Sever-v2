@@ -1,4 +1,4 @@
-package com.server.tourApiProject.like;
+package com.server.tourApiProject.likes;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -19,11 +19,11 @@ import java.util.Optional;
  * -----------------------------------------
  * 2023-02-08       jinhyeok       최초생성
  */
-public interface LikeRepository extends JpaRepository<Like , Long> {
-    Optional<Like> findByUserIdAndItemIdAndLikeType(@Param("userId") Long userId,
+public interface LikeRepository extends JpaRepository<Likes , Long> {
+    Optional<Likes> findByUserIdAndItemIdAndLikeType(@Param("userId") Long userId,
                                                     @Param("itemId") Long itemId,
                                                     @Param("likeType") Integer likeType);
 
-    List<Like> findByItemIdAndLikeType(@Param("itemId") Long itemId,
+    List<Likes> findByItemIdAndLikeType(@Param("itemId") Long itemId,
                                        @Param("likeType") Integer likeType);
 }

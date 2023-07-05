@@ -74,7 +74,11 @@ public class Post {
     private List<PostImage> postImages=new ArrayList<>();
 
     @Column
-    private Long saved;     //저장횟수, 좋아요수
+    private Long saved;     //저장횟수
+
+
+    @Column
+    private Long liked;     //좋아요수
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

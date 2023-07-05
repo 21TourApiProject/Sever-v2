@@ -12,8 +12,8 @@ spring: #local DB??
       on-profile: "localdb"
   datasource:
     driver-class-name: org.h2.Driver
-    username: 'sa'
-    password: '0000'
+    username: sa
+    password:
     url: jdbc:h2:tcp://localhost/~/tourApiProject
   jpa:
     show-sql: 'true'

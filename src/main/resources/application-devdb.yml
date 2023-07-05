@@ -5,9 +5,11 @@ spring: #develop DB??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://starry-night-dev-db.cjqbonn4adgf.ap-northeast-2.rds.amazonaws.com:3306/starrynight?serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
-    password: starrydev1103
+    url: jdbc:mysql://starrynight-dev.cjqbonn4adgf.ap-northeast-2.rds.amazonaws.com:3306/starrynight_dev?serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    password: 'starrynight0000'
   jpa:
     show-sql: 'false'
+    generate-ddl: 'true'
     hibernate:
       ddl-auto: create
+
