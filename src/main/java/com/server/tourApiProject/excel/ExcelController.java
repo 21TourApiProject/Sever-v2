@@ -22,6 +22,8 @@ import com.server.tourApiProject.star.Horoscope.Horoscope;
 import com.server.tourApiProject.star.Horoscope.HoroscopeRepository;
 import com.server.tourApiProject.star.constellation.Constellation;
 import com.server.tourApiProject.star.constellation.ConstellationRepository;
+import com.server.tourApiProject.touristPoint.area.Area;
+import com.server.tourApiProject.touristPoint.area.AreaRepository;
 import com.server.tourApiProject.touristPoint.area.AreaService;
 import com.server.tourApiProject.touristPoint.contentType.ContentType;
 import com.server.tourApiProject.touristPoint.contentType.ContentTypeService;
@@ -72,7 +74,7 @@ import java.util.Optional;
 @Controller
 public class ExcelController {
     private final TouristDataService touristDataService;
-    private final AreaService areaService;
+    private final AreaRepository areaRepository;
     private final ContentTypeService contentTypeService;
     private final TouristDataRepository touristDataRepository;
     private final NearTouristDataRepository nearTouristDataRepository;
@@ -93,10 +95,10 @@ public class ExcelController {
     private final DescriptionRepository descriptionRepository;
 
 
-    public ExcelController(TouristDataService touristDataService, AreaService areaService, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
+    public ExcelController(TouristDataService touristDataService, AreaService areaService, AreaRepository areaRepository, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
                            WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository) {
         this.touristDataService = touristDataService;
-        this.areaService = areaService;
+        this.areaRepository = areaRepository;
         this.contentTypeService = contentTypeService;
         this.touristDataRepository = touristDataRepository;
         this.nearTouristDataRepository = nearTouristDataRepository;
@@ -119,6 +121,35 @@ public class ExcelController {
 
     @GetMapping("/excel")
     public String main() {
+        return "excel";
+    }
+
+    @PostMapping("/excel/area/read")
+    public String readCommAreaExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            Area area = Area.builder().areaCode((long)row.getCell(0).getNumericCellValue())
+                    .areaName(row.getCell(1).getStringCellValue())
+                    .sigunguCode((long)row.getCell(2).getNumericCellValue())
+                    .sigunguName(row.getCell(3).getStringCellValue())
+                    .build();
+            areaRepository.save(area);
+        }
+        System.out.println("엑셀 완료");
         return "excel";
     }
 
@@ -488,9 +519,10 @@ public class ExcelController {
                 data.setCourseOrder(null);
             }
 
-            data.setReserve(row.getCell(18).getStringCellValue());
             if (data.getLink().equals("null"))
-                data.setLink(null);
+                data.setReserve(null);
+
+            data.setSaved((long)row.getCell(18).getNumericCellValue());
 
             observationRepository.save(data);
         }

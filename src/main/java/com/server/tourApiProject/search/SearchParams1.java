@@ -33,4 +33,5 @@ public class SearchParams1 {
     private Double latitude; //위도
     private Double light;   //관공해
     private List<String> hashTagNames; //해시태그 배열
+    private Long saved; //저장횟수
 }

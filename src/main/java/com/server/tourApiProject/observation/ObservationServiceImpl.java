@@ -137,6 +137,7 @@ public class ObservationServiceImpl implements ObservationService {
             searchParams1.setIntro(observation.getIntro());
             searchParams1.setContentType(observation.getObserveType());
             searchParams1.setLight(observation.getLight());
+            searchParams1.setSaved(observation.getSaved());
             if (!observation.getObserveImages().isEmpty()) {
                 ObserveImage observeImage = observation.getObserveImages().get(0);
                 searchParams1.setThumbnail(observeImage.getImage());
