@@ -76,6 +76,7 @@ public class PostCommentService {
         List<PostCommentParams> result = new ArrayList<>();
         for(PostComment postComment : postComments){
             PostCommentParams postCommentParams = new PostCommentParams();
+            postCommentParams.setCommentId(postComment.getCommentId());
             postCommentParams.setComment(postComment.getComment());
             postCommentParams.setUserId(postComment.getUserId());
             postCommentParams.setTime(postComment.getTime());

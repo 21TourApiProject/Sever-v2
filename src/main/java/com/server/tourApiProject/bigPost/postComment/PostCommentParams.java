@@ -28,6 +28,8 @@ import java.util.List;
  */
 public class PostCommentParams {
 
+    private Long commentId;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate yearDate;
 

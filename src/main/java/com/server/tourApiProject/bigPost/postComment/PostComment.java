@@ -57,9 +57,6 @@ public class PostComment {
     @Column(nullable = false)
     private String comment;
 
-    @Column
-    private Long parentId;
-
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
@@ -69,6 +66,5 @@ public class PostComment {
     @DateTimeFormat(pattern = "HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     private LocalTime time;
-
 
 }
