@@ -105,9 +105,9 @@ public class ObservationalFitService {
 
                     // 0    1   2   3   4   5   6   7   8   9   10  11  12
                     // 18   19  20  21  22  23  0   1   2   3   4   5   6
-                    int start;
+                    int start = 0;
                     if (hour >= 18) start = hour - 18;
-                    else start = hour + 6;
+                    else if(hour <= 6) start = hour + 6;
                     for (int i = start; i < 13; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
                         double observationalFit;
