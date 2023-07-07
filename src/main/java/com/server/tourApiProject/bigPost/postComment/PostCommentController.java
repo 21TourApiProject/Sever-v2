@@ -63,7 +63,7 @@ public class PostCommentController {
     }
 
     @ApiOperation(value = "게시물 댓글 정보 삭제", notes = "게시물 댓글 정보를 삭제한다")
-    @DeleteMapping(value = "postComment /")
+    @DeleteMapping(value = "postComment/{postCommentId}")
     public void deletePost(@PathVariable("postCommentId") Long postCommentId){
         postCommentService.deletePostComment(postCommentId);
     }
