@@ -97,11 +97,11 @@ public class ExcelController {
     private final WeatherObservationRepository weatherObservationRepository;
     private final DescriptionRepository descriptionRepository;
     private final StarFeatureRepository starFeatureRepository;
-    private  final StarHashTagRepository starHashTagRepository;
+    private final StarHashTagRepository starHashTagRepository;
 
 
     public ExcelController(TouristDataService touristDataService, AreaService areaService, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
-                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository) {
+                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository,StarFeatureRepository starFeatureRepository,StarHashTagRepository starHashTagRepository) {
         this.touristDataService = touristDataService;
         this.areaService = areaService;
         this.contentTypeService = contentTypeService;
@@ -122,6 +122,8 @@ public class ExcelController {
         this.weatherAreaRepository = weatherAreaRepository;
         this.weatherObservationRepository = weatherObservationRepository;
         this.descriptionRepository = descriptionRepository;
+        this.starFeatureRepository = starFeatureRepository;
+        this.starHashTagRepository = starHashTagRepository;
     }
 
     @GetMapping("/excel")
