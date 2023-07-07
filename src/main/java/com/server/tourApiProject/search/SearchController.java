@@ -8,10 +8,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,9 +40,10 @@ public class SearchController {
     private final PostService postService;
 
     @ApiOperation(value = "관측지 검색결과 ", notes = "검색어와 필터로 관측지 검색결과를 조회한다")
-    @PostMapping(value = "search/observation")
-    public List<SearchParams1> getObservationWithFilter(@RequestBody SearchKey searchKey){
-        return observationServiceImpl.getObservationWithFilter(searchKey.getFilter(), searchKey.getKeyword());
+    @PostMapping(value = "search/observation/{pageNo}")
+    public List<SearchParams1> getObservationWithFilter(@RequestBody SearchKey searchKey, @PathVariable(required = false) int pageNo){
+        Pageable pageable =PageRequest.of(pageNo, 10, Sort.Direction.ASC, "observationId");
+        return observationServiceImpl.getObservationWithFilter(searchKey.getFilter(), searchKey.getKeyword(),pageable);
     }
 
     @ApiOperation(value = "관광지 검색결과 ", notes = "검색어와 필터로 관광지 검색결과를 조회한다")
@@ -51,7 +53,7 @@ public class SearchController {
     }
     @ApiOperation(value = "게시물 정보 필터로 조회", notes = "필터로 걸러진 게시물을 조회한다")
     @PostMapping(value = "search/post")
-    public List<SearchParams1> getPostWithFilter(@RequestBody SearchKey searchKey){
+    public List<SearchParams1 > getPostWithFilter(@RequestBody SearchKey searchKey){
         return postService.getPostDataWithFilter(searchKey.getFilter(),searchKey.getKeyword());
     }
 

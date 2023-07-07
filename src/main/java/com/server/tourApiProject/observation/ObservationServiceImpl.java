@@ -16,6 +16,8 @@ import com.server.tourApiProject.touristPoint.touristData.TouristData;
 import com.server.tourApiProject.touristPoint.touristDataHashTag.TouristDataHashTag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -99,16 +101,18 @@ public class ObservationServiceImpl implements ObservationService {
     }
 
     @Override
-    public List<SearchParams1> getObservationWithFilter(Filter filter, String searchKey) {
+    public List<SearchParams1> getObservationWithFilter(Filter filter, String searchKey , Pageable pageable) {
         List<Long> areaCodeList = filter.getAreaCodeList();
         List<Long> hashTagIdList= filter.getHashTagIdList();    //필터 해쉬태그 리스트
 
         List<SearchParams1> resultParams = new ArrayList<>();   //최종결과 param 리스트
-        List<Observation> searchResult; //필터+검색어 결과 리스트
+        Page<Observation> searchResult; //필터+검색어 결과 리스트
 
         //Specification으로 조건 동적생성
         Specification<Observation> spec = Specification.where(ObservationSpecification.likeSearchKeyAndInFilter(searchKey, hashTagIdList, areaCodeList));
-        searchResult=observationRepository.findAll(spec);
+
+
+        searchResult= observationRepository.findAll(spec,pageable);
 
         //결과 param에 넣음
         for(Observation observation : searchResult){

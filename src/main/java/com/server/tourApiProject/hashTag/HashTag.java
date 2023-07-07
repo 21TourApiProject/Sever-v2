@@ -29,7 +29,6 @@ import javax.persistence.*;
 public class HashTag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hashTagId;
 
     @Column(nullable = false, unique = true)
