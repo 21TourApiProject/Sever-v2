@@ -2,6 +2,8 @@ package com.server.tourApiProject.excel;
 
 import com.server.tourApiProject.alarm.Alarm;
 import com.server.tourApiProject.alarm.AlarmRepository;
+import com.server.tourApiProject.bigPost.postHashTag.PostHashTag;
+import com.server.tourApiProject.bigPost.postHashTag.PostHashTagRepository;
 import com.server.tourApiProject.hashTag.HashTag;
 import com.server.tourApiProject.hashTag.HashTagCategory;
 import com.server.tourApiProject.hashTag.HashTagRepository;
@@ -44,6 +46,7 @@ import com.server.tourApiProject.weather.description.Description;
 import com.server.tourApiProject.weather.description.DescriptionRepository;
 import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -76,6 +79,7 @@ import java.util.Optional;
  * @modification : 2022-08-28(sein) 수정
  * @date : 2022-08-28
  */
+@AllArgsConstructor
 @Controller
 public class ExcelController {
     private final TouristDataService touristDataService;
@@ -100,33 +104,10 @@ public class ExcelController {
     private final DescriptionRepository descriptionRepository;
     private final StarFeatureRepository starFeatureRepository;
     private final StarHashTagRepository starHashTagRepository;
+    private final PostHashTagRepository postHashTagRepository;
 
 
-    public ExcelController(TouristDataService touristDataService, AreaRepository areaRepository, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
-                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository, StarFeatureRepository starFeatureRepository, StarHashTagRepository starHashTagRepository) {
-        this.touristDataService = touristDataService;
-        this.areaRepository = areaRepository;
-        this.contentTypeService = contentTypeService;
-        this.touristDataRepository = touristDataRepository;
-        this.nearTouristDataRepository = nearTouristDataRepository;
-        this.touristDataHashTagRepository = touristDataHashTagRepository;
-        this.constellationRepository = constellationRepository;
-        this.horoscopeRepository = horoscopeRepository;
-        this.observationRepository = observationRepository;
-        this.observeHashTagRepository = observeHashTagRepository;
-        this.observeImageRepository = observeImageRepository;
-        this.observeFeeRepository = observeFeeRepository;
-        this.courseRepository = courseRepository;
-        this.hashTagRepository = hashTagRepository;
-        this.searchFirstRepository = searchFirstRepository;
-        this.noticeRepository = noticeRepository;
-        this.alarmRepository = alarmRepository;
-        this.weatherAreaRepository = weatherAreaRepository;
-        this.weatherObservationRepository = weatherObservationRepository;
-        this.descriptionRepository = descriptionRepository;
-        this.starFeatureRepository = starFeatureRepository;
-        this.starHashTagRepository = starHashTagRepository;
-    }
+
 
     @GetMapping("/excel")
     public String main() {
@@ -984,6 +965,40 @@ public class ExcelController {
                     .description(row.getCell(2).getStringCellValue())
                     .result(row.getCell(3).getStringCellValue())
                     .build());
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    //게시물 해시태그
+    @PostMapping("/excel/PostHashTag/read")
+    public String readPostHashTagExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            PostHashTag data = new PostHashTag();
+
+            if (row.getCell(0) == null) {
+                break;
+            }
+            data.setPostHashTagListId((long) row.getCell(0).getNumericCellValue());
+            data.setHashTagId((long) row.getCell(1).getNumericCellValue());
+            data.setHashTagName(row.getCell(2).getStringCellValue());
+            data.setPostId((long) row.getCell(3).getNumericCellValue());
+            postHashTagRepository.save(data);
         }
         System.out.println("엑셀 완료");
         return "excel";

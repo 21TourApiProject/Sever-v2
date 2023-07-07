@@ -78,6 +78,7 @@ public class PostService {
         post.setObservation(observation);
         post.setObservationId(observationId);
         post.setAreaCode(observation.getAreaCode());
+        post.setLiked(0L);
         postRepository.save(post);
         return post.getPostId();
     }
