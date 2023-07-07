@@ -1,11 +1,15 @@
 package com.server.tourApiProject.weather.area;
 
+import com.server.tourApiProject.weather.observation.WeatherObservation;
+import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -15,6 +19,7 @@ import java.util.Map;
 public class WeatherAreaService {
 
     private final WeatherAreaRepository weatherAreaRepository;
+    private final WeatherObservationRepository weatherObservationRepository;
 
     public Double getLightPollution(Long areaId) {
         return weatherAreaRepository.findById(areaId).get().getLightPollution();
@@ -49,5 +54,17 @@ public class WeatherAreaService {
         String city = SGG.getOrDefault(split[0], "");
         WeatherArea weatherArea = weatherAreaRepository.findBySGGAndEMD(city, split[2]);
         return weatherArea.getAreaId();
+    }
+
+    public List<WeatherLocationDTO> getWeatherLocations() {
+        List<WeatherLocationDTO> result = new ArrayList<>();
+        for (WeatherArea area : weatherAreaRepository.findAll()) {
+            result.add(new WeatherLocationDTO(area.getSGG() + " " + area.getEMD(), "", area.getAreaId(), ""));
+        }
+
+        for (WeatherObservation observation : weatherObservationRepository.findAll()) {
+            result.add(new WeatherLocationDTO(observation.getName(), observation.getAddress(), observation.getObservationId(), ""));
+        }
+        return result;
     }
 }
