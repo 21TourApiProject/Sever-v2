@@ -18,7 +18,7 @@ spring: #local DB??
   jpa:
     show-sql: 'true'
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
 ---
 spring: #공통

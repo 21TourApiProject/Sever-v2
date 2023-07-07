@@ -22,6 +22,10 @@ import com.server.tourApiProject.star.Horoscope.Horoscope;
 import com.server.tourApiProject.star.Horoscope.HoroscopeRepository;
 import com.server.tourApiProject.star.constellation.Constellation;
 import com.server.tourApiProject.star.constellation.ConstellationRepository;
+import com.server.tourApiProject.star.starFeature.StarFeature;
+import com.server.tourApiProject.star.starFeature.StarFeatureRepository;
+import com.server.tourApiProject.star.starHashTag.StarHashTag;
+import com.server.tourApiProject.star.starHashTag.StarHashTagRepository;
 import com.server.tourApiProject.touristPoint.area.AreaService;
 import com.server.tourApiProject.touristPoint.contentType.ContentType;
 import com.server.tourApiProject.touristPoint.contentType.ContentTypeService;
@@ -40,6 +44,7 @@ import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -91,10 +96,12 @@ public class ExcelController {
     private final WeatherAreaRepository weatherAreaRepository;
     private final WeatherObservationRepository weatherObservationRepository;
     private final DescriptionRepository descriptionRepository;
+    private final StarFeatureRepository starFeatureRepository;
+    private  final StarHashTagRepository starHashTagRepository;
 
 
     public ExcelController(TouristDataService touristDataService, AreaService areaService, ContentTypeService contentTypeService, TouristDataRepository touristDataRepository, NearTouristDataRepository nearTouristDataRepository, TouristDataHashTagRepository touristDataHashTagRepository, ConstellationRepository constellationRepository, HoroscopeRepository horoscopeRepository, ObservationRepository observationRepository, ObserveHashTagRepository observeHashTagRepository, ObserveImageRepository observeImageRepository, ObserveFeeRepository observeFeeRepository, CourseRepository courseRepository, HashTagRepository hashTagRepository, SearchFirstRepository searchFirstRepository, NoticeRepository noticeRepository, AlarmRepository alarmRepository,
-                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository) {
+                           WeatherAreaRepository weatherAreaRepository, WeatherObservationRepository weatherObservationRepository, DescriptionRepository descriptionRepository,StarFeatureRepository starFeatureRepository, StarHashTagRepository starHashTagRepository) {
         this.touristDataService = touristDataService;
         this.areaService = areaService;
         this.contentTypeService = contentTypeService;
@@ -115,6 +122,8 @@ public class ExcelController {
         this.weatherAreaRepository = weatherAreaRepository;
         this.weatherObservationRepository = weatherObservationRepository;
         this.descriptionRepository = descriptionRepository;
+        this.starFeatureRepository = starFeatureRepository;
+        this.starHashTagRepository = starHashTagRepository;
     }
 
     @GetMapping("/excel")
@@ -361,20 +370,98 @@ public class ExcelController {
             }
 
             data.setConstId((long) row.getCell(0).getNumericCellValue());
-            data.setConstName(row.getCell(1).getStringCellValue());
-            data.setConstStory(row.getCell(2).getStringCellValue());
+            data.setConstBestMonth(row.getCell(1).getStringCellValue());
+            data.setConstEng(row.getCell(2).getStringCellValue());
             data.setConstMtd(row.getCell(3).getStringCellValue());
-            data.setConstBestMonth(row.getCell(4).getStringCellValue());
-            data.setStartDate1(row.getCell(8).getStringCellValue());
-            data.setEndDate1(row.getCell(9).getStringCellValue());
-            data.setStartDate2(row.getCell(10).getStringCellValue());
-            if (data.getStartDate2().equals("null"))
-                data.setStartDate2(null);
-            data.setEndDate2(row.getCell(11).getStringCellValue());
+            data.setConstName(row.getCell(4).getStringCellValue());
+            data.setConstStory(row.getCell(5).getStringCellValue());
+            if (data.getConstStory().equals("null"))
+                data.setConstStory(null);
+            DataFormatter formatter = new DataFormatter();
+            String end1 = formatter.formatCellValue(row.getCell(6));
+            data.setEndDate1(end1);
+            String end2 = formatter.formatCellValue(row.getCell(7));
+            data.setEndDate2(end2);
             if (data.getEndDate2().equals("null"))
                 data.setEndDate2(null);
-            data.setConstEng(row.getCell(12).getStringCellValue());
+            String str1 = formatter.formatCellValue(row.getCell(8));
+            data.setStartDate1(str1);
+            String str2 = formatter.formatCellValue(row.getCell(9));
+            data.setStartDate2(str2);
+            if (data.getStartDate2().equals("null"))
+                data.setStartDate2(null);
+            data.setSummary(row.getCell(10).getStringCellValue());
+            if (data.getSummary().equals("null"))
+                data.setSummary(null);
             constellationRepository.save(data);
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    //별자리 해시태그, 특성
+    @PostMapping("/excel/StarFeature/read")
+    public String readStarFeatureExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            StarFeature data = new StarFeature();
+
+            if (row.getCell(0) == null) {
+                break;
+            }
+            data.setStarFeatureId((long) row.getCell(0).getNumericCellValue());
+            data.setStarFeatureName(row.getCell(1).getStringCellValue());
+
+            starFeatureRepository.save(data);
+        }
+        System.out.println("엑셀 완료");
+        return "excel";
+    }
+
+    //별자리 해시태그, 특성
+    @PostMapping("/excel/StarHashTag/read")
+    public String readStarHashTagExcel(@RequestParam("file") MultipartFile file, Model model)
+            throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("xlsx") && !extension.equals("xls")) {
+            throw new IOException("엑셀파일만 업로드 해주세요.");
+        }
+        Workbook workbook = null;
+
+        if (extension.equals("xlsx")) {
+            workbook = new XSSFWorkbook(file.getInputStream());
+        } else if (extension.equals("xls")) {
+            workbook = new HSSFWorkbook(file.getInputStream());
+        }
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            Row row = worksheet.getRow(i);
+            StarHashTag data = new StarHashTag();
+
+            if (row.getCell(0) == null) {
+                break;
+            }
+            data.setStarHashTagListId((long) row.getCell(0).getNumericCellValue());
+            data.setConstId((long) row.getCell(1).getNumericCellValue());
+            data.setHashTagId((long) row.getCell(2).getNumericCellValue());
+            data.setHashTagName(row.getCell(3).getStringCellValue());
+
+            starHashTagRepository.save(data);
         }
         System.out.println("엑셀 완료");
         return "excel";

@@ -40,10 +40,10 @@ public class Constellation {
     @Column(nullable = false)
     private String constName;  //별자리 이름
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String constStory;    // 별자리 설화
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String summary;    // 별자리 요약
 
     @Column(nullable = false, columnDefinition = "TEXT")

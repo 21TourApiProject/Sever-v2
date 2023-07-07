@@ -4,6 +4,8 @@ import com.server.tourApiProject.hashTag.HashTag;
 import com.server.tourApiProject.hashTag.HashTagRepository;
 import com.server.tourApiProject.star.constellation.Constellation;
 import com.server.tourApiProject.star.constellation.ConstellationRepository;
+import com.server.tourApiProject.star.starFeature.StarFeature;
+import com.server.tourApiProject.star.starFeature.StarFeatureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ import java.util.List;
 public class StarHashTagService {
     private final StarHashTagRepository starHashTagRepository;
     private final ConstellationRepository constellationRepository;
-    private final HashTagRepository hashTagRepository;
+    private final StarFeatureRepository starFeatureRepository;
 
     /**
      * description: 별자리 id로 해시태그 가져오는 메소드.
@@ -71,8 +73,8 @@ public class StarHashTagService {
             starHashTag.setHashTagName(p.getHashTagName());
             starHashTag.setConstellation(constellation);
             starHashTag.setConstId(constellation.getConstId());
-            HashTag hashTag = hashTagRepository.findByHashTagName(p.getHashTagName());
-            starHashTag.setHashTagId(hashTag.getHashTagId());
+            StarFeature starFeature = starFeatureRepository.findByStarFeatureName(p.getHashTagName());
+            starHashTag.setHashTagId(starFeature.getStarFeatureId());
             starHashTagRepository.save(starHashTag);
         }
     }
