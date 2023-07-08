@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"7.1 날씨 - 지역"})
 @RestController
-@RequestMapping(value = "weather/v2")
+@RequestMapping(value = "v1/weather/v2")
 @RequiredArgsConstructor
 
 public class WeatherAreaController {
