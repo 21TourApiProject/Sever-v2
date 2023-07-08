@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Api(tags = {"7.3 날씨 - 관측적합도"})
 @RestController
-@RequestMapping(value = "weather/v2")
+@RequestMapping(value = "v1/weather/v2")
 @RequiredArgsConstructor
 public class ObservationalFitController {
 
