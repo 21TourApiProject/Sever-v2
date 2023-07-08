@@ -46,8 +46,8 @@ public class StarHashTagController {
         return starHashTagService.getStarHashTagName(constId);
     }
     @ApiOperation(value = "별자리 해시태그 정보 삭제", notes = "모든 별자리 해시태그를 삭제한다")
-    @DeleteMapping(value = "postHashTag/")
-    public void deletePostHashTag(){
+    @DeleteMapping(value = "starHashTag/")
+    public void deleteStarHashTag(){
         starHashTagService.deleteStarHashTags();
     }
 }
