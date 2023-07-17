@@ -433,17 +433,12 @@ public class ExcelController {
             data.setConstStory(row.getCell(5).getStringCellValue());
             if (data.getConstStory().equals("null"))
                 data.setConstStory(null);
-            DataFormatter formatter = new DataFormatter();
-            String end1 = formatter.formatCellValue(row.getCell(6));
-            data.setEndDate1(end1);
-            String end2 = formatter.formatCellValue(row.getCell(7));
-            data.setEndDate2(end2);
+            data.setEndDate1(row.getCell(6).getStringCellValue());
+            data.setEndDate2(row.getCell(7).getStringCellValue());
             if (data.getEndDate2().equals("null"))
                 data.setEndDate2(null);
-            String str1 = formatter.formatCellValue(row.getCell(8));
-            data.setStartDate1(str1);
-            String str2 = formatter.formatCellValue(row.getCell(9));
-            data.setStartDate2(str2);
+            data.setStartDate1(row.getCell(8).getStringCellValue());
+            data.setStartDate2(row.getCell(9).getStringCellValue());
             if (data.getStartDate2().equals("null"))
                 data.setStartDate2(null);
             data.setSummary(row.getCell(10).getStringCellValue());

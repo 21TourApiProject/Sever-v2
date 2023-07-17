@@ -56,6 +56,16 @@
     <input th:type="submit" value="별자리 제출" />
 </form>
 
+<form th:action="@{/excel/StarFeature/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="별자리 특성 제출" />
+</form>
+
+<form th:action="@{/excel/StarHashTag/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="별자리 해시태그 제출" />
+</form>
+
 <form th:action="@{/excel/horoscope/read}" method="POST" enctype="multipart/form-data">
     <input type="file" th:name="file">
     <input th:type="submit" value="별자리 운세 제출" />
