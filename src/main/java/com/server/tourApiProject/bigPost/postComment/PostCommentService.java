@@ -3,6 +3,8 @@ package com.server.tourApiProject.bigPost.postComment;
 import ch.qos.logback.core.pattern.PostCompileProcessor;
 import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.post.PostRepository;
+import com.server.tourApiProject.bigPost.postImage.PostImage;
+import com.server.tourApiProject.bigPost.postImage.PostImageRepository;
 import com.server.tourApiProject.user.User;
 import com.server.tourApiProject.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class PostCommentService {
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
     private final UserRepository userRepository;
+    private final PostImageRepository postImageRepository;
 
 
     /**
@@ -85,6 +88,36 @@ public class PostCommentService {
         }
         return result;
     }
+
+    /**
+     * description:내가 쓴 게시물 가져오는 메소드
+     *
+     * @param userId            - the user id
+     * @return List<PostCommentParams2> - the postCommentParams2 list
+     */
+    public List<PostCommentParams2> getPostCommentByUserId(Long userId){
+        List<PostComment> postComments = postCommentRepository.findByUserId(userId);
+        List<PostCommentParams2> result = new ArrayList<>();
+        for(PostComment postComment : postComments){
+            PostCommentParams2 postCommentParams2 = new PostCommentParams2();
+            postCommentParams2.setCommentId(postComment.getCommentId());
+            postCommentParams2.setComment(postComment.getComment());
+            postCommentParams2.setYearDate(postComment.getYearDate());
+            Post post = postRepository.findById(postComment.getPostId()).orElseThrow(IllegalAccessError::new);
+            postCommentParams2.setPostTitle(post.getPostTitle());
+            postCommentParams2.setPostId(post.getPostId());
+            List<PostImage> imageList = postImageRepository.findByPostId(post.getPostId());
+            if (!imageList.isEmpty()) {
+                PostImage postImage = imageList.get(0);
+                postCommentParams2.setThumbnail(postImage.getImageName());
+            } else{
+                postCommentParams2.setThumbnail(null);
+            }
+            result.add(postCommentParams2);
+        }
+        return result;
+    }
+
     /**
      * description:게시물 댓글 좋아요 유저 리스트 추가하는 메소드.
      *

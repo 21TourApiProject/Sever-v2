@@ -73,6 +73,8 @@ public class PostService {
         post.setOptionObservation(postParams.getOptionObservation());
         post.setYearDate(postParams.getYearDate());
         post.setTime(postParams.getTime());
+        post.setWriteDate(postParams.getWriteDate());
+        post.setWriteTime(postParams.getWriteTime());
         post.setUser(userRepository.findById(postParams.getUserId()).orElseThrow(IllegalAccessError::new));
         post.setUserId(postParams.getUserId());
         post.setObservation(observation);

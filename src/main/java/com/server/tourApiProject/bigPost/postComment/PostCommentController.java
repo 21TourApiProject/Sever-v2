@@ -49,6 +49,12 @@ public class PostCommentController {
         return postCommentService.getPostCommentById(postId);
     }
 
+    @ApiOperation(value = "내가 쓴 댓글 목록 정보 조회", notes = "유저 아이디로 내가 쓴 댓글을 조회한다")
+    @GetMapping(value = "myCommentList/{userId}")
+    public List<PostCommentParams2> getPostCommentByUserId(@PathVariable("userId") Long userId) {
+        return postCommentService.getPostCommentByUserId(userId);
+    }
+
     @ApiOperation(value = "게시물 댓글 좋아요 추가", notes = "댓글 아이디 와 유저 아이디로 게시글 좋아요 추가")
     @GetMapping(value = "postComment /{userId}/{postCommentId}")
     public void addLove(@PathVariable("userId") Long userId,

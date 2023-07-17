@@ -36,7 +36,7 @@ public class StarHashTagController {
     }
     @ApiOperation(value = "별자리 해시태그 리스트 조회", notes = "별자리 id로 해시태그를 조회한다.")
     @GetMapping(value = "starHashTag/{constId}")
-    public List<StarHashTag> getStarHashTags(@PathVariable("const")Long constId){
+    public List<StarHashTag> getStarHashTags(@PathVariable("constId")Long constId){
         return starHashTagService.getStarHashTag(constId);
     }
 
