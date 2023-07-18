@@ -21,5 +21,7 @@ public class WeatherLocationDTO {
 
     private Long locationId;
 
-    private String observationValue;
+    private Double latitude;
+
+    private Double longitude;
 }

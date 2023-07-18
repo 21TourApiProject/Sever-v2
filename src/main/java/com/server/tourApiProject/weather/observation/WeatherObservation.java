@@ -27,7 +27,10 @@ public class WeatherObservation {
     private String name; // 관측지 이름
 
     @Column(nullable = false)
-    private String address; // 미세먼지 값을 위한 주소
+    private String fineDustAddress; // 미세먼지 계산을 위한 주소
+
+    @Column(nullable = false)
+    private String searchAddress; // 검색 결과를 위한 주소
 
     @Column(nullable = false)
     private Double latitude; // 위도
