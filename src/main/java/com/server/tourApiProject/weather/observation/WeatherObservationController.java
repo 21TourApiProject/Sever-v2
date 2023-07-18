@@ -1,5 +1,6 @@
 package com.server.tourApiProject.weather.observation;
 
+import com.server.tourApiProject.weather.area.WeatherLocationDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"7.2 날씨 - 관측지"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "v2/weather")
 @RequiredArgsConstructor
 
 public class WeatherObservationController {
@@ -36,5 +37,11 @@ public class WeatherObservationController {
     @GetMapping(value = "observation/address/{observationId}")
     public WeatherObservation getWeatherObservation(@PathVariable Long observationId){
         return weatherObservationService.getWeatherObservation(observationId);
+    }
+
+    @ApiOperation(value = "지역, 관측지 조회", notes = "모든 지역, 관측지 조회")
+    @GetMapping(value = "locations")
+    public List<WeatherLocationDTO> getWeatherLocations() {
+        return weatherObservationService.getWeatherLocations();
     }
 }

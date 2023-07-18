@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"7.1 날씨 - 지역"})
 @RestController
-@RequestMapping(value = "v1/weather/v2")
+@RequestMapping(value = "v2/weather")
 @RequiredArgsConstructor
 
 public class WeatherAreaController {
@@ -30,12 +30,6 @@ public class WeatherAreaController {
     @GetMapping(value = "area/{areaId}")
     public WeatherArea getWeatherArea(@PathVariable Long areaId) {
         return weatherAreaService.getWeatherArea(areaId);
-    }
-
-    @ApiOperation(value = "지역, 관측지 조회", notes = "모든 지역, 관측지 조회")
-    @GetMapping(value = "locations")
-    public List<WeatherLocationDTO> getWeatherLocations() {
-        return weatherAreaService.getWeatherLocations();
     }
 
 }

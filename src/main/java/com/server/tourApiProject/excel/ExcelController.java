@@ -926,10 +926,11 @@ public class ExcelController {
             Row row = worksheet.getRow(i);
             weatherObservationRepository.save(WeatherObservation.builder()
                     .name(row.getCell(1).getStringCellValue())
-                    .address(row.getCell(2).getStringCellValue())
-                    .latitude(row.getCell(3).getNumericCellValue())
-                    .longitude(row.getCell(4).getNumericCellValue())
-                    .lightPollution(row.getCell(5).getNumericCellValue())
+                    .latitude(row.getCell(2).getNumericCellValue())
+                    .longitude(row.getCell(3).getNumericCellValue())
+                    .lightPollution(row.getCell(4).getNumericCellValue())
+                    .fineDustAddress(row.getCell(5).getStringCellValue())
+                    .searchAddress(row.getCell(6).getStringCellValue() + " " + row.getCell(7).getStringCellValue())
                     .build());
         }
         System.out.println("엑셀 완료");
