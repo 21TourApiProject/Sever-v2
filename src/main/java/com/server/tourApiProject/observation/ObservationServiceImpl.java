@@ -164,6 +164,22 @@ public class ObservationServiceImpl implements ObservationService {
         return resultParams;
     }
 
+    @Override
+    public Long getCountWithFilter(Filter filter, String searchKey) {
+        List<Long> areaCodeList = filter.getAreaCodeList();
+        List<Long> hashTagIdList= filter.getHashTagIdList();    //필터 해쉬태그 리스트
+
+        List<SearchParams1> resultParams = new ArrayList<>();   //최종결과 param 리스트
+        Long count; //필터+검색어 결과 리스트
+
+        //Specification으로 조건 동적생성
+        Specification<Observation> spec = Specification.where(ObservationSpecification.likeSearchKeyAndInFilter(searchKey, hashTagIdList, areaCodeList));
+
+
+        return observationRepository.count(spec);
+    }
+
+
 
 //    @Override
 //    public List<SearchParams1> getObservationWithFilter(Filter filter, String searchKey) {

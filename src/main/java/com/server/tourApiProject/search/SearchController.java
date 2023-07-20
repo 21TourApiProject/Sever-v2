@@ -62,4 +62,10 @@ public class SearchController {
     public List<SearchParams1> getTouristPointWithFilterForMap(@RequestBody SearchKey searchKey){
         return touristDataService.getTouristPointWithFilterForMap(searchKey.getFilter(), searchKey.getKeyword());
     }
+
+    @ApiOperation(value = "관측지 검색결과수", notes = "검색어와 필터로 관측지 검색 수를 조회한다")
+    @PostMapping(value = "search/observation/count")
+    public Long getObservationCountWithFilter(@RequestBody SearchKey searchKey){
+        return observationServiceImpl.getCountWithFilter(searchKey.getFilter(), searchKey.getKeyword());
+    }
 }
