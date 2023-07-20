@@ -45,10 +45,10 @@ public class WeatherObservationService {
         List<WeatherLocationDTO> result = new ArrayList<>();
 
         for (WeatherObservation observation : weatherObservationRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))) {
-            result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), observation.getObservationId(), observation.getLatitude(), observation.getLongitude()));
+            result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(), observation.getLatitude(), observation.getLongitude()));
         }
         for (WeatherArea area : weatherAreaRepository.findAll()) {
-            result.add(new WeatherLocationDTO(area.getEMD(), area.getSGG() + " " + area.getSGG(), area.getAreaId(), area.getLatitude(), area.getLongitude()));
+            result.add(new WeatherLocationDTO(area.getEMD(), area.getSGG() + " " + area.getSigungu(), area.getAreaId(), null, area.getLatitude(), area.getLongitude()));
         }
         return result;
     }

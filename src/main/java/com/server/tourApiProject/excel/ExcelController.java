@@ -49,7 +49,6 @@ import com.server.tourApiProject.weather.observation.WeatherObservationRepositor
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -107,8 +106,6 @@ public class ExcelController {
     private final PostHashTagRepository postHashTagRepository;
 
 
-
-
     @GetMapping("/excel")
     public String main() {
         return "excel";
@@ -132,7 +129,7 @@ public class ExcelController {
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
             Row row = worksheet.getRow(i);
-            HashTag hashTag = HashTag.builder().hashTagId((long)row.getCell(0).getNumericCellValue())
+            HashTag hashTag = HashTag.builder().hashTagId((long) row.getCell(0).getNumericCellValue())
                     .hashTagName(row.getCell(1).getStringCellValue())
                     .build();
 
@@ -176,9 +173,9 @@ public class ExcelController {
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
             Row row = worksheet.getRow(i);
-            Area area = Area.builder().areaCode((long)row.getCell(0).getNumericCellValue())
+            Area area = Area.builder().areaCode((long) row.getCell(0).getNumericCellValue())
                     .areaName(row.getCell(1).getStringCellValue())
-                    .sigunguCode((long)row.getCell(2).getNumericCellValue())
+                    .sigunguCode((long) row.getCell(2).getNumericCellValue())
                     .sigunguName(row.getCell(3).getStringCellValue())
                     .build();
             areaRepository.save(area);
@@ -622,14 +619,14 @@ public class ExcelController {
             data.setAreaCode((long) row.getCell(16).getNumericCellValue());
 
             data.setCourseOrder((int) row.getCell(17).getNumericCellValue());
-            if (data.getCourseOrder()==100){
+            if (data.getCourseOrder() == 100) {
                 data.setCourseOrder(null);
             }
 
             data.setReserve(row.getCell(18).getStringCellValue());
             if (data.getReserve().equals("null"))
                 data.setReserve(null);
-            data.setSaved((long)row.getCell(19).getNumericCellValue());
+            data.setSaved((long) row.getCell(19).getNumericCellValue());
 
             observationRepository.save(data);
         }
@@ -893,13 +890,23 @@ public class ExcelController {
         Sheet worksheet = workbook.getSheetAt(0);
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
             Row row = worksheet.getRow(i);
-            WeatherArea weatherArea = WeatherArea.builder().EMD(row.getCell(4).getStringCellValue())
-                    .longitude(row.getCell(8).getNumericCellValue())
-                    .latitude(row.getCell(9).getNumericCellValue())
-                    .SGG(row.getCell(10).getStringCellValue())
-                    .lightPollution(Double.valueOf(row.getCell(13).getStringCellValue()))
+
+            WeatherArea weatherArea = WeatherArea.builder()
+                    .longitude(row.getCell(12).getNumericCellValue())
+                    .latitude(row.getCell(13).getNumericCellValue())
+                    .SGG(row.getCell(4).getStringCellValue())
+                    .lightPollution(Double.valueOf(row.getCell(15).getStringCellValue()))
                     .build();
-            if (row.getCell(11) != null) weatherArea.setSGG2(row.getCell(11).getStringCellValue());
+
+            if (row.getCell(4).getStringCellValue().equals("세종")) {
+                weatherArea.setEMD(row.getCell(5).getStringCellValue());
+                weatherArea.setSigungu("");
+            } else {
+                weatherArea.setEMD(row.getCell(6).getStringCellValue());
+                weatherArea.setSigungu(row.getCell(5).getStringCellValue());
+            }
+
+            if (row.getCell(8) != null) weatherArea.setSGG2(row.getCell(8).getStringCellValue());
             weatherAreaRepository.save(weatherArea);
         }
         System.out.println("엑셀 완료");
