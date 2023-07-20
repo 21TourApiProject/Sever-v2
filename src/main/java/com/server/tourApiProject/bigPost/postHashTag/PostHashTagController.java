@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"2.2 게시물 해시태그"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 /**
 * @className : PostHashTagController.java

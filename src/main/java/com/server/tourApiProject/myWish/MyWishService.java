@@ -115,7 +115,11 @@ public class MyWishService {
                 String now2 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
                 myWish.setWishTime(Long.parseLong(now2));
                 myWishRepository.save(myWish);
-                post.setSaved(post.getSaved()+1);
+                if(post.getSaved()==null){
+                    post.setSaved(1L);
+                }else{
+                    post.setSaved(post.getSaved()+1);
+                }
                 break;
         }
     }

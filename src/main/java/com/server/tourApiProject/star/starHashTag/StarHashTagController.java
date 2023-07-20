@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"6.3 별자리 해시태그"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 /**
  * className : com.server.tourApiProject.star.starHashTag

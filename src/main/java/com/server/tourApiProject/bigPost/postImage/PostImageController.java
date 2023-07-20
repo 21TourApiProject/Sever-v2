@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"2.3 게시물 이미지"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 /**
 * @className : PostImageController.java
