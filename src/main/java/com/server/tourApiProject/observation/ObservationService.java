@@ -54,4 +54,13 @@ public interface ObservationService {
      */
     public List<SearchParams1> getObservationWithFilter(Filter filter, String searchKey, Pageable pageable);
 
+    /**
+     * TODO 필터와 검색어로 관측지 개수 조회
+     * @param  filter - 검색필터
+     * @param  searchKey - 검색어
+     * @return Long - 검색결과의 개수
+     * @throws
+     */
+    public Long getCountWithFilter(Filter filter, String searchKey);
+
 }

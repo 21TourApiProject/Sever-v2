@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"2.4 게시물 댓글"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 /**
  * className : com.server.tourApiProject.bigPost.postComment

@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"6.2 별자리 운세"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**

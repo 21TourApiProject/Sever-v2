@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"3.1 해시태그"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**

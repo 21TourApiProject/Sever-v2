@@ -35,5 +35,6 @@ public interface ObservationRepository extends JpaRepository<Observation, Long>,
 //    반환형 findBy제목ContainingOr개요또는내용Containing(String 제목검색어, String 내용검색어);
 
 
+
 //
 }

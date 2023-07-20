@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"10.1 공지사항"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**
