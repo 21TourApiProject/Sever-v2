@@ -19,7 +19,9 @@ public class WeatherLocationDTO {
 
     private String subtitle;
 
-    private Long locationId;
+    private Long areaId; // WEATHER_AREA id
+
+    private Long observationId; // WEATHER_OBSERVATION id
 
     private Double latitude;
 

@@ -35,6 +35,9 @@ public class WeatherArea {
     @Column(nullable = false)
     private String SGG; // 시군구
 
+    @Column(nullable = false)
+    private String sigungu; // 시군구 (검색용. 추구 필드명 변경)
+
     @Column
     private String SGG2; // 영동/영서, 경기북부/경기남부
 
