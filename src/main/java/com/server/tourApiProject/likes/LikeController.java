@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Api(tags = {"12.1 좋아요"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**

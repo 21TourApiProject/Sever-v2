@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"2.1 게시물"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**

@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"6.4 별자리 특성"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**
@@ -33,7 +33,7 @@ public class StarFeatureController {
     private final StarFeatureService starFeatureService;
 
     @ApiOperation(value = "모든 별자리 특성 조회", notes = "모든 별자리 특성을 조회한다")
-    @GetMapping(value = "starFeatures")
+    @GetMapping(value = "starFeatures/")
     public List<StarFeature> getStarFeatures(){ return starFeatureService.getAllStarFeature(); }
 
     @ApiOperation(value = "별자리 특성 입력", notes = "별자리 특성 정보를 입력한다")

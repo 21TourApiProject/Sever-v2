@@ -31,7 +31,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"8.1 검색결과"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 public class SearchController {
 

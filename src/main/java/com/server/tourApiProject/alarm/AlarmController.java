@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"9.1 알림"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 /**
 * @className : AlarmController.java
