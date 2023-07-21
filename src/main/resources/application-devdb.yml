@@ -11,5 +11,4 @@ spring: #develop DB??
     show-sql: 'false'
     generate-ddl: 'true'
     hibernate:
-      ddl-auto: update
-
+      ddl-auto: create
