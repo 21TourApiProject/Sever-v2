@@ -29,7 +29,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"4.1 관측지"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 public class ObservationController {
     private final ObservationService observationService;

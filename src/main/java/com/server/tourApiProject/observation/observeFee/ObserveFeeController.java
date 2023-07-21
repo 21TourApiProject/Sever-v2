@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Api(tags = {"4.3 관측지 입장료"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 public class ObserveFeeController {
     private final ObserveFeeService observeFeeService;

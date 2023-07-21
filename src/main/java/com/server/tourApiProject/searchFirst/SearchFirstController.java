@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"11.1 검색 기본"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 public class SearchFirstController {
 
