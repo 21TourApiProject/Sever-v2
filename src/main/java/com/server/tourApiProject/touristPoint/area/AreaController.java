@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"5.1 관광지-지역"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 /**
