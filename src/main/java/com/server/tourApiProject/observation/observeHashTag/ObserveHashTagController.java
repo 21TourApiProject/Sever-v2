@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Api(tags = {"4.2 관측지 해시태그"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 public class ObserveHashTagController {
     private final ObserveHashTagService observeHashTagService;

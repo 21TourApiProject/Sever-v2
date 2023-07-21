@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = {"4.2 관측지 코스"})
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/v2")
 @RequiredArgsConstructor
 
 public class CourseController {
