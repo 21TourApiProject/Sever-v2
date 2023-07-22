@@ -40,8 +40,23 @@ public class ObservationalFitService {
     private static final String OPEN_WEATHER_UNITS = "metric";
     private static final String OPEN_WEATHER_LANG = "kr";
 
-    private static final Map<Double, String> effectMap = Map.of(0D, "많은 구름", 1D, "나쁜 체감온도", 2D, "밝은 달빛", 3D, "나쁜 미세먼지", 4D, "높은 강수확률", 5D, "높은 광공해");
-    private static final Map<Double, String> effectMap2 = Map.of(0D, "많은 구름이", 1D, "나쁜 체감온도가", 2D, "밝은 달빛이", 3D, "나쁜 미세먼지가", 4D, "높은 강수확률이", 5D, "높은 광공해가");
+    // 날씨 상세 페이지용
+    private static final Map<Double, String> effectMap = Map.of(
+            0D, "많은 구름",
+            1D, "나쁜 체감온도",
+            2D, "밝은 달빛",
+            3D, "나쁜 미세먼지",
+            4D, "높은 강수확률",
+            5D, "높은 광공해");
+
+    // 메인 날씨 탭용
+    private static final Map<Double, String> effectMap2 = Map.of(
+            0D, "많은 구름이",
+            1D, "나쁜 체감온도가",
+            2D, "밝은 달빛이",
+            3D, "나쁜 미세먼지가",
+            4D, "높은 강수확률이",
+            5D, "높은 광공해가");
 
     public Mono<WeatherInfo> getWeatherInfo(AreaTimeDTO areaTime) {
 
@@ -84,7 +99,8 @@ public class ObservationalFitService {
                     detailWeather.setCloud(Math.round(hourly.getClouds()) + Const.Weather.PERCENT);
                     detailWeather.setFineDust(fineDust);
                     detailWeather.setWindSpeed(hourly.getWindSpeed() + Const.Weather.METER_PER_SECOND);
-                    detailWeather.setMoonAge(getMoonPhaseString(Double.valueOf(daily.getMoonPhase())));
+//                    detailWeather.setMoonAge(getMoonPhaseString(Double.valueOf(daily.getMoonPhase())));
+                    detailWeather.setMoonAge(String.valueOf(daily.getMoonPhase()));
                     detailWeather.setSunrise(getHHmm(daily.getSunrise()));
                     detailWeather.setSunset(getHHmm(daily.getSunset()));
                     detailWeather.setMoonrise(getHHmm(daily.getMoonrise()));
@@ -102,7 +118,7 @@ public class ObservationalFitService {
                     int bestTime = 18; // 최고 관측적합도 시각
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
-                    double maxEffect = 0D; // 최대 관측적합도의 주요 원인
+                    double mainEffect = 0D; // 관측적합도의 주요 원인
 
                     // 0    1   2   3   4   5   6   7   8   9   10  11  12
                     // 18   19  20  21  22  23  0   1   2   3   4   5   6
@@ -116,8 +132,8 @@ public class ObservationalFitService {
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
                             double[] observationFit = getObservationFit(
                                     H_hourly.getClouds(),
-                                    H_daily1.getMoonPhase(),
                                     H_hourly.getFeelsLike(),
+                                    H_daily1.getMoonPhase(),
                                     fineDust,
                                     Double.valueOf(H_hourly.getPop()),
                                     lightPollution
@@ -127,8 +143,8 @@ public class ObservationalFitService {
                         } else { // 명일 0시 ~ 6시 (7개)
                             double[] observationFit = getObservationFit(
                                     H_hourly.getClouds(),
-                                    H_daily2.getMoonPhase(),
                                     H_hourly.getFeelsLike(),
+                                    H_daily2.getMoonPhase(),
                                     fineDust,
                                     Double.valueOf(H_hourly.getPop()),
                                     lightPollution
@@ -138,8 +154,8 @@ public class ObservationalFitService {
                         }
                         if (maxObservationalFit < observationalFit) {
                             maxObservationalFit = observationalFit;
-                            maxEffect = effect;
                             bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                            mainEffect = effect;
                         }
                         if (minObservationalFit > observationalFit) {
                             minObservationalFit = observationalFit;
@@ -158,19 +174,18 @@ public class ObservationalFitService {
 
                         double observationalFit = getObservationFit(
                                 D_daily.getClouds(),
-                                D_daily.getMoonPhase(),
                                 Arrays.stream(new Double[]{feelsLike.getDay(), feelsLike.getNight(), feelsLike.getEve(), feelsLike.getMorn()}).max(Comparator.comparing(x -> x)).get(),
+                                D_daily.getMoonPhase(),
                                 fineDust,
                                 Double.valueOf(D_daily.getPop()),
-                                lightPollution
-                        )[0];
+                                lightPollution)[0];
                         dayList.add(WeatherInfo.DayObservationalFit.builder()
                                 .day(dayDateMap.get(i)[0])
                                 .date(dayDateMap.get(i)[1])
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
                     }
 
-                    String[] todayComment = getTodayComment(bestTime, minObservationalFit, maxObservationalFit, maxEffect);
+                    String[] todayComment = getTodayComment(bestTime, minObservationalFit, maxObservationalFit, mainEffect);
 
                     WeatherInfo weatherInfo = WeatherInfo.builder().detailWeather(detailWeather)
                             .hourObservationalFitList(hourList)
@@ -202,7 +217,7 @@ public class ObservationalFitService {
         else return 4;
     }
 
-    public String[] getTodayComment(int bestTime, double minObservationalFit, double maxObservationalFit, double maxEffect) {
+    public String[] getTodayComment(int bestTime, double minObservationalFit, double maxObservationalFit, double mainEffect) {
         int min = (int) Math.round(minObservationalFit);
         int max = (int) Math.round(maxObservationalFit);
 
@@ -213,9 +228,9 @@ public class ObservationalFitService {
         } else if (max >= 60) {
             return new String[]{"오늘 " + bestTime + "시가", "별 보기 적당해요"};
         } else if (max >= 40) {
-            return new String[]{"오늘은 하루종일", "별 보기 조금 아쉬워요", effectMap.get(maxEffect)};
+            return new String[]{"오늘은 하루종일", "별 보기 조금 아쉬워요", effectMap.get(mainEffect)};
         } else {
-            return new String[]{"오늘은 하루종일", "별 보기 어려워요", effectMap.get(maxEffect)};
+            return new String[]{"오늘은 하루종일", "별 보기 어려워요", effectMap.get(mainEffect)};
         }
     }
 
@@ -280,8 +295,8 @@ public class ObservationalFitService {
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
                             observationFitList[i] = getObservationFit(
                                     hourly.getClouds(),
-                                    daily1.getMoonPhase(),
                                     hourly.getFeelsLike(),
+                                    daily1.getMoonPhase(),
                                     fineDust,
                                     Double.valueOf(hourly.getPop()),
                                     observation.getLightPollution()
@@ -289,8 +304,8 @@ public class ObservationalFitService {
                         } else { // 명일 0시 ~ 6시 (7개)
                             observationFitList[i] = getObservationFit(
                                     hourly.getClouds(),
-                                    daily2.getMoonPhase(),
                                     hourly.getFeelsLike(),
+                                    daily2.getMoonPhase(),
                                     fineDust,
                                     Double.valueOf(hourly.getPop()),
                                     observation.getLightPollution()
@@ -307,103 +322,6 @@ public class ObservationalFitService {
                 })
 //                .retryWhen(Retry.fixedDelay(1, Duration.ofSeconds(5)))
                 .subscribe();
-    }
-
-    public double[] getObservationFit(Double clouds, Double moonPhase, Double feel_like,
-                                      String fineDust, Double pop, Double lightPollution) {
-
-        double cloudsValue; // 구름양
-        double moonPhaseValue; // 월령
-        double feel_likeValue; // 체감 온도
-        double fineDustValue; // 미세먼지
-        double popValue; // 강수확률
-        double lightPollutionValue; // 광공해
-
-        double biggestValue; //
-        double averageValue; //
-
-        double observationalFitDegree;
-        double obFitFinal;
-
-        double effect;
-
-        cloudsValue = Math.round(100 * (-(1 / (-(0.25) * (clouds / 100 - 2.7)) - 1.48148)) * 100) / 100.0;
-        if (moonPhase <= 0.5) {
-            moonPhaseValue = -Math.round(((8 * Math.pow(moonPhase, 3.46)) / 0.727 * 100) * 100) / 100.0;
-        } else if (moonPhase > 0.5 && moonPhase <= 0.5609) {
-            moonPhaseValue = -Math.round(((-75 * Math.pow(moonPhase - 0.5, 2) + 0.727) / 0.727 * 100) * 100) / 100.0;
-        } else {
-            moonPhaseValue = -Math.round(((1 / (5.6 * Math.pow(moonPhase + 0.3493, 10)) - 0.0089) / 0.727 * 100) * 100) / 100.0;
-        }
-
-        if (feel_like < 18) {
-            feel_likeValue = Math.round(-0.008 * Math.pow((feel_like - 18), 2) * 100) / 100.0;
-        } else {
-            feel_likeValue = Math.round(-0.09 * Math.pow((feel_like - 18), 2) * 100) / 100.0;
-        }
-
-        switch (fineDust) {
-            case "보통":
-                fineDustValue = -5D;
-                break;
-            case "나쁨":
-                fineDustValue = -15D;
-                break;
-            case "매우나쁨":
-                fineDustValue = -30D;
-                break;
-            default:
-                fineDustValue = 0D;
-                break;
-        }
-
-        popValue = Math.round(100 * (-(1 / (-(1.2) * (pop / 100 - 1.5)) - 0.55556)) * 100) / 100.0;
-
-        if (lightPollution < 28.928) {
-            lightPollutionValue = Math.round(-(1 / (-(0.001) * (lightPollution - 48)) - 20.833) * 100) / 100.0;
-        } else if (lightPollution >= 28.928 && lightPollution < 77.53) {
-            lightPollutionValue = Math.round(-(1 / (-(0.0001) * (lightPollution + 52)) + 155) * 100) / 100.0;
-        } else if (lightPollution >= 77.53 && lightPollution < 88.674) {
-            lightPollutionValue = Math.round(-(1 / (-(0.001) * (lightPollution - 110)) + 47) * 100) / 100.0;
-        } else {
-            lightPollutionValue = Math.round(-(1 / (-(0.01) * (lightPollution - 71)) + 100) * 100) / 100.0;
-        }
-
-        if (cloudsValue < feel_likeValue && cloudsValue < moonPhaseValue && cloudsValue < fineDustValue && cloudsValue < popValue && cloudsValue < lightPollutionValue) {
-            biggestValue = cloudsValue;
-            effect = 0D;
-        } else if (feel_likeValue < cloudsValue && feel_likeValue < moonPhaseValue && feel_likeValue < fineDustValue && feel_likeValue < popValue && feel_likeValue < lightPollutionValue) {
-            biggestValue = feel_likeValue;
-            effect = 1D;
-        } else if (moonPhaseValue < cloudsValue && moonPhaseValue < feel_likeValue && moonPhaseValue < fineDustValue && moonPhaseValue < popValue && moonPhaseValue < lightPollutionValue) {
-            biggestValue = moonPhaseValue;
-            effect = 2D;
-        } else if (fineDustValue < cloudsValue && fineDustValue < feel_likeValue && fineDustValue < moonPhaseValue && fineDustValue < popValue && fineDustValue < lightPollutionValue) {
-            biggestValue = fineDustValue;
-            effect = 3D;
-        } else if (popValue < cloudsValue && popValue < feel_likeValue && popValue < moonPhaseValue && popValue < fineDustValue && popValue < lightPollutionValue) {
-            biggestValue = popValue;
-            effect = 4D;
-        } else {
-            biggestValue = lightPollutionValue;
-            effect = 5D;
-        }
-
-        averageValue = (cloudsValue + feel_likeValue + moonPhaseValue + fineDustValue + popValue + lightPollutionValue - biggestValue) / 6;
-
-        if (100 + (biggestValue + averageValue * 0.3) > 0) {
-            observationalFitDegree = 100 + (biggestValue + averageValue * 0.3);
-        } else {
-            observationalFitDegree = 0D;
-        }
-
-        obFitFinal = Math.round(observationalFitDegree * 100) / 100.0;
-
-        if (obFitFinal < 0) {
-            return new double[]{0D};
-        } else {
-            return new double[]{obFitFinal, effect};
-        }
     }
 
     public Mono<OpenWeatherResponse> getOpenWeather(Double lat, Double lon) {
@@ -459,7 +377,7 @@ public class ObservationalFitService {
                     int bestTime = 18; // 최고 관측적합도 시각
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
-                    double maxEffect = 0D; // 최대 관측적합도의 주요 원인
+                    double mainEffect = 0D; // 최대 관측적합도의 주요 원인
 
                     for (int i = 0; i < 13; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
@@ -468,8 +386,8 @@ public class ObservationalFitService {
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
                             double[] observationFit = getObservationFit(
                                     H_hourly.getClouds(),
-                                    H_daily1.getMoonPhase(),
                                     H_hourly.getFeelsLike(),
+                                    H_daily1.getMoonPhase(),
                                     fineDust,
                                     Double.valueOf(H_hourly.getPop()),
                                     lightPollution
@@ -479,8 +397,8 @@ public class ObservationalFitService {
                         } else { // 명일 0시 ~ 6시 (7개)
                             double[] observationFit = getObservationFit(
                                     H_hourly.getClouds(),
-                                    H_daily2.getMoonPhase(),
                                     H_hourly.getFeelsLike(),
+                                    H_daily2.getMoonPhase(),
                                     fineDust,
                                     Double.valueOf(H_hourly.getPop()),
                                     lightPollution
@@ -490,8 +408,8 @@ public class ObservationalFitService {
                         }
                         if (maxObservationalFit < observationalFit) {
                             maxObservationalFit = observationalFit;
-                            maxEffect = effect;
                             bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                            mainEffect = effect;
                         }
                         if (minObservationalFit > observationalFit) {
                             minObservationalFit = observationalFit;
@@ -505,7 +423,7 @@ public class ObservationalFitService {
                             .build();
 
                     if ((int) Math.round(maxObservationalFit) < 40) {
-                        mainInfo.setMainEffect(effectMap2.get(maxEffect) + " 관측을 방해해요");
+                        mainInfo.setMainEffect(effectMap2.get(mainEffect) + " 관측을 방해해요");
                     } else {
                         if (bestTime <= 6) {
                             mainInfo.setBestTime("추천 관측시간 내일 0" + bestTime + "시");
@@ -540,6 +458,104 @@ public class ObservationalFitService {
         } else {
             return "오늘은 별을 보기 어려워요";
         }
+    }
+
+    public double[] getObservationFit(Double clouds, Double feelLike, Double moonPhase,
+                                      String fineDust, Double pop, Double lightPollution) {
+        double[] values = {getCloudsValue(clouds),
+                getFeelLikeValue(feelLike),
+                getMoonPhaseValue(moonPhase),
+                getFineDustValue(fineDust),
+                getPopValue(pop),
+                getLightPollutionValue(lightPollution)};
+
+        double minValue = Arrays.stream(values)
+                .min()
+                .orElseThrow(() -> new IllegalStateException("Array is empty."));
+        double otherSumValue = Math.round((Arrays.stream(values).sum() - minValue) / 6.0 * 100) / 100.0;
+        double total = total(minValue, otherSumValue);
+        int idx = minValueIdx(values);
+        return new double[]{total, idx};
+    }
+
+    public double getCloudsValue(Double clouds) {
+        return Math.round(100 * (-(1 / (-0.25 * (clouds / 100 - 2.7)) - 1.48148)) * 100) / 100.0;
+    }
+
+    public double getFeelLikeValue(Double feelLike) {
+        double feelLikeValue;
+        if (feelLike < 18) {
+            feelLikeValue = -0.008 * Math.pow((feelLike - 18), 2);
+        } else {
+            feelLikeValue = -0.09 * Math.pow((feelLike - 18), 2);
+        }
+        return Math.round(feelLikeValue * 100) / 100.0;
+    }
+
+    public double getMoonPhaseValue(Double moonPhase) {
+        double moonPhaseValue;
+        if (moonPhase <= 0.5) {
+            moonPhaseValue = -((8 * Math.pow(moonPhase, 3.46)) / 0.727 * 100);
+        } else if (moonPhase <= 0.5609) {
+            moonPhaseValue = -((75 * Math.pow(moonPhase - 0.5, 2) - 0.727) / 0.727 * 100);
+        } else {
+            moonPhaseValue = -((1 / (5.6 * (Math.pow(moonPhase + 0.3493, 10))) - 0.0089) / 0.727 * 100);
+        }
+        return Math.round(moonPhaseValue * 100) / 100.0;
+    }
+
+    public double getFineDustValue(String fineDust) {
+        double fineDustValue;
+        switch (fineDust) {
+            case "보통":
+                fineDustValue = -5D;
+                break;
+            case "나쁨":
+                fineDustValue = -15D;
+                break;
+            case "매우나쁨":
+                fineDustValue = -30D;
+                break;
+            default:
+                fineDustValue = 0D;
+                break;
+        }
+        return fineDustValue;
+    }
+
+    public double getPopValue(Double pop) {
+        return Math.round(100 * (-(1 / (-(1.2) * (pop / 100 - 1.5)) - 0.55556)) * 100) / 100.0;
+    }
+
+    public double getLightPollutionValue(Double lightPollution) {
+        double lightPollutionValue;
+        if (lightPollution < 28.928) {
+            lightPollutionValue = -(1 / (-(0.001) * (lightPollution - 48)) - 20.833);
+        } else if (lightPollution < 77.53) {
+            lightPollutionValue = -(1 / (-(0.0001) * (lightPollution + 52)) + 155);
+        } else if (lightPollution < 88.674) {
+            lightPollutionValue = -(1 / (-(0.001) * (lightPollution - 110)) + 47);
+        } else {
+            lightPollutionValue = -(1 / (-(0.01) * (lightPollution - 71)) + 100);
+        }
+        return Math.round(lightPollutionValue * 100) / 100.0;
+    }
+
+    public int minValueIdx(double[] values) {
+        double min = values[0];
+        int idx = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] < min) {
+                min = values[i];
+                idx = i;
+            }
+        }
+        return idx;
+    }
+
+    public double total(Double minValue, Double otherSumValue) {
+        double value = 100 + (minValue + otherSumValue * 0.5);
+        return (value > 0) ? (Math.round(value * 100) / 100.0) : 0;
     }
 }
 
