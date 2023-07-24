@@ -214,67 +214,13 @@ public class PostService {
     /**
      * description: 메인 페이지 게시물 리스트 가져오는 메소드.
      *
-     * @param filter the filter
      * @return the list
      */
-    public List<PostParams4>getMainPost(Filter filter) {
+    public List<PostParams4>getMainPost() {
         // 유저의 희망 해시태그에 따라 우선적 필터로 거르고 가져옴)
         List<PostParams4> result = new ArrayList<>();
-        List<Long> mainHashTagIdList = filter.getHashTagIdList();
-        List<Long> mainPostIdList = new ArrayList<>();
-        for (Long hashTagId : mainHashTagIdList) {
-            List<PostHashTag> postHashTagList = postHashTagRepository.findByHashTagId(hashTagId);
-            for (PostHashTag postHashTag : postHashTagList) {
-                Long postId = postHashTag.getPostId();
-                if (!mainPostIdList.contains(postId)) {
-                    mainPostIdList.add(postId);
-                }
-            }
-        }
-        Collections.sort(mainPostIdList, new OrderComparator());
-        List<Long>realMainPostList = mainPostIdList.subList(0,4);
-        for (Long postId : realMainPostList){
-            Post hashPost = postRepository.findById(postId).orElseThrow(IllegalAccessError::new);
-            PostParams4 hashPostParams = new PostParams4();
-            hashPostParams.setPostId(hashPost.getPostId());
-            hashPostParams.setMainTitle(hashPost.getPostTitle());
-            Optional<User> userOp = userRepository.findById(hashPost.getUserId());
-            if (userOp.isPresent()){
-                User user = userOp.get();
-                hashPostParams.setMainNickName(user.getNickName());
-                hashPostParams.setProfileImage(user.getProfileImage());
-            }
-            hashPostParams.setMainObservation(hashPost.getObservation().getObservationName());
-            hashPostParams.setObservationId(hashPost.getObservationId());
-            hashPostParams.setOptionObservation(hashPost.getOptionObservation());
-            List<String> hashTagName = new ArrayList<>();
-            List<PostHashTag> list = postHashTagRepository.findByPostId(hashPost.getPostId());
-            if (!list.isEmpty()) {
-                for (PostHashTag postHashTag : list) {
-                    hashTagName.add(postHashTag.getHashTagName());
-                }
-                hashPostParams.setHashTags(hashTagName);
-            } else {
-                hashPostParams.setHashTags(null);
-            }
-            hashPostParams.setHashTags(hashTagName);
-            List<PostImage> hashImageList = postImageRepository.findByPostId(hashPost.getPostId());
-            if (!hashImageList.isEmpty()) {
-                ArrayList<String> imageList = new ArrayList<>();
-                for (int i = 0; i < hashImageList.size(); i++) {
-                    imageList.add("https://starry-night.s3.ap-northeast-2.amazonaws.com/postImage/" + hashImageList.get(i).getImageName());
-                }
-                hashPostParams.setImages(imageList);
-            } else {
-                hashPostParams.setImages(null);
-            }
-            result.add(hashPostParams);
-        }
-
-        //나머지 게시물
         List<Post> posts = postRepository.findAll(Sort.by(Sort.Order.desc("postId")));
         for (Post post : posts) {
-            if (!realMainPostList.contains(post.getPostId())){
                 PostParams4 postParams4 = new PostParams4();
                 postParams4.setPostId(post.getPostId());
                 postParams4.setObservationId(post.getObservationId());
@@ -308,7 +254,6 @@ public class PostService {
                     postParams4.setHashTags(null);
                 }
                 result.add(postParams4);
-            }
         }
         return result;
         }

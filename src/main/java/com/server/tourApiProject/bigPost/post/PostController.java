@@ -96,7 +96,7 @@ public class PostController {
 
     @ApiOperation(value = "메인페이지 게시물 정보 조회", notes = "메인페이지에 띄울 모든 게시물을 조회한다")
     @PostMapping(value = "post/main")
-    public List<PostParams4> getMainPost(@RequestBody Filter filter){ return postService.getMainPost(filter); }
+    public List<PostParams4> getMainPost(){ return postService.getMainPost(); }
 
 }
 
