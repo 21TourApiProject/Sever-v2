@@ -119,6 +119,7 @@ public class ObservationalFitService {
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double mainEffect = 0D; // 관측적합도의 주요 원인
+                    double avgObservationalFit = 0D; // 평균 관측적합도
 
                     // 0    1   2   3   4   5   6   7   8   9   10  11  12
                     // 18   19  20  21  22  23  0   1   2   3   4   5   6
@@ -160,6 +161,8 @@ public class ObservationalFitService {
                         if (minObservationalFit > observationalFit) {
                             minObservationalFit = observationalFit;
                         }
+                        avgObservationalFit += observationalFit;
+
                         hourList.add(WeatherInfo.HourObservationalFit.builder()
                                 .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
@@ -179,10 +182,13 @@ public class ObservationalFitService {
                                 fineDust,
                                 Double.valueOf(D_daily.getPop()),
                                 lightPollution)[0];
-                        dayList.add(WeatherInfo.DayObservationalFit.builder()
+
+                        WeatherInfo.DayObservationalFit dayInfo = WeatherInfo.DayObservationalFit.builder()
                                 .day(dayDateMap.get(i)[0])
                                 .date(dayDateMap.get(i)[1])
-                                .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
+                                .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build();
+                        if (i == 0) dayInfo.setObservationalFit(Math.round(avgObservationalFit / 13) + Const.Weather.PERCENT);
+                        dayList.add(dayInfo);
                     }
 
                     String[] todayComment = getTodayComment(bestTime, minObservationalFit, maxObservationalFit, mainEffect);
