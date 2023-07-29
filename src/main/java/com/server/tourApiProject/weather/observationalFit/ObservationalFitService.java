@@ -168,14 +168,12 @@ public class ObservationalFitService {
                         avgObservationalFit += observationalFit;
 
                         int realHour = i + 18 < 24 ? i + 18 : i - 6;
-                        if (!checkSunset && realHour >= sunset) checkSunset = true;
-                        if (checkSunset) {
-                            if (0 <= realHour && realHour <= 6 && realHour > sunrise) continue;
-                            hourList.add(WeatherInfo.HourObservationalFit.builder()
-                                    .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
-                                    .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
-                        }
+                        if (realHour <= 6 && realHour > sunrise) continue; // 익일 새벽
+                        if (realHour <= 23 && realHour < sunset) continue; // 금일 저녁
 
+                        hourList.add(WeatherInfo.HourObservationalFit.builder()
+                                .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
+                                .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
                     }
 
                     // 일일별 관측적합도 정보
