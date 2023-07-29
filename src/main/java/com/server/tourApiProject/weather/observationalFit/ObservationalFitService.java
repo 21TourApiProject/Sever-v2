@@ -120,6 +120,10 @@ public class ObservationalFitService {
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double mainEffect = 0D; // 관측적합도의 주요 원인
                     double avgObservationalFit = 0D; // 평균 관측적합도
+                    int sunrise = getSunHour(detailWeather.getSunrise()); // 일출
+                    int sunset = getSunHour(detailWeather.getSunset()); // 일몰
+                    boolean checkSunset = false;
+
 
                     // 0    1   2   3   4   5   6   7   8   9   10  11  12
                     // 18   19  20  21  22  23  0   1   2   3   4   5   6
@@ -163,9 +167,15 @@ public class ObservationalFitService {
                         }
                         avgObservationalFit += observationalFit;
 
-                        hourList.add(WeatherInfo.HourObservationalFit.builder()
-                                .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
-                                .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
+                        int realHour = i + 18 < 24 ? i + 18 : i - 6;
+                        if (!checkSunset && realHour >= sunset) checkSunset = true;
+                        if (checkSunset) {
+                            if (0 <= realHour && realHour <= 6 && realHour > sunrise) continue;
+                            hourList.add(WeatherInfo.HourObservationalFit.builder()
+                                    .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
+                                    .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
+                        }
+
                     }
 
                     // 일일별 관측적합도 정보
@@ -187,7 +197,8 @@ public class ObservationalFitService {
                                 .day(dayDateMap.get(i)[0])
                                 .date(dayDateMap.get(i)[1])
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build();
-                        if (i == 0) dayInfo.setObservationalFit(Math.round(avgObservationalFit / 13) + Const.Weather.PERCENT);
+                        if (i == 0)
+                            dayInfo.setObservationalFit(Math.round(avgObservationalFit / 13) + Const.Weather.PERCENT);
                         dayList.add(dayInfo);
                     }
 
@@ -275,6 +286,12 @@ public class ObservationalFitService {
         SimpleDateFormat formatHourMin = new SimpleDateFormat("HH:mm");
         formatHourMin.setTimeZone(java.util.TimeZone.getTimeZone("GMT+9"));
         return formatHourMin.format(unixHourMin);
+    }
+
+    public int getSunHour(String sunTime) { // 05:33
+        String hour = sunTime.substring(0, 2);
+        if (hour.startsWith("0")) return Integer.parseInt(hour.substring(1));
+        else return Integer.parseInt(hour);
     }
 
     public void setObservationFit(String date) {
