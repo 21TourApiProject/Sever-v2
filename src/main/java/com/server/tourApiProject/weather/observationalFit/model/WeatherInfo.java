@@ -31,6 +31,7 @@ public class WeatherInfo {
     public String mainEffect;
 
     @Setter
+    @Getter
     @NoArgsConstructor
     public static class DetailWeather {
         public String weatherText;
