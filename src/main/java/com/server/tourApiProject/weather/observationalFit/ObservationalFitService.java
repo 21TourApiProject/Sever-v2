@@ -51,12 +51,12 @@ public class ObservationalFitService {
 
     // 메인 날씨 탭용
     private static final Map<Double, String> effectMap2 = Map.of(
-            0D, "많은 구름이",
-            1D, "나쁜 체감온도가",
-            2D, "밝은 달빛이",
-            3D, "나쁜 미세먼지가",
-            4D, "높은 강수확률이",
-            5D, "높은 광공해가");
+            0D, "‘많은 구름’ 이",
+            1D, "’나쁜 체감온도’ 가",
+            2D, "’밝은 달빛’ 이",
+            3D, "’나쁜 미세먼지’ 가",
+            4D, "’높은 강수확률’ 이",
+            5D, "’높은 광공해’가");
 
     public Mono<WeatherInfo> getWeatherInfo(AreaTimeDTO areaTime) {
 
@@ -122,8 +122,6 @@ public class ObservationalFitService {
                     double avgObservationalFit = 0D; // 평균 관측적합도
                     int sunrise = getSunHour(detailWeather.getSunrise()); // 일출
                     int sunset = getSunHour(detailWeather.getSunset()); // 일몰
-                    boolean checkSunset = false;
-
 
                     // 0    1   2   3   4   5   6   7   8   9   10  11  12
                     // 18   19  20  21  22  23  0   1   2   3   4   5   6
@@ -168,8 +166,8 @@ public class ObservationalFitService {
                         avgObservationalFit += observationalFit;
 
                         int realHour = i + 18 < 24 ? i + 18 : i - 6;
-                        if (realHour <= 6 && realHour > sunrise) continue; // 익일 새벽
-                        if (realHour <= 23 && realHour < sunset) continue; // 금일 저녁
+                        if (realHour <= 6 && realHour > sunrise - 1) continue; // 익일 새벽
+                        if (6 < realHour && realHour <= 23 && sunset + 2 > realHour) continue; // 금일 저녁
 
                         hourList.add(WeatherInfo.HourObservationalFit.builder()
                                 .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
