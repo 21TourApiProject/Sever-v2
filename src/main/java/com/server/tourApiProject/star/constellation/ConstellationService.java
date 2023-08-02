@@ -185,8 +185,8 @@ public class ConstellationService {
         }
 
         if(searchKey!=null){
-            searchList= constellationRepository.findByConstNameContainingAndConstEngContaining(searchKey,searchKey);
-            keyList= constellationRepository.findByConstNameContainingAndConstEngContaining(searchKey,searchKey);
+            searchList= constellationRepository.findByConstNameContainingOrConstEngContaining(searchKey,searchKey);
+            keyList= constellationRepository.findByConstNameContainingOrConstEngContaining(searchKey,searchKey);
             if (!hashTagIdList.isEmpty()) {
                 //필터 받은게 없으면 그냥 검색결과 전달, 있으면 중첩 검색
                 for (Constellation constellation : keyList) {
