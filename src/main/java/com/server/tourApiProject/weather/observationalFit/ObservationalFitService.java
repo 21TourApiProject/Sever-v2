@@ -60,7 +60,7 @@ public class ObservationalFitService {
 
     public Mono<WeatherInfo> getWeatherInfo(AreaTimeDTO areaTime) {
 
-        log.info("Weather Request from App | {} ", areaTime);
+//        log.info("Weather Request from App | {} ", areaTime);
 
         return Mono.zip(Mono.just(fineDustService.getFineDustMap(areaTime.getDate())),
                         getOpenWeather(areaTime.getLat(), areaTime.getLon()))
@@ -292,7 +292,7 @@ public class ObservationalFitService {
 
     public void setObservationFit(String date) {
         Map<String, String> fineDustMap = fineDustService.getFineDustMap(date);
-        log.info("Fine Dust Info | {}", fineDustMap);
+//        log.info("Fine Dust Info | {}", fineDustMap);
 
         for (WeatherObservation observation : weatherObservationService.get2Observation()) {
 //        for (WeatherObservation observation : weatherObservationService.getAllObservation()) {
@@ -358,8 +358,7 @@ public class ObservationalFitService {
                 .retrieve()
                 .toEntity(OpenWeatherResponse.class)
                 .flatMap(response -> {
-                    log.info("HTTP Response for Open Weather ({}, {}) | {} | {}", lat, lon,
-                            response.getStatusCode(), response.getBody());
+//                    log.info("HTTP Response for Open Weather ({}, {}) | {} | {}", lat, lon, response.getStatusCode(), response.getBody());
                     return Mono.just(Objects.requireNonNull(response.getBody()));
                 });
     }
