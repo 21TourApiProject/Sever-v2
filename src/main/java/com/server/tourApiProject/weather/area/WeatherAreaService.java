@@ -50,4 +50,17 @@ public class WeatherAreaService {
         WeatherArea weatherArea = weatherAreaRepository.findBySGGAndEMD(city, split[2]);
         return weatherArea.getAreaId();
     }
+
+    public Map<String, String> getNearestArea(NearestDTO nearestDTO) {
+        double minDistance = Double.MAX_VALUE;
+        String EMD = "";
+        for (WeatherArea area : weatherAreaRepository.findBysigungu(nearestDTO.getSigungu())) {
+            double calculate = Math.pow(Math.abs(nearestDTO.getLatitude() - area.getLatitude()), 2) + Math.pow(Math.abs(nearestDTO.getLongitude() - area.getLongitude()), 2);
+            if (calculate < minDistance) {
+                minDistance = calculate;
+                EMD = area.getEMD();
+            }
+        }
+        return Map.of("EMD", EMD);
+    }
 }
