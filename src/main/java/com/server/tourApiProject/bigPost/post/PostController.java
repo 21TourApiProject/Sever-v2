@@ -50,9 +50,11 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시물정보 입력", notes = "게시물 정보를 입력한다")
-    @PostMapping(value = "post/{observePointName}")
-    public Long createPost(@PathVariable("observePointName") String observePointName,@RequestBody PostParams postParams) {
-        return postService.createPost(observePointName,postParams);
+    @PostMapping(value = "post/{observePointName}/{areaId}")
+    public Long createPost(@PathVariable("observePointName") String observePointName,
+                           @RequestBody PostParams postParams,
+                           @PathVariable("areaId") Long areaId) {
+        return postService.createPost(observePointName,postParams,areaId);
     }
     @ApiOperation(value = "게시물정보 삭제", notes = "게시물 정보를 삭제한다")
     @DeleteMapping(value = "post/{postId}")
