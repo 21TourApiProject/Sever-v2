@@ -64,7 +64,7 @@ public class PostService {
      * @param postParams - the post params
      * @return the post.getPostId()
      */
-    public Long createPost(String observePointName, PostParams postParams) {
+    public Long createPost(String observePointName, PostParams postParams,Long areaId) {
         Post post = new Post();
         Observation observation = observationRepository.findByObservationName(observePointName);
         Long observationId = observation.getObservationId();
@@ -79,7 +79,11 @@ public class PostService {
         post.setUserId(postParams.getUserId());
         post.setObservation(observation);
         post.setObservationId(observationId);
-        post.setAreaCode(observation.getAreaCode());
+        if(areaId==0){
+            post.setAreaCode(observation.getAreaCode());
+        }else{
+         post.setAreaCode(areaId);
+        }
         post.setLiked(0L);
         post.setSaved(0L);
         postRepository.save(post);
