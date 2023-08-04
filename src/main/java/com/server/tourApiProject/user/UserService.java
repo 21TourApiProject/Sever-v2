@@ -71,7 +71,7 @@ public class UserService {
      *
      * @param userParam
      */
-    public void createUser(UserParams userParam) {
+    public String createUser(UserParams userParam) {
         User user = new User();
         user.setRealName(userParam.getRealName());
         user.setSex(userParam.getSex());
@@ -93,32 +93,7 @@ public class UserService {
         user.setKakao(userParam.getKakao());
         user.setSignUpDt(LocalDateTime.now());
 
-        userRepository.save(user);
-    }
-
-    //테스트용
-    public void createUser2(UserParams userParam) {
-        User user = new User();
-        user.setRealName(userParam.getRealName());
-        user.setSex(userParam.getSex());
-        user.setBirthDay(userParam.getBirthDay());
-        user.setMobilePhoneNumber(userParam.getMobilePhoneNumber());
-        user.setEmail(userParam.getEmail());
-        user.setPassword(userParam.getPassword());
-
-        boolean isDuplicate = true;
-        while (isDuplicate) {
-            String nickname = randomNickName();
-            if (userRepository.findByNickName(nickname) == null) {
-                isDuplicate = false;
-                user.setNickName(nickname);
-            }
-        }
-        user.setIsMarketing(userParam.getIsMarketing());
-        user.setKakao(userParam.getKakao());
-        user.setSignUpDt(LocalDateTime.now());
-
-        userRepository.save(user);
+        return String.valueOf(userRepository.save(user).getUserId());
     }
 
     /**
@@ -140,7 +115,7 @@ public class UserService {
         return front[f] + " " + back[b] + " " + n;
     }
 
-    public void createKakaoUser(KakaoUserParams userParam) {
+    public String createKakaoUser(KakaoUserParams userParam) {
         User user = new User();
         user.setEmail(userParam.getEmail());
         user.setNickName(userParam.getNickName());
@@ -156,7 +131,7 @@ public class UserService {
         if (userParam.getAgeRange() != null)
             user.setAgeRange(userParam.getAgeRange());
 
-        userRepository.save(user);
+        return String.valueOf(userRepository.save(user).getUserId());
     }
 
     /**
