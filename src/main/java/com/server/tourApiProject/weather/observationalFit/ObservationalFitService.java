@@ -73,10 +73,10 @@ public class ObservationalFitService {
 
                     if (areaTime.getAreaId() != null) {
                         WeatherArea area = weatherAreaService.getWeatherArea(areaTime.getAreaId());
-                        if (Objects.equals(area.getSGG(), "강원") || Objects.equals(area.getSGG(), "경기")) {
-                            fineDust = fineDustMap.getOrDefault(area.getSGG2(), "보통");
+                        if (Objects.equals(area.getSD(), "강원") || Objects.equals(area.getSD(), "경기")) {
+                            fineDust = fineDustMap.getOrDefault(area.getSD2(), "보통");
                         } else {
-                            fineDust = fineDustMap.getOrDefault(area.getSGG(), "보통");
+                            fineDust = fineDustMap.getOrDefault(area.getSD(), "보통");
                         }
                         lightPollution = area.getLightPollution();
                     } else if (areaTime.getObservationId() != null) {
@@ -365,9 +365,7 @@ public class ObservationalFitService {
 
     public Mono<MainInfo> getMainInfo(AreaTimeDTO areaTime) {
 
-        System.out.println("areaTime = " + areaTime.toString());
         Long areaId = getAreaId(areaTime.getAddress());
-        System.out.println("areaId = " + areaId);
 
         return Mono.zip(Mono.just(fineDustService.getFineDustMap(areaTime.getDate())),
                         getOpenWeather(areaTime.getLat(), areaTime.getLon()))
@@ -379,10 +377,10 @@ public class ObservationalFitService {
                     Double lightPollution;
 
                     WeatherArea area = weatherAreaService.getWeatherArea(areaId);
-                    if (Objects.equals(area.getSGG(), "강원") || Objects.equals(area.getSGG(), "경기")) {
-                        fineDust = fineDustMap.getOrDefault(area.getSGG2(), "보통");
+                    if (Objects.equals(area.getSD(), "강원") || Objects.equals(area.getSD(), "경기")) {
+                        fineDust = fineDustMap.getOrDefault(area.getSD2(), "보통");
                     } else {
-                        fineDust = fineDustMap.getOrDefault(area.getSGG(), "보통");
+                        fineDust = fineDustMap.getOrDefault(area.getSD(), "보통");
                     }
                     lightPollution = area.getLightPollution();
 

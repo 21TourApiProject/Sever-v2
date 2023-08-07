@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -24,7 +25,7 @@ public class WeatherAreaService {
         return weatherAreaRepository.findById(areaId).get();
     }
 
-    private final static Map<String, String> SGG = new HashMap<>() {{
+    private final static Map<String, String> SD = new HashMap<>() {{
         put("서울특별시", "서울");
         put("경기도", "경기");
         put("인쳔광역시", "인천");
@@ -46,15 +47,21 @@ public class WeatherAreaService {
 
     public Long getAreaIdByAddress(String address) { // 서울특별시 서대문구 북가좌동
         String[] split = address.split(" ");
-        String city = SGG.getOrDefault(split[0], "");
-        WeatherArea weatherArea = weatherAreaRepository.findBySGGAndEMD(city, split[2]);
+        String city = SD.getOrDefault(split[0], "");
+        WeatherArea weatherArea = weatherAreaRepository.findBySDAndEMD(city, split[2]);
         return weatherArea.getAreaId();
     }
 
     public Map<String, String> getNearestArea(NearestDTO nearestDTO) {
         double minDistance = Double.MAX_VALUE;
         String EMD = "";
-        for (WeatherArea area : weatherAreaRepository.findBysigungu(nearestDTO.getSigungu())) {
+        List<WeatherArea> list;
+        if (nearestDTO.getSgg().equals("세종")) {
+            list = weatherAreaRepository.findBySD("세종");
+        } else {
+            list = weatherAreaRepository.findBySGG(nearestDTO.getSgg());
+        }
+        for (WeatherArea area : list) {
             double calculate = Math.pow(Math.abs(nearestDTO.getLatitude() - area.getLatitude()), 2) + Math.pow(Math.abs(nearestDTO.getLongitude() - area.getLongitude()), 2);
             if (calculate < minDistance) {
                 minDistance = calculate;

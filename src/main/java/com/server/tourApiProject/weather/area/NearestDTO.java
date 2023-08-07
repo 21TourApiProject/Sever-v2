@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NearestDTO {
 
-    private String sigungu;
+    private String sgg;
 
     private Double latitude;
 

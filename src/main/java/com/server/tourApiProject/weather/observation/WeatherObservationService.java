@@ -48,7 +48,7 @@ public class WeatherObservationService {
             result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(), observation.getLatitude(), observation.getLongitude()));
         }
         for (WeatherArea area : weatherAreaRepository.findAll()) {
-            result.add(new WeatherLocationDTO(area.getEMD(), area.getSGG() + " " + area.getSigungu(), area.getAreaId(), null, area.getLatitude(), area.getLongitude()));
+            result.add(new WeatherLocationDTO(area.getEMD(), area.getSD() + " " + area.getSGG(), area.getAreaId(), null, area.getLatitude(), area.getLongitude()));
         }
         return result;
     }
