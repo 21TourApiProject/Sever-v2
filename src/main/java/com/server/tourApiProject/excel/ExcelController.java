@@ -892,21 +892,25 @@ public class ExcelController {
             Row row = worksheet.getRow(i);
 
             WeatherArea weatherArea = WeatherArea.builder()
-                    .longitude(row.getCell(12).getNumericCellValue())
-                    .latitude(row.getCell(13).getNumericCellValue())
-                    .SGG(row.getCell(4).getStringCellValue())
-                    .lightPollution(Double.valueOf(row.getCell(15).getStringCellValue()))
+                    .SD(row.getCell(1).getStringCellValue())
+                    .longitude(row.getCell(6).getNumericCellValue())
+                    .latitude(row.getCell(7).getNumericCellValue())
+                    .lightPollution(Double.valueOf(row.getCell(8).getStringCellValue()))
                     .build();
 
-            if (row.getCell(4).getStringCellValue().equals("세종")) {
-                weatherArea.setEMD(row.getCell(5).getStringCellValue());
-                weatherArea.setSigungu("");
+            if (row.getCell(1).getStringCellValue().equals("세종")) {
+                weatherArea.setEMD(row.getCell(2).getStringCellValue());
             } else {
-                weatherArea.setEMD(row.getCell(6).getStringCellValue());
-                weatherArea.setSigungu(row.getCell(5).getStringCellValue());
+                if (!row.getCell(4).getStringCellValue().equals("null")) {
+                    weatherArea.setSGG(row.getCell(3).getStringCellValue());
+                    weatherArea.setEMD(row.getCell(4).getStringCellValue());
+                } else if (!row.getCell(3).getStringCellValue().equals("null")) {
+                    weatherArea.setSGG(row.getCell(2).getStringCellValue());
+                    weatherArea.setEMD(row.getCell(3).getStringCellValue());
+                }
             }
 
-            if (row.getCell(8) != null) weatherArea.setSGG2(row.getCell(8).getStringCellValue());
+            if (row.getCell(5) != null) weatherArea.setSD2(row.getCell(5).getStringCellValue());
             weatherAreaRepository.save(weatherArea);
         }
         System.out.println("엑셀 완료");
