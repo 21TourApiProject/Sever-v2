@@ -12,7 +12,13 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="myWish")
+@Table(name="myWish",
+        uniqueConstraints={
+        @UniqueConstraint(
+                name="UniqueUserIdAndItemId",
+                columnNames={"userId", "itemId"})
+    }
+)
 
 /**
  * @className : MyWish.java

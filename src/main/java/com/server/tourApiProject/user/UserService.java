@@ -1,6 +1,7 @@
 package com.server.tourApiProject.user;
 
 import com.server.tourApiProject.bigPost.post.Post;
+import com.server.tourApiProject.myWish.MyWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -37,6 +38,7 @@ import java.util.Random;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final MyWishRepository myWishRepository;
     private final UserPasswordService userPasswordService;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
@@ -338,7 +340,13 @@ public class UserService {
      * @param userId - 사용자 id
      */
     public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+        List<Post> myPosts = user.getMyPosts();
+        for(Post post: myPosts){
+            myWishRepository.deleteByItemIdAndWishType(post.getPostId(),2);
+        }
         userRepository.deleteById(userId);
+
     }
 
     /**
