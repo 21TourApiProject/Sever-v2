@@ -433,10 +433,14 @@ public class ObservationalFitService {
                     }
 
                     MainInfo mainInfo = MainInfo.builder()
-                            .comment(areaTime.getAddress().split(" ")[2] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit))
                             .bestObservationalFit("관측 적합도 ~" + (int) Math.round(maxObservationalFit) + "%")
                             .areaId(areaId)
                             .build();
+
+                    String[] split = areaTime.getAddress().split(" ");
+                    if(split.length == 2) mainInfo.setComment(areaTime.getAddress().split(" ")[1] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
+                    if(split.length == 3) mainInfo.setComment(areaTime.getAddress().split(" ")[2] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
+                    if(split.length == 4) mainInfo.setComment(areaTime.getAddress().split(" ")[3] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
 
                     if ((int) Math.round(maxObservationalFit) < 40) {
                         mainInfo.setMainEffect(effectMap2.get(mainEffect) + " 관측을 방해해요");
