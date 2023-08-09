@@ -45,27 +45,40 @@ public class WeatherAreaService {
         put("제주특별자치도", "제주");
     }};
 
-    public Long getAreaIdByAddress(String address) { // 서울특별시 서대문구 북가좌동
+    public Long getAreaIdByAddress(String address) {
         String[] split = address.split(" ");
         String city = SD.getOrDefault(split[0], "");
-        WeatherArea weatherArea = weatherAreaRepository.findBySDAndEMD(city, split[2]);
-        return weatherArea.getAreaId();
+
+        if (split.length == 2)
+            return weatherAreaRepository.findBySDAndEMD1(city, split[1]).getAreaId(); // 세종특별자치시 소정면
+        if (split.length == 3)
+            return weatherAreaRepository.findBySDAndEMD2(city, split[2]).getAreaId(); // 서울특별시 서대문구 북가좌동
+        if (split.length == 4)
+            return weatherAreaRepository.findBySDAndEMD3(city, split[3]).getAreaId(); // 경기도 고양시 일산서구 일산동
+        else return -1L;
     }
 
     public Map<String, String> getNearestArea(NearestDTO nearestDTO) {
         double minDistance = Double.MAX_VALUE;
         String EMD = "";
         List<WeatherArea> list;
+
         if (nearestDTO.getSgg().equals("세종")) {
             list = weatherAreaRepository.findBySD("세종");
         } else {
-            list = weatherAreaRepository.findBySGG(nearestDTO.getSgg());
+            list = weatherAreaRepository.findByEMD1(nearestDTO.getSgg()).orElseGet(() -> weatherAreaRepository.findByEMD2(nearestDTO.getSgg()).get());
         }
         for (WeatherArea area : list) {
             double calculate = Math.pow(Math.abs(nearestDTO.getLatitude() - area.getLatitude()), 2) + Math.pow(Math.abs(nearestDTO.getLongitude() - area.getLongitude()), 2);
             if (calculate < minDistance) {
                 minDistance = calculate;
-                EMD = area.getEMD();
+                if (nearestDTO.getSgg().equals("세종")) {
+                    EMD = area.getEMD1();
+                } else {
+                    EMD = area.getEMD2();
+                    if (area.getEMD3() != null) EMD += " " + area.getEMD3();
+                }
+                System.out.println("EMD = " + EMD);
             }
         }
         return Map.of("EMD", EMD);

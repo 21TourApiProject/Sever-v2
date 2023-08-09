@@ -30,10 +30,13 @@ public class WeatherArea {
     private String SD2; // 영동, 영서, 경기북부, 경기남부
 
     @Column
-    private String SGG; // 시군구
+    private String EMD1;
 
-    @Column(nullable = false)
-    private String EMD; // 읍면동
+    @Column
+    private String EMD2;
+
+    @Column
+    private String EMD3;
 
     @Column(nullable = false)
     private Double latitude; // 위도

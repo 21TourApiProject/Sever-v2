@@ -893,24 +893,21 @@ public class ExcelController {
 
             WeatherArea weatherArea = WeatherArea.builder()
                     .SD(row.getCell(1).getStringCellValue())
+                    .EMD1(row.getCell(2).getStringCellValue())
                     .longitude(row.getCell(6).getNumericCellValue())
                     .latitude(row.getCell(7).getNumericCellValue())
                     .lightPollution(Double.valueOf(row.getCell(8).getStringCellValue()))
                     .build();
 
-            if (row.getCell(1).getStringCellValue().equals("세종")) {
-                weatherArea.setEMD(row.getCell(2).getStringCellValue());
-            } else {
-                if (!row.getCell(4).getStringCellValue().equals("null")) {
-                    weatherArea.setSGG(row.getCell(3).getStringCellValue());
-                    weatherArea.setEMD(row.getCell(4).getStringCellValue());
-                } else if (!row.getCell(3).getStringCellValue().equals("null")) {
-                    weatherArea.setSGG(row.getCell(2).getStringCellValue());
-                    weatherArea.setEMD(row.getCell(3).getStringCellValue());
-                }
-            }
+            if (row.getCell(3) != null && !row.getCell(3).getStringCellValue().equals("null"))
+                weatherArea.setEMD2(row.getCell(3).getStringCellValue());
+            if (row.getCell(4) != null && !row.getCell(4).getStringCellValue().equals("null"))
+                weatherArea.setEMD3(row.getCell(4).getStringCellValue());
+            if (row.getCell(5) != null && !row.getCell(5).getStringCellValue().equals("null"))
+                weatherArea.setSD2(row.getCell(5).getStringCellValue());
 
-            if (row.getCell(5) != null) weatherArea.setSD2(row.getCell(5).getStringCellValue());
+            System.out.println("weatherArea.toString() = " + weatherArea.toString());
+
             weatherAreaRepository.save(weatherArea);
         }
         System.out.println("엑셀 완료");
