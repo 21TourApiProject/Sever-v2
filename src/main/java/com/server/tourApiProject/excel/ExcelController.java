@@ -905,9 +905,6 @@ public class ExcelController {
                 weatherArea.setEMD3(row.getCell(4).getStringCellValue());
             if (row.getCell(5) != null && !row.getCell(5).getStringCellValue().equals("null"))
                 weatherArea.setSD2(row.getCell(5).getStringCellValue());
-
-            System.out.println("weatherArea.toString() = " + weatherArea.toString());
-
             weatherAreaRepository.save(weatherArea);
         }
         System.out.println("엑셀 완료");
