@@ -78,7 +78,6 @@ public class WeatherAreaService {
                     EMD = area.getEMD2();
                     if (area.getEMD3() != null) EMD += " " + area.getEMD3();
                 }
-                System.out.println("EMD = " + EMD);
             }
         }
         return Map.of("EMD", EMD);
