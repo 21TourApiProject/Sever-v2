@@ -136,6 +136,11 @@
     <input th:type="submit" value="한줄개요 늘리기" />
 </form>
 
+<form th:action="@{/excel/PostHashTag/read}" method="POST" enctype="multipart/form-data">
+    <input type="file" th:name="file">
+    <input th:type="submit" value="게시글 해쉬태그" />
+</form>
+
 </body>
 
 <!--다른 엑셀 추가하고 싶으면 위에 form 복사해서 body안에 붙여넣고, action에 url고치고 ExcelController로 ㄱㄱ-->
