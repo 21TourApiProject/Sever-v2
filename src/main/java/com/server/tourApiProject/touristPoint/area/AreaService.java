@@ -50,7 +50,6 @@ public class AreaService {
 
         List<AreaFilterParams> result = new ArrayList<>();
         for (AreaFilterParams.AreaFilter areaFilter : filterArea) {
-            System.out.println(areaFilter.getName());
             result.add(new AreaFilterParams(areaFilter.getId(), areaFilter.getName(), "AREA"));
         }
 
