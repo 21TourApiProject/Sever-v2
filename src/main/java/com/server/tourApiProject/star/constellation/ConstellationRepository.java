@@ -31,6 +31,6 @@ public interface ConstellationRepository extends JpaRepository< Constellation, L
      * parameter type = String, String
      * result type = List<Constellation>
      */
-    List<Constellation> findByConstNameContainingAndConstEngContaining(@Param("constName") String constName,@Param("constEng") String constEng);
+    List<Constellation> findByConstNameContainingOrConstEngContaining(@Param("constName") String constName,@Param("constEng") String constEng);
 }
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -48,7 +47,18 @@ public class WeatherObservationService {
             result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(), observation.getLatitude(), observation.getLongitude()));
         }
         for (WeatherArea area : weatherAreaRepository.findAll()) {
-            result.add(new WeatherLocationDTO(area.getEMD(), area.getSGG() + " " + area.getSigungu(), area.getAreaId(), null, area.getLatitude(), area.getLongitude()));
+            String title = area.getEMD1();
+            String subtitle = "";
+
+            if (area.getEMD3() != null) {
+                title = area.getEMD3();
+                subtitle = area.getSD() + " " + area.getEMD1() + " " + area.getEMD2();
+            } else if (area.getEMD2() != null) {
+                title = area.getEMD2();
+                subtitle = area.getSD() + " " + area.getEMD1();
+            }
+
+            result.add(new WeatherLocationDTO(title, subtitle, area.getAreaId(), null, area.getLatitude(), area.getLongitude()));
         }
         return result;
     }

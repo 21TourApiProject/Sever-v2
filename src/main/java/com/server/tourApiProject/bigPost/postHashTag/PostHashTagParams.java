@@ -22,4 +22,6 @@ import lombok.*;
  */
 public class PostHashTagParams {
     private String hashTagName;
+    private String areaName;
+    private Long areaId;
 }

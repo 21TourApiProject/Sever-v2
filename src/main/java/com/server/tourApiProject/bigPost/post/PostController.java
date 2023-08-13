@@ -50,9 +50,11 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시물정보 입력", notes = "게시물 정보를 입력한다")
-    @PostMapping(value = "post/{observePointName}")
-    public Long createPost(@PathVariable("observePointName") String observePointName,@RequestBody PostParams postParams) {
-        return postService.createPost(observePointName,postParams);
+    @PostMapping(value = "post/{observePointName}/{areaId}")
+    public Long createPost(@PathVariable("observePointName") String observePointName,
+                           @RequestBody PostParams postParams,
+                           @PathVariable("areaId") Long areaId) {
+        return postService.createPost(observePointName,postParams,areaId);
     }
     @ApiOperation(value = "게시물정보 삭제", notes = "게시물 정보를 삭제한다")
     @DeleteMapping(value = "post/{postId}")
@@ -96,7 +98,7 @@ public class PostController {
 
     @ApiOperation(value = "메인페이지 게시물 정보 조회", notes = "메인페이지에 띄울 모든 게시물을 조회한다")
     @PostMapping(value = "post/main")
-    public List<PostParams4> getMainPost(@RequestBody Filter filter){ return postService.getMainPost(filter); }
+    public List<PostParams4> getMainPost(){ return postService.getMainPost(); }
 
 }
 

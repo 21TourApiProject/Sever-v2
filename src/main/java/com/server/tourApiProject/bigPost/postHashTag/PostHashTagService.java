@@ -4,6 +4,8 @@ import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.post.PostRepository;
 import com.server.tourApiProject.hashTag.HashTag;
 import com.server.tourApiProject.hashTag.HashTagRepository;
+import com.server.tourApiProject.touristPoint.area.Area;
+import com.server.tourApiProject.touristPoint.area.AreaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ public class PostHashTagService {
     private final PostHashTagRepository postHashTagRepository;
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
+    private final AreaRepository areaRepository;
 
 
     /**
@@ -73,11 +76,18 @@ public class PostHashTagService {
         for (PostHashTagParams p : postHashTagParams) {
             Post post = postRepository.findById(postId).orElseThrow(IllegalAccessError::new);
             PostHashTag postHashTag = new PostHashTag();
-            postHashTag.setHashTagName(p.getHashTagName());
             postHashTag.setPost(post);
             postHashTag.setPostId(post.getPostId());
-            HashTag hashTag = hashTagRepository.findByHashTagName(p.getHashTagName());
-            postHashTag.setHashTagId(hashTag.getHashTagId());
+            if(p.getHashTagName()!=null){
+                postHashTag.setHashTagName(p.getHashTagName());
+                HashTag hashTag = hashTagRepository.findByHashTagName(p.getHashTagName());
+                postHashTag.setHashTagId(hashTag.getHashTagId());
+            }
+            if(p.getAreaName()!=null){
+                postHashTag.setHashTagName(p.getAreaName());
+                Area area = areaRepository.findByAreaId(p.getAreaId());
+                postHashTag.setHashTagId(p.getAreaId());
+            }
             postHashTagRepository.save(postHashTag);
         }
     }

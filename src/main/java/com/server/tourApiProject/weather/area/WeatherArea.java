@@ -24,22 +24,25 @@ public class WeatherArea {
     private Long areaId;
 
     @Column(nullable = false)
-    private String EMD; // 읍면동
+    private String SD; // 시도
+
+    @Column
+    private String SD2; // 영동, 영서, 경기북부, 경기남부
+
+    @Column
+    private String EMD1;
+
+    @Column
+    private String EMD2;
+
+    @Column
+    private String EMD3;
 
     @Column(nullable = false)
     private Double latitude; // 위도
 
     @Column(nullable = false)
     private Double longitude; // 경도
-
-    @Column(nullable = false)
-    private String SGG; // 시군구
-
-    @Column(nullable = false)
-    private String sigungu; // 시군구 (검색용. 추구 필드명 변경)
-
-    @Column
-    private String SGG2; // 영동/영서, 경기북부/경기남부
 
     @Column(nullable = false)
     private Double lightPollution; // 광공해

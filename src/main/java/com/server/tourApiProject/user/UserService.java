@@ -1,6 +1,7 @@
 package com.server.tourApiProject.user;
 
 import com.server.tourApiProject.bigPost.post.Post;
+import com.server.tourApiProject.myWish.MyWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -37,6 +38,7 @@ import java.util.Random;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final MyWishRepository myWishRepository;
     private final UserPasswordService userPasswordService;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
@@ -71,7 +73,7 @@ public class UserService {
      *
      * @param userParam
      */
-    public void createUser(UserParams userParam) {
+    public String createUser(UserParams userParam) {
         User user = new User();
         user.setRealName(userParam.getRealName());
         user.setSex(userParam.getSex());
@@ -93,32 +95,7 @@ public class UserService {
         user.setKakao(userParam.getKakao());
         user.setSignUpDt(LocalDateTime.now());
 
-        userRepository.save(user);
-    }
-
-    //테스트용
-    public void createUser2(UserParams userParam) {
-        User user = new User();
-        user.setRealName(userParam.getRealName());
-        user.setSex(userParam.getSex());
-        user.setBirthDay(userParam.getBirthDay());
-        user.setMobilePhoneNumber(userParam.getMobilePhoneNumber());
-        user.setEmail(userParam.getEmail());
-        user.setPassword(userParam.getPassword());
-
-        boolean isDuplicate = true;
-        while (isDuplicate) {
-            String nickname = randomNickName();
-            if (userRepository.findByNickName(nickname) == null) {
-                isDuplicate = false;
-                user.setNickName(nickname);
-            }
-        }
-        user.setIsMarketing(userParam.getIsMarketing());
-        user.setKakao(userParam.getKakao());
-        user.setSignUpDt(LocalDateTime.now());
-
-        userRepository.save(user);
+        return String.valueOf(userRepository.save(user).getUserId());
     }
 
     /**
@@ -140,7 +117,7 @@ public class UserService {
         return front[f] + " " + back[b] + " " + n;
     }
 
-    public void createKakaoUser(KakaoUserParams userParam) {
+    public String createKakaoUser(KakaoUserParams userParam) {
         User user = new User();
         user.setEmail(userParam.getEmail());
         user.setNickName(userParam.getNickName());
@@ -156,7 +133,7 @@ public class UserService {
         if (userParam.getAgeRange() != null)
             user.setAgeRange(userParam.getAgeRange());
 
-        userRepository.save(user);
+        return String.valueOf(userRepository.save(user).getUserId());
     }
 
     /**
@@ -363,7 +340,13 @@ public class UserService {
      * @param userId - 사용자 id
      */
     public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+        List<Post> myPosts = user.getMyPosts();
+        for(Post post: myPosts){
+            myWishRepository.deleteByItemIdAndWishType(post.getPostId(),2);
+        }
         userRepository.deleteById(userId);
+
     }
 
     /**

@@ -58,7 +58,7 @@ public class FineDustService {
                 .retrieve()
                 .toEntity(AirKoreaResponse.class)
                 .doOnNext(response -> {
-                    log.info("HTTP Response for Air Korea Get | {} | {}", response.getStatusCode(), response.getBody());
+//                    log.info("HTTP Response for Air Korea Get | {} | {}", response.getStatusCode(), response.getBody());
                     AirKoreaResponse airKoreaResponse = response.getBody();
                     String informGrade = airKoreaResponse.getResponse().getBody().getItems().get(0).getInformGrade();
 

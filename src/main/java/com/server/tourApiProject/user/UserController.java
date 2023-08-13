@@ -35,20 +35,14 @@ public class UserController {
 
     @ApiOperation(value = "사용자정보 입력", notes = "사용자 정보를 입력한다")
     @PostMapping(value = "user")
-    public void createUser(@RequestBody UserParams userParam){
-        userService.createUser(userParam);
-    }
-
-    @ApiOperation(value = "사용자정보 입력2", notes = "[테스트용] 사용자 정보를 입력한다")
-    @PostMapping(value = "user2")
-    public void createUser2(@RequestBody UserParams userParam){
-        userService.createUser2(userParam);
+    public String createUser(@RequestBody UserParams userParam){
+        return userService.createUser(userParam);
     }
 
     @ApiOperation(value = "카카오 사용자정보 입력", notes = "사용자 정보를 입력한다")
     @PostMapping(value = "user/kakao")
-    public void createKakaoUser(@RequestBody KakaoUserParams userParam){
-        userService.createKakaoUser(userParam);
+    public String createKakaoUser(@RequestBody KakaoUserParams userParam){
+        return userService.createKakaoUser(userParam);
     }
 
     @ApiOperation(value = "사용자정보 삭제", notes = "사용자 정보를 삭제한다")
