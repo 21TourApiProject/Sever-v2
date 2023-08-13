@@ -27,7 +27,6 @@ import javax.persistence.*;
 @Table(name="observeFee")
 public class ObserveFee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long observeFeeListId;
 
     @JsonIgnore
