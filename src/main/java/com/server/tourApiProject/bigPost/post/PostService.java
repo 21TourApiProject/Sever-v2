@@ -258,8 +258,14 @@ public class PostService {
                         mainHashTagName.add(postHashTag.getHashTagName());
                     }
                     postParams4.setHashTags(mainHashTagName);
+                    if(post.getOptionHashTag()!=null){ postParams4.setOptionHashTag(post.getOptionHashTag());}
+                    if(post.getOptionHashTag2()!=null){ postParams4.setOptionHashTag2(post.getOptionHashTag2());}
+                    if(post.getOptionHashTag3()!=null){ postParams4.setOptionHashTag3(post.getOptionHashTag3());}
                 } else {
                     postParams4.setHashTags(null);
+                    if(post.getOptionHashTag()!=null){ postParams4.setOptionHashTag(post.getOptionHashTag());}
+                    if(post.getOptionHashTag2()!=null){ postParams4.setOptionHashTag2(post.getOptionHashTag2());}
+                    if(post.getOptionHashTag3()!=null){ postParams4.setOptionHashTag3(post.getOptionHashTag3());}
                 }
                 result.add(postParams4);
         }
