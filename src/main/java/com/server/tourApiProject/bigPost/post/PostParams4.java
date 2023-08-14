@@ -31,5 +31,8 @@ public class PostParams4 {
     private String mainNickName;
     private ArrayList<String> images;
     private List<String> hashTags;
+    private String optionHashTag;
+    private String optionHashTag2;
+    private String optionHashTag3;
     private String profileImage;
 }

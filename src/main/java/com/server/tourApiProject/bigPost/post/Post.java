@@ -52,6 +52,27 @@ public class Post {
     @Column
     private String optionObservation;
 
+    @Column
+    private String optionHashTag;
+    @Column
+    private String optionHashTag2;
+    @Column
+    private String optionHashTag3;
+    @Column
+    private String optionHashTag4;
+    @Column
+    private String optionHashTag5;
+    @Column
+    private String optionHashTag6;
+    @Column
+    private String optionHashTag7;
+    @Column
+    private String optionHashTag8;
+    @Column
+    private String optionHashTag9;
+    @Column
+    private String optionHashTag10;
+
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
