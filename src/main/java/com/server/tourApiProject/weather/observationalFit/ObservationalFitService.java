@@ -111,24 +111,31 @@ public class ObservationalFitService {
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
-                    Integer hour = areaTime.getHour();
-                    int idx = 0;
-                    if (hour < 18) idx = 17 - hour;
+                    Integer hour = areaTime.getHour(); // 현재 시각
+                    int idx = 18;
+                    if (hour <= 6) idx = 0; // 현재 시각이 새벽 0시 ~ 6시라면, 내일을 의미
 
-                    int bestTime = 18; // 최고 관측적합도 시각
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double mainEffect = 0D; // 관측적합도의 주요 원인
                     double avgObservationalFit = 0D; // 평균 관측적합도
-                    int sunrise = getSunHour(detailWeather.getSunrise()); // 일출
-                    int sunset = getSunHour(detailWeather.getSunset()); // 일몰
+                    int avgCount = 0;
+                    int sunrise = getSunHour(detailWeather.getSunrise()); // 일출 시간
+                    int sunset = getSunHour(detailWeather.getSunset()); // 일몰 시간
 
                     // 0    1   2   3   4   5   6   7   8   9   10  11  12
                     // 18   19  20  21  22  23  0   1   2   3   4   5   6
                     int start = 0;
-                    if (hour >= 18) start = hour - 18;
-                    else if (hour <= 6) start = hour + 6;
-                    for (int i = start; i < 13; i++) {
+                    int finish = 12;
+                    if (hour >= 18) start = hour - 18; // 현재 시각이 18시 ~ 23시. start = 0,1,2,3,4,5
+                    else if (hour <= 6) start = hour + 6; // 현재 시각이 0시 ~ 6시. start = 6,7,8,9,10,11,12
+
+                    if (sunset + 2 > 18 && sunset + 2 - 18 > start) start = sunset + 2 - 18;
+                    if (sunrise - 1 < 6) finish = (sunrise - 1) + 6;
+                    int bestTime = start; // 최고 관측적합도 시각
+                    avgCount = finish - start + 1;
+
+                    for (int i = start; i <= finish; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
                         double observationalFit;
                         double effect;
@@ -165,10 +172,6 @@ public class ObservationalFitService {
                         }
                         avgObservationalFit += observationalFit;
 
-                        int realHour = i + 18 < 24 ? i + 18 : i - 6;
-                        if (realHour <= 6 && realHour > sunrise - 1) continue; // 익일 새벽
-                        if (6 < realHour && realHour <= 23 && sunset + 2 > realHour) continue; // 금일 저녁
-
                         hourList.add(WeatherInfo.HourObservationalFit.builder()
                                 .hour((i + 18 < 24 ? i + 18 : i - 6) + "시")
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build());
@@ -194,7 +197,7 @@ public class ObservationalFitService {
                                 .date(dayDateMap.get(i)[1])
                                 .observationalFit(Math.round(observationalFit) + Const.Weather.PERCENT).build();
                         if (i == 0)
-                            dayInfo.setObservationalFit(Math.round(avgObservationalFit / 13) + Const.Weather.PERCENT);
+                            dayInfo.setObservationalFit(Math.round(avgObservationalFit / avgCount) + Const.Weather.PERCENT);
                         dayList.add(dayInfo);
                     }
 
@@ -284,7 +287,7 @@ public class ObservationalFitService {
         return formatHourMin.format(unixHourMin);
     }
 
-    public int getSunHour(String sunTime) { // 05:33
+    public int getSunHour(String sunTime) { // 05:33, 19:27
         String hour = sunTime.substring(0, 2);
         if (hour.startsWith("0")) return Integer.parseInt(hour.substring(1));
         else return Integer.parseInt(hour);
@@ -387,15 +390,26 @@ public class ObservationalFitService {
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
-                    int idx = 0;
-                    if (areaTime.getHour() < 18) idx = 17 - areaTime.getHour();
+                    Integer hour = areaTime.getHour(); // 현재 시각
+                    int idx = 18;
+                    if (hour <= 6) idx = 0; // 현재 시각이 새벽 0시 ~ 6시라면, 내일을 의미
 
-                    int bestTime = 18; // 최고 관측적합도 시각
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double mainEffect = 0D; // 최대 관측적합도의 주요 원인
+                    int sunrise = getSunHour(H_daily1.getSunrise()); // 일출 시간
+                    int sunset = getSunHour(H_daily1.getSunset()); // 일몰 시간
 
-                    for (int i = 0; i < 13; i++) {
+                    int start = 0;
+                    int finish = 12;
+                    if (hour >= 18) start = hour - 18; // 현재 시각이 18시 ~ 23시. start = 0,1,2,3,4,5
+                    else if (hour <= 6) start = hour + 6; // 현재 시각이 0시 ~ 6시. start = 6,7,8,9,10,11,12
+
+                    if (sunset + 2 > 18 && sunset + 2 - 18 > start) start = sunset + 2 - 18;
+                    if (sunrise - 1 < 6) finish = (sunrise - 1) + 6;
+                    int bestTime = start; // 최고 관측적합도 시각
+
+                    for (int i = start; i <= finish; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
                         double observationalFit;
                         double effect;
@@ -438,9 +452,12 @@ public class ObservationalFitService {
                             .build();
 
                     String[] split = areaTime.getAddress().split(" ");
-                    if(split.length == 2) mainInfo.setComment(areaTime.getAddress().split(" ")[1] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
-                    if(split.length == 3) mainInfo.setComment(areaTime.getAddress().split(" ")[2] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
-                    if(split.length == 4) mainInfo.setComment(areaTime.getAddress().split(" ")[3] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
+                    if (split.length == 2)
+                        mainInfo.setComment(areaTime.getAddress().split(" ")[1] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
+                    if (split.length == 3)
+                        mainInfo.setComment(areaTime.getAddress().split(" ")[2] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
+                    if (split.length == 4)
+                        mainInfo.setComment(areaTime.getAddress().split(" ")[3] + ",\n" + getMainComment(minObservationalFit, maxObservationalFit));
 
                     if ((int) Math.round(maxObservationalFit) < 40) {
                         mainInfo.setMainEffect(effectMap2.get(mainEffect) + " 관측을 방해해요");
@@ -454,10 +471,6 @@ public class ObservationalFitService {
                     return Mono.just(mainInfo);
                 });
     }
-
-
-    // https://maps.googleapis.com/maps/api/geocode/json?latlng=37.573427,126.910140&key=AIzaSyB6QyRBRuKS6tleI_eyalLIXnkHGEyw0Kc&language=kr
-    //8e9d0698ed2d448e4b441ff77ccef198
 
     public Long getAreaId(String address) {
         return weatherAreaService.getAreaIdByAddress(address);
