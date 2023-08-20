@@ -297,8 +297,8 @@ public class ObservationalFitService {
         Map<String, String> fineDustMap = fineDustService.getFineDustMap(date);
 //        log.info("Fine Dust Info | {}", fineDustMap);
 
-        for (WeatherObservation observation : weatherObservationService.get2Observation()) {
-//        for (WeatherObservation observation : weatherObservationService.getAllObservation()) {
+//        for (WeatherObservation observation : weatherObservationService.get2Observation()) {
+        for (WeatherObservation observation : weatherObservationService.getAllObservation()) {
             String fineDust = fineDustMap.getOrDefault(observation.getFineDustAddress(), "보통");
             saveBestObservationalFit(date, fineDust, observation);
         }
@@ -313,7 +313,7 @@ public class ObservationalFitService {
 
                     double[] observationFitList = new double[13];
                     for (int i = 0; i < 13; i++) {
-                        Hourly hourly = openWeatherResponse.getHourly().get(i + 1);
+                        Hourly hourly = openWeatherResponse.getHourly().get(i + 11);
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
                             observationFitList[i] = getObservationFit(
                                     hourly.getClouds(),
@@ -342,8 +342,9 @@ public class ObservationalFitService {
                             .date(date)
                             .build());
                 })
+                .onErrorResume(e -> Mono.empty())
 //                .retryWhen(Retry.fixedDelay(1, Duration.ofSeconds(5)))
-                .subscribe();
+                .block();
     }
 
     public Mono<OpenWeatherResponse> getOpenWeather(Double lat, Double lon) {

@@ -23,8 +23,8 @@ public class Scheduler {
     public void saveHourObservationalFit() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String today = LocalDate.now().format(formatter);
-        log.info("Start saveHourObservationalFit | {}", today);
-//        observationalFitService.setObservationFit(today);
+        log.info("Start ObservationalFit Schedule | {}", today);
+        observationalFitService.setObservationFit(today);
     }
 
 }
