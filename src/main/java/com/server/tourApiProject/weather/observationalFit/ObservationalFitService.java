@@ -112,19 +112,17 @@ public class ObservationalFitService {
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
                     Integer hour = areaTime.getHour(); // 현재 시각
-                    int idx = 18;
-                    if (hour <= 6) idx = 0; // 현재 시각이 새벽 0시 ~ 6시라면, 내일을 의미
 
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double mainEffect = 0D; // 관측적합도의 주요 원인
                     double avgObservationalFit = 0D; // 평균 관측적합도
-                    int avgCount = 0;
+
                     int sunrise = getSunHour(detailWeather.getSunrise()); // 일출 시간
                     int sunset = getSunHour(detailWeather.getSunset()); // 일몰 시간
 
-                    // 0    1   2   3   4   5   6   7   8   9   10  11  12
-                    // 18   19  20  21  22  23  0   1   2   3   4   5   6
+                    // 0   1   2   3   4   5   6   7   8   9   10  11  12
+                    // 18  19  20  21  22  23  0   1   2   3   4   5   6
                     int start = 0;
                     int finish = 12;
                     if (hour >= 18) start = hour - 18; // 현재 시각이 18시 ~ 23시. start = 0,1,2,3,4,5
@@ -133,10 +131,36 @@ public class ObservationalFitService {
                     if (sunset + 2 > 18 && sunset + 2 - 18 > start) start = sunset + 2 - 18;
                     if (sunrise - 1 < 6) finish = (sunrise - 1) + 6;
                     int bestTime = start; // 최고 관측적합도 시각
-                    avgCount = finish - start + 1;
+                    int avgCount = finish - start + 1;
+
+                    Map<Integer, Integer> timeMap1 = new HashMap<>(Map.of(
+                            0, 18,
+                            1, 19,
+                            2, 20,
+                            3, 21,
+                            4, 22,
+                            5, 23
+                    ));
+
+                    Map<Integer, Integer> timeMap2 = new HashMap<>(Map.of(
+                            6, 0,
+                            7, 1,
+                            8, 2,
+                            9, 3,
+                            10, 4,
+                            11, 5,
+                            12, 6
+                    ));
+
+                    timeMap1.putAll(timeMap2);
+
+                    Integer realIdx = timeMap1.get(start); // 21
+                    // 현재 시각 (hour) 은 20. 따라서 i + 1 을 해야한다.
+                    // 여기서 + 1 은 realIdx - hour
+                    int idx = realIdx - hour;
 
                     for (int i = start; i <= finish; i++) {
-                        Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
+                        Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx - start);
                         double observationalFit;
                         double effect;
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
@@ -392,12 +416,11 @@ public class ObservationalFitService {
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
                     Integer hour = areaTime.getHour(); // 현재 시각
-                    int idx = 18;
-                    if (hour <= 6) idx = 0; // 현재 시각이 새벽 0시 ~ 6시라면, 내일을 의미
 
                     double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
                     double mainEffect = 0D; // 최대 관측적합도의 주요 원인
+
                     int sunrise = getSunHour(H_daily1.getSunrise()); // 일출 시간
                     int sunset = getSunHour(H_daily1.getSunset()); // 일몰 시간
 
@@ -410,8 +433,34 @@ public class ObservationalFitService {
                     if (sunrise - 1 < 6) finish = (sunrise - 1) + 6;
                     int bestTime = start; // 최고 관측적합도 시각
 
+                    Map<Integer, Integer> timeMap1 = new HashMap<>(Map.of(
+                            0, 18,
+                            1, 19,
+                            2, 20,
+                            3, 21,
+                            4, 22,
+                            5, 23
+                    ));
+
+                    Map<Integer, Integer> timeMap2 = new HashMap<>(Map.of(
+                            6, 0,
+                            7, 1,
+                            8, 2,
+                            9, 3,
+                            10, 4,
+                            11, 5,
+                            12, 6
+                    ));
+
+                    timeMap1.putAll(timeMap2);
+
+                    Integer realIdx = timeMap1.get(start); // 21
+                    // 현재 시각 (hour) 은 20. 따라서 i + 1 을 해야한다.
+                    // 여기서 + 1 은 realIdx - hour
+                    int idx = realIdx - hour;
+
                     for (int i = start; i <= finish; i++) {
-                        Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx);
+                        Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx - start);
                         double observationalFit;
                         double effect;
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
