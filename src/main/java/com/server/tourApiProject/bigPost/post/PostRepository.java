@@ -16,4 +16,5 @@ public interface PostRepository extends JpaRepository <Post, Long> {
     List<Post> findByObservationId(@Param("ObservationId")Long observationId);
     List<Post> findByPostTitleContainingOrPostContentContaining(@Param("postTitle") String postTitle,@Param("postContent") String postContent);
     List<Post> findByAreaCode(@Param("areaCode") Long areaCode);
+    List<Post> findByPostTitleContaining(@Param("postTitle") String postTitle);
 }

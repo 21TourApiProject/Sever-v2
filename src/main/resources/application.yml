@@ -4,7 +4,7 @@ spring:
       "local": "localdb,common,security"
       "prod":  "proddb,common,security"
       "dev" : "devdb,common,security"
-
+    active: local
 ---
 spring: #local DB??
   config:
@@ -13,10 +13,10 @@ spring: #local DB??
   datasource:
     driver-class-name: org.h2.Driver
     username: 'sa'
-    password: '0000'
+#    password: '0000'
     url: jdbc:h2:tcp://localhost/~/tourApiProject
   jpa:
-    show-sql: 'true'
+    show-sql: 'false'
     hibernate:
       ddl-auto: update
 
