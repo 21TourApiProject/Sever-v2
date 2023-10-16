@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class NoticeController {
     @ApiOperation(value = "공지사항 입력", notes = "공지사항을 입력한다")
     @PostMapping(value = "notice/")
     public void createNotice(@RequestBody NoticeParams noticeParams){
+        System.out.println(noticeParams.getNoticeTitle());
         noticeService.createNotice(noticeParams);
     }
 
@@ -44,4 +46,15 @@ public class NoticeController {
     @ApiOperation(value = "공지사항 조회", notes = "공지사항의 정보를 조회한다")
     @GetMapping(value = "notice/{noticeId}")
     public Notice getNotice(@PathVariable("noticeId") Long noticeId){ return noticeService.getNotice(noticeId); }
+
+    @ApiOperation(value = "공지사항 삭제", notes = "공지사항을 삭제한다")
+    @DeleteMapping(value = "notice/{noticeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteNotice(@PathVariable("noticeId") Long noticeId){ noticeService.deleteNoticewithId(noticeId); }
+
+    @ApiOperation(value = "공지사항 수정 ", notes = "공지를 수정 한다.")
+    @PutMapping(value = "notice")
+    public void updateTask(@RequestBody NoticeUpdateParam params){
+        noticeService.updateNotice(params);
+    }
 }
