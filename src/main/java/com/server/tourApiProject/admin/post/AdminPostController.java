@@ -25,8 +25,8 @@ public class AdminPostController {
     }
 
     @ApiOperation(value = "게시물 삭제", notes = "특정 게시물을 삭제한다")
-    @DeleteMapping(value = "post/{postId}")
-    public void deletePost(@PathVariable("postId") Long postId) {
+    @PostMapping(value = "post/delete")
+    public void deletePost(@RequestParam Long postId) {
         postService.deletePost(postId);
     }
 
