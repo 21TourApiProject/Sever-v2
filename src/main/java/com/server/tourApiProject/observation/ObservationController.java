@@ -1,6 +1,8 @@
 package com.server.tourApiProject.observation;
 
 import com.server.tourApiProject.observation.course.CourseService;
+import com.server.tourApiProject.observation.model.ObservationParams;
+import com.server.tourApiProject.observation.model.ObservationSimpleParams;
 import com.server.tourApiProject.observation.observeFee.ObserveFee;
 import com.server.tourApiProject.observation.observeFee.ObserveFeeService;
 import com.server.tourApiProject.observation.observeHashTag.ObserveHashTagService;
@@ -79,4 +81,9 @@ public class ObservationController {
         return observeFeeService.getObserveFees(observationId);
     }
 
+    @ApiOperation(value = "관측적합도 상위 관측지 리스트", notes = "관측적합도 상위 10개 관측지 결과를 가져온다.")
+    @GetMapping(value = "observations/simple")
+    public List<ObservationSimpleParams> getBestFitObservationList(){
+        return observationService.getBestFitObservationList();
+    }
 }
