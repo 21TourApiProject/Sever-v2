@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ObservationRepository extends JpaRepository<Observation, Long>, JpaSpecificationExecutor<Observation> {
+public interface ObservationRepository extends JpaRepository<Observation, Long>, JpaSpecificationExecutor<Observation>, ObservationRepositoryCustom {
 
     /**
      * 쿼리명: findByObservationName

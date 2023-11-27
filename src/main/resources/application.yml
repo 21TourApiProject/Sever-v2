@@ -13,10 +13,10 @@ spring: #local DB??
   datasource:
     driver-class-name: org.h2.Driver
     username: 'sa'
-#    password: '0000'
+    password: '0000'
     url: jdbc:h2:tcp://localhost/~/tourApiProject
   jpa:
-    show-sql: 'false'
+    show-sql: 'true'
     hibernate:
       ddl-auto: update
 

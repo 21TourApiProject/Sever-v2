@@ -39,3 +39,4 @@ out/
 application-RSA-KEY.properties
 /src/main/resources-prod/application-proddb.yml
 /src/main/resources-dev/application-devdb.yml
+/src/main/generated
