@@ -640,6 +640,11 @@ public class ObservationalFitService {
         double value = 100 + (minValue + otherSumValue * 0.5);
         return (value > 0) ? (Math.round(value * 100) / 100.0) : 0;
     }
+
+    public String getObservationFitInfo(ObservationFitRequestDTO observationFitRequestDTO) {
+        return String.valueOf(observationalFitRepository.findByDateAndObservationCode(observationFitRequestDTO.getDate(), observationFitRequestDTO.getObservationId())
+                .getBestObservationalFit());
+    }
 }
 
 
