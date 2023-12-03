@@ -2,6 +2,7 @@ package com.server.tourApiProject.weather.observationalFit;
 
 import com.server.tourApiProject.weather.observationalFit.model.AreaTimeDTO;
 import com.server.tourApiProject.weather.observationalFit.model.MainInfo;
+import com.server.tourApiProject.weather.observationalFit.model.ObservationFitRequestDTO;
 import com.server.tourApiProject.weather.observationalFit.model.WeatherInfo;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,11 @@ public class ObservationalFitController {
         return observationalFitService.getMainInfo(areaTime);
     }
 
-
+    /**
+     * 앱 메인 페이지 관심 지역 관측적합도 제공
+     */
+    @PostMapping("/observationalFit")
+    public String getObservationFitInfo(@RequestBody ObservationFitRequestDTO observationFitRequestDTO) {
+        return observationalFitService.getObservationFitInfo(observationFitRequestDTO);
+    }
 }

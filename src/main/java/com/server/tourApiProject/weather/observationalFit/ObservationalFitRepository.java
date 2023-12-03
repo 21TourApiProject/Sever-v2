@@ -8,5 +8,6 @@ public interface ObservationalFitRepository extends JpaRepository<ObservationalF
 
     // 날짜로 시간별 관측적합도 조회
     List<ObservationalFit> findByDate(String date);
+    ObservationalFit findByDateAndObservationCode(String date, Long observationCode);
 
 }

@@ -21,7 +21,7 @@ public class ObservationalFit {
     private Long observationCode; // 관측지 id
 
     @Column(nullable = false)
-    private String date; // 20221103
+    private String date; // 2022-11-03
 
     @Column(nullable = false)
     private Double bestObservationalFit; // 관측적합도
