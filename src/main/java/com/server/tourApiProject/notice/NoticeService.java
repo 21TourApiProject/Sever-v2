@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -61,8 +62,35 @@ public class NoticeService {
         notice.setNoticeTitle(noticeParams.getNoticeTitle());
         notice.setNoticeContent(noticeParams.getNoticeContent());
         notice.setNoticeDate(noticeParams.getNoticeDate());
+        System.out.println(noticeParams.getNoticeTitle()+"그리고" + noticeParams.getNoticeContent());
         noticeRepository.save(notice);
         List<String> tokenList = fcmService.getAllFcmToken(); //푸쉬 알람 관련 코드
         fcmService.sendMessageAll(tokenList,notice.getNoticeTitle(),notice.getNoticeContent());
+    }
+
+    /**
+     * description: 공지사항 삭제
+     *
+     * @param noticeId
+     */
+    public void deleteNoticewithId(Long noticeId) {
+
+        noticeRepository.deleteById(noticeId);
+    }
+
+    /**
+     * description: 공지사항 수정
+     *
+     * @param noticeparam
+     */
+    public void updateNotice(NoticeUpdateParam noticeparam) {
+
+        Optional<Notice> notice = noticeRepository.findById(noticeparam.getNoticeId());
+
+        notice.ifPresent(notice1 -> {
+            notice1.setNoticeTitle(noticeparam.getNoticeTitle());
+            notice1.setNoticeContent(noticeparam.getNoticeContent());
+            noticeRepository.save(notice1);
+        });
     }
 }
