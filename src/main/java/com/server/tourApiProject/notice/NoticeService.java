@@ -1,5 +1,6 @@
 package com.server.tourApiProject.notice;
 
+import com.server.tourApiProject.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.Optional;
  */
 public class NoticeService {
     private final NoticeRepository noticeRepository;
+    private final FcmService fcmService;
 
     /**
      * description: 모든 공지사항 조회
@@ -54,7 +56,7 @@ public class NoticeService {
      *
      * @param noticeParams
      */
-    public void createNotice(NoticeParams noticeParams) {
+    public void createNotice(NoticeParams noticeParams) throws InterruptedException {
 
         Notice notice = new Notice();
         notice.setNoticeTitle(noticeParams.getNoticeTitle());
@@ -62,6 +64,8 @@ public class NoticeService {
         notice.setNoticeDate(noticeParams.getNoticeDate());
         System.out.println(noticeParams.getNoticeTitle()+"그리고" + noticeParams.getNoticeContent());
         noticeRepository.save(notice);
+        List<String> tokenList = fcmService.getAllFcmToken(); //푸쉬 알람 관련 코드
+        fcmService.sendMessageAll(tokenList,notice.getNoticeTitle(),notice.getNoticeContent());
     }
 
     /**

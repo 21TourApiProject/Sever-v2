@@ -1,5 +1,6 @@
 package com.server.tourApiProject.bigPost.postComment;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,8 @@ public class PostCommentController {
     @ApiOperation(value = "게시물 댓글 정보 입력", notes = "게시물 댓글 정보를 입력한다")
     @PostMapping(value = "postComment /{postId}")
     public void createPostComment(@PathVariable("postId") Long postId,
-                                  @RequestBody PostCommentParams postCommentParams) {
+                                  @RequestBody PostCommentParams postCommentParams)
+        throws FirebaseMessagingException {
         postCommentService.createComments(postId,postCommentParams);
     }
 

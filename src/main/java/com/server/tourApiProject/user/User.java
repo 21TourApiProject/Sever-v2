@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.postComment.PostComment;
 import com.server.tourApiProject.interestArea.InterestArea;
+import com.server.tourApiProject.fcm.FcmToken;
 import com.server.tourApiProject.likes.Likes;
 import com.server.tourApiProject.myHashTag.MyHashTag;
 import com.server.tourApiProject.myWish.MyWish;
@@ -103,6 +104,10 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<InterestArea> myInterestArea = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private FcmToken myFcmTokens = new FcmToken();
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

@@ -1,5 +1,7 @@
 package com.server.tourApiProject.alarm;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.server.tourApiProject.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.List;
  */
 public class AlarmService {
     private final AlarmRepository alarmRepository;
+    private final FcmService fcmService;
 
     /**
      * description: 알림 목록 가져오는 메소드.
@@ -40,7 +43,9 @@ public class AlarmService {
      *
      * @param alarm the alarm
      */
-    public void createAlarm(Alarm alarm) {
+    public void createAlarm(Alarm alarm) throws InterruptedException {
         alarmRepository.save(alarm);
+        List<String> tokenList = fcmService.getAllFcmToken();
+        fcmService.sendMessageAll(tokenList,alarm.getAlarmTitle(),alarm.getAlarmContent());
     }
 }
