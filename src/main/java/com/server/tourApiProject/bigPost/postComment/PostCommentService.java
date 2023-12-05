@@ -1,10 +1,14 @@
 package com.server.tourApiProject.bigPost.postComment;
 
 import ch.qos.logback.core.pattern.PostCompileProcessor;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.post.PostRepository;
 import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.bigPost.postImage.PostImageRepository;
+import com.server.tourApiProject.fcm.FcmService;
+import com.server.tourApiProject.fcm.FcmToken;
+import com.server.tourApiProject.fcm.FcmTokenRepository;
 import com.server.tourApiProject.user.User;
 import com.server.tourApiProject.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +41,8 @@ public class PostCommentService {
     private final PostCommentRepository postCommentRepository;
     private final UserRepository userRepository;
     private final PostImageRepository postImageRepository;
+    private final FcmTokenRepository fcmTokenRepository;
+    private final FcmService fcmService;
 
 
     /**
@@ -56,7 +62,8 @@ public class PostCommentService {
      * @param postId            - the post id
      * @param postCommentParams - the postComment params
      */
-    public void createComments(Long postId, PostCommentParams postCommentParams) {
+    public void createComments(Long postId, PostCommentParams postCommentParams)
+        throws FirebaseMessagingException {
             Post post = postRepository.findById(postId).orElseThrow(IllegalAccessError::new);
             PostComment postComment = new PostComment();
             postComment.setComment(postCommentParams.getComment());
@@ -67,6 +74,8 @@ public class PostCommentService {
             postComment.setYearDate(postCommentParams.getYearDate());
             postComment.setTime(postCommentParams.getTime());
             postCommentRepository.save(postComment);
+            FcmToken token = fcmTokenRepository.findByUserId(post.getUserId());
+            fcmService.sendMessageTo(token.getFcmToken(),postComment.getUser().getNickName()+"님이 댓글을 달았어요.",postCommentParams.getComment());
     }
     /**
      * description:게시물 아이디로 게시물 댓글 가져오는 메소드.

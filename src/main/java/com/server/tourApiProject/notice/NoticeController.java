@@ -33,7 +33,7 @@ public class NoticeController {
 
     @ApiOperation(value = "공지사항 입력", notes = "공지사항을 입력한다")
     @PostMapping(value = "notice/")
-    public void createNotice(@RequestBody NoticeParams noticeParams){
+    public void createNotice(@RequestBody NoticeParams noticeParams) throws InterruptedException {
         noticeService.createNotice(noticeParams);
     }
 
