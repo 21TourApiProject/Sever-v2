@@ -366,6 +366,17 @@ public class PostService {
         }
         return result;
     }
+
+    /**
+     * description: 최근 게시글 간단정보                                 를 size만큼 가져온다.
+     *
+     * @param size    size
+     * @return List<PostParams6>
+     */
+    public List<PostContentsParams>getLatestPostsWithSize(int size){
+        return postRepository.getLatestContentsWithSize(size);
+    }
+
     class OrderComparator implements Comparator<Long> {
         @Override
         public int compare(Long o1, Long o2) {
