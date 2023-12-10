@@ -38,14 +38,16 @@ public class FcmService {
     private final UserRepository userRepository;
 
     public void sendMessageAll(List<String> targetTokenList, String title, String body) throws  InterruptedException{
-        Notification notification = Notification.builder()
-            .setTitle(title)
-            .setBody(body)
-            .build();
+//        Notification notification = Notification.builder()
+//            .setTitle(title)
+//            .setBody(body)
+//            .build();
 
         List<Message> messages = targetTokenList.stream().map(token->Message.builder()
             .setToken(token)
-            .setNotification(notification)
+            .putData("click","alarm")
+            .putData("title",title)
+            .putData("body",body)
             .build()).collect(Collectors.toList());
         BatchResponse response;
         try{
@@ -63,13 +65,15 @@ public class FcmService {
     }
 
     public void sendMessageTo(String targetToken, String title ,String body) throws  FirebaseMessagingException{
-        Notification notification = Notification.builder()
-            .setTitle(title)
-            .setBody(body)
-            .build();
+//        Notification notification = Notification.builder()
+//            .setTitle(title)
+//            .setBody(body)
+//            .build();
         Message message = Message.builder()
             .setToken(targetToken)
-            .setNotification(notification)
+            .putData("click","alarm")
+            .putData("title",title)
+            .putData("body",body)
             .build();
         try{
             firebaseMessaging.send(message);
