@@ -28,8 +28,11 @@ public class InterestArea {
     private Long userId;
 
     @Column(nullable = false)
-    private Long observationId;
+    private Long regionId;
 
     @Column(nullable = false)
-    private String observationName;
+    private String regionName;
+
+    @Column(nullable = false)
+    private Integer regionType; // 1 : 관측지, 2 : 지역
 }

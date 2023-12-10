@@ -3,12 +3,17 @@ package com.server.tourApiProject.weather.observation;
 import com.server.tourApiProject.weather.area.WeatherArea;
 import com.server.tourApiProject.weather.area.WeatherAreaRepository;
 import com.server.tourApiProject.weather.area.WeatherLocationDTO;
+import com.server.tourApiProject.weather.observationalFit.ObservationalFit;
+import com.server.tourApiProject.weather.observationalFit.ObservationalFitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +24,7 @@ import java.util.List;
 public class WeatherObservationService {
 
     private final WeatherObservationRepository weatherObservationRepository;
+    private final ObservationalFitRepository observationalFitRepository;
     private final WeatherAreaRepository weatherAreaRepository;
 
     public List<WeatherObservation> getAllObservation() {
@@ -43,9 +49,24 @@ public class WeatherObservationService {
     public List<WeatherLocationDTO> getWeatherLocations() {
         List<WeatherLocationDTO> result = new ArrayList<>();
 
-        for (WeatherObservation observation : weatherObservationRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))) {
-            result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(), observation.getLatitude(), observation.getLongitude()));
+        int hour = Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HH")));
+        String date;
+        if (hour < 7) {
+            date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } else {
+            date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
+        List<ObservationalFit> observationalFitList;
+//        observationalFitList = observationalFitRepository.findByDate(date);
+        observationalFitList = observationalFitRepository.findByDate("2023-08-20");
+
+        int idx = 0;
+        for (WeatherObservation observation : weatherObservationRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))) {
+            String observationalFit = String.valueOf(Math.round(observationalFitList.get(idx++).getBestObservationalFit()));
+            result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(),
+                    observation.getLatitude(), observation.getLongitude(), "~" + observationalFit + "%"));
+        }
+
         for (WeatherArea area : weatherAreaRepository.findAll()) {
             String title = area.getEMD1();
             String subtitle = "";
@@ -58,7 +79,7 @@ public class WeatherObservationService {
                 subtitle = area.getSD() + " " + area.getEMD1();
             }
 
-            result.add(new WeatherLocationDTO(title, subtitle, area.getAreaId(), null, area.getLatitude(), area.getLongitude()));
+            result.add(new WeatherLocationDTO(title, subtitle, area.getAreaId(), null, area.getLatitude(), area.getLongitude(), ""));
         }
         return result;
     }

@@ -7,11 +7,10 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InterestAreaParams {
+public class UpdateInterestAreaDTO {
 
     private Long userId;
-
-    private Long observationId;
-
-    private String observationName;
+    private Long regionId;
+    private String regionName;
+    private Integer regionType;
 }
