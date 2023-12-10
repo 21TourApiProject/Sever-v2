@@ -2,6 +2,7 @@ package com.server.tourApiProject.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.server.tourApiProject.alarm.Alarm;
 import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.postComment.PostComment;
 import com.server.tourApiProject.interestArea.InterestArea;
@@ -104,6 +105,10 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<InterestArea> myInterestArea = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Alarm> myAlarm = new ArrayList<>();
 
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)

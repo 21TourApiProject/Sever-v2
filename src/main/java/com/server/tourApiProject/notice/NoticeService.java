@@ -1,5 +1,7 @@
 package com.server.tourApiProject.notice;
 
+import com.server.tourApiProject.alarm.Alarm;
+import com.server.tourApiProject.alarm.AlarmService;
 import com.server.tourApiProject.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ import java.util.Optional;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final FcmService fcmService;
+    private final AlarmService alarmService;
 
     /**
      * description: 모든 공지사항 조회
@@ -66,6 +69,12 @@ public class NoticeService {
         noticeRepository.save(notice);
         List<String> tokenList = fcmService.getAllFcmToken(); //푸쉬 알람 관련 코드
         fcmService.sendMessageAll(tokenList,notice.getNoticeTitle(),notice.getNoticeContent());
+        Alarm alarm =new Alarm();
+        alarm.setAlarmContent(notice.getNoticeContent());
+        alarm.setAlarmTitle(notice.getNoticeTitle());
+        alarm.setAlarmDate(notice.getNoticeDate());
+        alarm.setUserId(null);
+        alarmService.createAlarm(alarm);
     }
 
     /**

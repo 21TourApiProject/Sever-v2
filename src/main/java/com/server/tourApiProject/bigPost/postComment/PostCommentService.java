@@ -1,7 +1,8 @@
 package com.server.tourApiProject.bigPost.postComment;
 
-import ch.qos.logback.core.pattern.PostCompileProcessor;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.server.tourApiProject.alarm.Alarm;
+import com.server.tourApiProject.alarm.AlarmService;
 import com.server.tourApiProject.bigPost.post.Post;
 import com.server.tourApiProject.bigPost.post.PostRepository;
 import com.server.tourApiProject.bigPost.postImage.PostImage;
@@ -11,13 +12,12 @@ import com.server.tourApiProject.fcm.FcmToken;
 import com.server.tourApiProject.fcm.FcmTokenRepository;
 import com.server.tourApiProject.user.User;
 import com.server.tourApiProject.user.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -43,6 +43,7 @@ public class PostCommentService {
     private final PostImageRepository postImageRepository;
     private final FcmTokenRepository fcmTokenRepository;
     private final FcmService fcmService;
+    private final AlarmService alarmService;
 
 
     /**
@@ -75,7 +76,16 @@ public class PostCommentService {
             postComment.setTime(postCommentParams.getTime());
             postCommentRepository.save(postComment);
             FcmToken token = fcmTokenRepository.findByUserId(post.getUserId());
-            fcmService.sendMessageTo(token.getFcmToken(),postComment.getUser().getNickName()+"님이 댓글을 달았어요.",postCommentParams.getComment());
+            if(post.getUser()!=postComment.getUser()){ //게시글 작성자와 댓글 작성자가 동일한 경우에는 알림 생성 x
+                fcmService.sendMessageTo(token.getFcmToken(),postComment.getUser().getNickName()+"님이 댓글을 달았어요.",postCommentParams.getComment());
+                Alarm alarm = new Alarm();
+                alarm.setAlarmContent(postComment.getComment());
+                alarm.setAlarmTitle(postComment.getUser().getNickName()+"님이 댓글을 달았어요.");
+                alarm.setAlarmDate(postComment.getTime().toString());
+                alarm.setUserId(post.getUserId());//알림은 게시글 User에 맞춰야함(PostComment.getUser/UserId로 설정 x
+                alarm.setUser(post.getUser());
+                alarmService.createAlarm(alarm);
+            }
     }
     /**
      * description:게시물 아이디로 게시물 댓글 가져오는 메소드.
