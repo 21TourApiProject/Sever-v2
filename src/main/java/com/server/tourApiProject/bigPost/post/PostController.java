@@ -100,7 +100,7 @@ public class PostController {
     @PostMapping(value = "post/main")
     public List<PostParams4> getMainPost(){ return postService.getMainPost(); }
 
-    @ApiOperation(value = "게시물 정보 사이즈로 조회", notes = "게시물 정보를 사이즈만큼 가져온다.")
+    @ApiOperation(value = "게시물 정보 사이즈로 조회", notes = "게시물 정보를 최신순으로 사이즈만큼 가져온다.")
     @GetMapping(value = "posts/{size}")
     public List<PostContentsParams> getLatestPostWithSize(@PathVariable("size")int size){ return postService.getLatestPostsWithSize(size); }
 
