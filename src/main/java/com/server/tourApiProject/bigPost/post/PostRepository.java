@@ -11,10 +11,12 @@ import java.util.List;
  * parameter type =Post, Long
  * result type = List <Post>
  */
-public interface PostRepository extends JpaRepository <Post, Long> {
+public interface PostRepository extends JpaRepository <Post, Long>, PostRepositoryCustom {
     List<Post> findByUserId(@Param("userId") Long userId);
     List<Post> findByObservationId(@Param("ObservationId")Long observationId);
     List<Post> findByPostTitleContainingOrPostContentContaining(@Param("postTitle") String postTitle,@Param("postContent") String postContent);
     List<Post> findByAreaCode(@Param("areaCode") Long areaCode);
     List<Post> findByPostTitleContaining(@Param("postTitle") String postTitle);
+
+
 }

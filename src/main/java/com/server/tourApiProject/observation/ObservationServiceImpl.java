@@ -111,7 +111,7 @@ public class ObservationServiceImpl implements ObservationService {
 
         List<SearchParams1> resultParams = new ArrayList<>();   //최종결과 param 리스트
         Page<Observation> searchResult; //필터+검색어 결과 리스트
-
+        long start = System.currentTimeMillis();
         //Specification으로 조건 동적생성
         Specification<Observation> spec = Specification.where(ObservationSpecification.likeSearchKeyAndInFilter(searchKey, hashTagIdList, areaCodeList));
 
@@ -165,6 +165,8 @@ public class ObservationServiceImpl implements ObservationService {
 
             resultParams.add(searchParams1);
         }
+        long end = System.currentTimeMillis();
+        System.out.println("time is "+(end-start) );
         return resultParams;
     }
 
