@@ -13,6 +13,7 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,10 +35,10 @@ public class FineDustService {
      */
     public Map<String, String> getFineDustMap(String date) {
 
-        // 오전 5시 이전에 호출하면 실패. -> 오전 5시 이전 요청은 하루 전 날짜로 요청 필요
-        String hour = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
-        if (hour.startsWith("0") && Integer.parseInt(hour.substring(0, 1)) < 6)
-            date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));  // 2021/06/17
+        // 오전 6시 이전에 호출하면 실패. -> 오전 6시 이전 요청은 하루 전 날짜로 요청 필요
+        String hour = LocalTime.now().format(DateTimeFormatter.ofPattern("HH"));
+        if (hour.startsWith("0") && Integer.parseInt(hour.substring(1)) < 6)
+            date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(AIR_KOREA_URL);
         uriBuilder.queryParam("searchDate", date);
