@@ -13,10 +13,11 @@ import com.server.tourApiProject.observation.observeImage.ObserveImage;
 import com.server.tourApiProject.observation.observeImage.ObserveImageRepository;
 import com.server.tourApiProject.search.Filter;
 import com.server.tourApiProject.search.SearchParams1;
+import com.server.tourApiProject.weather.area.WeatherArea;
+import com.server.tourApiProject.weather.area.WeatherAreaRepository;
 import com.server.tourApiProject.weather.observationalFit.ObservationalFitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,8 +27,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * @className : ObservationService.java
@@ -52,6 +53,7 @@ public class ObservationServiceImpl implements ObservationService {
     private final ObserveFeeRepository observeFeeRepository;
     private final ObserveImageRepository observeImageRepository;
     private final ObservationalFitRepository observationalFitRepository;
+    private final WeatherAreaRepository weatherAreaRepository;
 
     public List<Observation> getAllObservation() {
         return observationRepository.findAll();
@@ -210,6 +212,14 @@ public class ObservationServiceImpl implements ObservationService {
         }
         String stringDate =latestDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return stringDate;
+    }
+
+    @Override
+    public List<ObservationSimpleParams> getNearObservationIds(Long areaId, int size) {
+        WeatherArea weatherArea = weatherAreaRepository.findById(areaId).get();
+        List<Long> nearObservationIds = observationRepository.findNearObservationIds(weatherArea.getLatitude(), weatherArea.getLongitude(), size );
+
+        return observationRepository.findObservationSimpleByIdList(nearObservationIds, getDateForFit());
     }
 
     //    @Override

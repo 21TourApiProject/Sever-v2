@@ -86,4 +86,10 @@ public class ObservationController {
     public List<ObservationSimpleParams> getBestFitObservationList(){
         return observationService.getBestFitObservationList();
     }
+
+    @ApiOperation(value = "가까운 관측지 리스트", notes = "지역에 가까운 3개 관측지 결과를 가져온다.")
+    @GetMapping(value = "observations/near/{areaId}/{size}")
+    public List<ObservationSimpleParams> getNearObservationIds(@PathVariable("areaId") Long areaId, @PathVariable("size") int size){
+        return observationService.getNearObservationIds(areaId,size);
+    }
 }

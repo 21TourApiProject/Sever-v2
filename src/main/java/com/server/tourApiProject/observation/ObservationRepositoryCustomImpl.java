@@ -25,7 +25,7 @@ public class ObservationRepositoryCustomImpl implements ObservationRepositoryCus
                 observation.latitude, observation.light, observationalFit.bestObservationalFit, observation.saved))
                 .from(observation)
                 .leftJoin(observation.observeImages, observeImage)
-                .groupBy(observationalFit.bestObservationalFit)
+                .groupBy(observationalFit.bestObservationalFit, observation.observationId)
                 .join(observationalFit).on(observation.observationId.eq(observationalFit.observationCode),observationalFit.date.eq(date))
                 .where(observation.observationId.in(observationIds))
                 .orderBy(observationalFit.bestObservationalFit.desc())

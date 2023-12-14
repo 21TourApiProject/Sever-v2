@@ -88,5 +88,14 @@ public interface ObservationService {
      * @throws
      */
     public List<ObservationSimpleParams> getBestFitObservationList();
+
+    /**
+     * TODO 관측지 가까운 순으로 3개 조회
+     *
+     * @param
+     * @return com.server.tourApiProject.observation.Observation
+     * @throws
+     */
+    public List<ObservationSimpleParams> getNearObservationIds(Long areaId, int size);
 }
 
