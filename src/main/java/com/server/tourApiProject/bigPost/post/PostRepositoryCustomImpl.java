@@ -28,4 +28,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
                 .limit(size)
                 .fetch();
     }
+
+    @Override
+    public List<PostContentsParams> getObservationPostWithSize(int size, Long observationId) {
+
+        return query.select(new QPostContentsParams(post.postId,postImage.imageName.max(), post.postTitle, post.observationId,
+                        observation.observationName, post.optionObservation, post.postContent))
+                .from(post)
+                .leftJoin(post.observation, observation)
+                .leftJoin(post.postImages, postImage)
+                .where(post.observationId.eq(observationId))
+                .groupBy(post.postId)
+                .orderBy(post.postId.desc())
+                .limit(size)
+                .fetch();
+    }
 }
