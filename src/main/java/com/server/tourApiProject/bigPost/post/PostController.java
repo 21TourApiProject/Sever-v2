@@ -96,6 +96,10 @@ public class PostController {
     @GetMapping(value = "post/observation/{observationId}")
     public List<PostParams5> getRelatePost(@PathVariable("observationId")Long observationId){ return postService.getRelatePost(observationId); }
 
+    @ApiOperation(value = "관측지 게시물 정보 사이즈로 조회", notes = "해당 관측지의 게시물을 사이즈로 조회한다")
+    @GetMapping(value = "post/observation/{observationId}/{size}")
+    public List<PostContentsParams> getObservationPostWithSize(@PathVariable("observationId")Long observationId, @PathVariable("size")int size){ return postService.getObservationRelatePostWithSize(size, observationId); }
+
     @ApiOperation(value = "메인페이지 게시물 정보 조회", notes = "메인페이지에 띄울 모든 게시물을 조회한다")
     @PostMapping(value = "post/main")
     public List<PostParams4> getMainPost(){ return postService.getMainPost(); }
