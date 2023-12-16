@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateInterestAreaDTO {
+public class AddInterestAreaDTO {
 
     private Long userId;
     private Long regionId;

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Api(tags = {"1.1 사용자"})
@@ -124,5 +125,9 @@ public class UserController {
     @ApiOperation(value = "사용자가 타입 조회", notes = "사용자가 카카오 가입인지 확인한다")
     @GetMapping(value = "user/{userId}/isKakao")
     public Boolean checkIsKakao(@PathVariable("userId") Long userId){ return userService.checkIsKakao(userId); }
+
+    @ApiOperation(value = "사용자 닉네임 조회", notes = "사용자 id로 사용자의 닉네임을 조회한다")
+    @GetMapping(value = "user/{userId}/nickName")
+    public Map<String, String> getNickName(@PathVariable("userId") Long userId){ return userService.getNickName(userId); }
 
 }
