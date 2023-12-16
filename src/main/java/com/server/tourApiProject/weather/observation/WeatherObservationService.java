@@ -58,7 +58,7 @@ public class WeatherObservationService {
         }
         List<ObservationalFit> observationalFitList;
 //        observationalFitList = observationalFitRepository.findByDate(date);
-        observationalFitList = observationalFitRepository.findByDate("2023-08-20");
+        observationalFitList = observationalFitRepository.findByDate("2023-12-15");
 
         int idx = 0;
         for (WeatherObservation observation : weatherObservationRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))) {

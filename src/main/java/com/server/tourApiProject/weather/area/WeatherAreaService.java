@@ -58,28 +58,28 @@ public class WeatherAreaService {
         else return -1L;
     }
 
-    public Map<String, String> getNearestArea(NearestDTO nearestDTO) {
+    /**
+     * 시군구, 위경도로 가장 가까운 WeatherArea 조회
+     * ex) 시군구 - 서대문구
+     * 단, 위치가 세종특별시라면 sgg 값은 세종으로 온다.
+     */
+    public WeatherArea getNearestArea(NearestAreaDTO nearestAreaDTO) {
         double minDistance = Double.MAX_VALUE;
-        String EMD = "";
+        WeatherArea result = null;
         List<WeatherArea> list;
 
-        if (nearestDTO.getSgg().equals("세종")) {
+        if (nearestAreaDTO.getSgg().equals("세종")) {
             list = weatherAreaRepository.findBySD("세종");
         } else {
-            list = weatherAreaRepository.findByEMD1(nearestDTO.getSgg()).orElseGet(() -> weatherAreaRepository.findByEMD2(nearestDTO.getSgg()).get());
+            list = weatherAreaRepository.findByEMD1(nearestAreaDTO.getSgg()).orElseGet(() -> weatherAreaRepository.findByEMD2(nearestAreaDTO.getSgg()).get());
         }
         for (WeatherArea area : list) {
-            double calculate = Math.pow(Math.abs(nearestDTO.getLatitude() - area.getLatitude()), 2) + Math.pow(Math.abs(nearestDTO.getLongitude() - area.getLongitude()), 2);
+            double calculate = Math.pow(Math.abs(nearestAreaDTO.getLatitude() - area.getLatitude()), 2) + Math.pow(Math.abs(nearestAreaDTO.getLongitude() - area.getLongitude()), 2);
             if (calculate < minDistance) {
                 minDistance = calculate;
-                if (nearestDTO.getSgg().equals("세종")) {
-                    EMD = area.getEMD1();
-                } else {
-                    EMD = area.getEMD2();
-                    if (area.getEMD3() != null) EMD += " " + area.getEMD3();
-                }
+                result = area;
             }
         }
-        return Map.of("EMD", EMD);
+        return result;
     }
 }

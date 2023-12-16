@@ -4,9 +4,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @Api(tags = {"7.1 날씨 - 지역"})
@@ -27,12 +28,6 @@ public class WeatherAreaController {
     @GetMapping(value = "area/{areaId}")
     public WeatherArea getWeatherArea(@PathVariable Long areaId) {
         return weatherAreaService.getWeatherArea(areaId);
-    }
-
-    @ApiOperation(value = "읍면동 조회", notes = "위도/경도를 기준으로 가장 가까운 읍면동을 조회한다")
-    @PostMapping(value = "area/nearest")
-    public Map<String, String> getNearestArea(@RequestBody NearestDTO nearestDTO) {
-        return weatherAreaService.getNearestArea(nearestDTO);
     }
 
 }

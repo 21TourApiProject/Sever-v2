@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -375,5 +376,9 @@ public class UserService {
                 userRepository.save(user);
             }
         }
+    }
+
+    public Map<String, String> getNickName(Long userId) {
+        return Map.of("nickName", userRepository.findById(userId).get().getNickName());
     }
 }
