@@ -38,11 +38,22 @@ public class InterestAreaService {
         List<InterestAreaDTO> result = new ArrayList<>();
         for (InterestArea interestArea : interestAreaRepository.findByUserId(userId)) {
 
+            InterestAreaDTO interestAreaDTO = InterestAreaDTO.builder().regionName(interestArea.getRegionName())
+                    .regionId(interestArea.getRegionId())
+                    .regionType(interestArea.getRegionType()).build();
+
             AreaTimeDTO areaTimeDTO = new AreaTimeDTO();
             areaTimeDTO.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             areaTimeDTO.setHour(Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))));
 
             if (interestArea.getRegionType() == 1) { // 관측지
+
+                // 관측지 이미지
+                List<ObserveImage> imageList = observeImageRepository.findByObservationId(interestArea.getRegionId());
+                if (!imageList.isEmpty()) {
+                    interestAreaDTO.setRegionImage(imageList.get(0).getImage());
+                }
+
                 areaTimeDTO.setObservationId(interestArea.getRegionId());
                 WeatherObservation observation = weatherObservationRepository.findById(interestArea.getRegionId()).get();
                 areaTimeDTO.setLat(observation.getLatitude());
@@ -54,25 +65,24 @@ public class InterestAreaService {
                 areaTimeDTO.setLon(area.getLongitude());
             }
 
-            result.add(InterestAreaDTO.builder().regionName(interestArea.getRegionName())
-                    .regionId(interestArea.getRegionId())
-                    .regionType(interestArea.getRegionType())
-                    .observationalFit(observationalFitService.getInterestAreaInfo(areaTimeDTO).block()).build());
+            interestAreaDTO.setObservationalFit(observationalFitService.getInterestAreaInfo(areaTimeDTO).block());
+
+            result.add(interestAreaDTO);
         }
         return result;
     }
 
-    public void addInterestArea(UpdateInterestAreaDTO updateInterestAreaDTO) {
+    public void addInterestArea(AddInterestAreaDTO addInterestAreaDTO) {
         InterestArea interestArea = InterestArea.builder()
-                .userId(updateInterestAreaDTO.getUserId())
-                .regionId(updateInterestAreaDTO.getRegionId())
-                .regionName(updateInterestAreaDTO.getRegionName())
-                .regionType(updateInterestAreaDTO.getRegionType()).build();
+                .userId(addInterestAreaDTO.getUserId())
+                .regionId(addInterestAreaDTO.getRegionId())
+                .regionName(addInterestAreaDTO.getRegionName())
+                .regionType(addInterestAreaDTO.getRegionType()).build();
         interestAreaRepository.save(interestArea);
     }
 
-    public void deleteInterestArea(UpdateInterestAreaDTO updateInterestAreaDTO) {
-        Optional<InterestArea> interestArea = interestAreaRepository.findByUserIdAndRegionId(updateInterestAreaDTO.getUserId(), updateInterestAreaDTO.getRegionId());
+    public void deleteInterestArea(Long userId, Long regionId, Integer regionType) {
+        Optional<InterestArea> interestArea = interestAreaRepository.findByUserIdAndRegionIdAndRegionType(userId, regionId, regionType);
         interestAreaRepository.delete(interestArea.get());
     }
 
@@ -107,7 +117,6 @@ public class InterestAreaService {
             if (!imageList.isEmpty()) {
                 result.setRegionImage(imageList.get(0).getImage());
             }
-            result.setRegionImage("http://tong.visitkorea.or.kr/cms/resource/00/2431800_image2_1.jpg");
         } else { // 지역
             WeatherArea region = weatherAreaRepository.findById(regionId).get();
             result.setRegionName(region.getEMD2());

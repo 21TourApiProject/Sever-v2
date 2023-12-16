@@ -25,14 +25,14 @@ public class InterestAreaController {
 
     @ApiOperation(value = "관심지역 추가", notes = "메인페이지에서 관심지역을 추가한다")
     @PostMapping(value = "interestArea")
-    public void addInterestArea(@RequestBody UpdateInterestAreaDTO updateInterestAreaDTO) {
-        interestAreaService.addInterestArea(updateInterestAreaDTO);
+    public void addInterestArea(@RequestBody AddInterestAreaDTO addInterestAreaDTO) {
+        interestAreaService.addInterestArea(addInterestAreaDTO);
     }
 
     @ApiOperation(value = "관심지역 삭제", notes = "메인페이지에서 관심지역을 삭제한다")
-    @DeleteMapping(value = "interestArea")
-    public void deleteInterestArea(@RequestBody UpdateInterestAreaDTO updateInterestAreaDTO) {
-        interestAreaService.deleteInterestArea(updateInterestAreaDTO);
+    @DeleteMapping(value = "interestArea/{userId}/{regionId}/{regionType}")
+    public void deleteInterestArea(@PathVariable Long userId, @PathVariable Long regionId, @PathVariable Integer regionType) {
+        interestAreaService.deleteInterestArea(userId, regionId, regionType);
     }
 
     @ApiOperation(value = "관심지역 날씨 정보 조회", notes = "관심 지역 상세 페이지의 날씨 정보를 조회한다")

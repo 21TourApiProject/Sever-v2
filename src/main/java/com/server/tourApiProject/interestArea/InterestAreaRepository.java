@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface InterestAreaRepository extends JpaRepository<InterestArea, Long> {
 
     List<InterestArea> findByUserId(Long userId);
-    Optional<InterestArea> findByUserIdAndRegionId(Long userId, Long regionId);
+    Optional<InterestArea> findByUserIdAndRegionIdAndRegionType(Long userId, Long regionId, Integer regionType);
 }

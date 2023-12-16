@@ -846,7 +846,7 @@ public class ObservationalFitService {
                     if (bestTime <= 6) {
                         timeComment = "추천 관측 시간은 내일 0" + bestTime + "시에요.";
                     } else {
-                        timeComment = "추천 관측 시간은 오늘" + bestTime + "시에요.";
+                        timeComment = "추천 관측 시간은 오늘 " + bestTime + "시에요.";
                     }
 
                     return Mono.just(MainInfo.builder()
