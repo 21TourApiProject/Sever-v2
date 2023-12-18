@@ -48,6 +48,7 @@ public class FcmService {
             .putData("click","alarm")
             .putData("title",title)
             .putData("body",body)
+            .putData("isNotice","notification")
             .build()).collect(Collectors.toList());
         BatchResponse response;
         try{
@@ -74,6 +75,7 @@ public class FcmService {
             .putData("click","alarm")
             .putData("title",title)
             .putData("body",body)
+            .putData("isNotice","comment")
             .build();
         try{
             firebaseMessaging.send(message);

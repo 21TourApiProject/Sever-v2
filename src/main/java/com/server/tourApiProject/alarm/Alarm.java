@@ -52,6 +52,12 @@ public class Alarm {
     @Column(nullable = false)
     private String alarmDate;
 
+    @Column
+    private String isNotice;
+
+    @Column
+    private Long itemId;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", insertable = false, updatable=false)

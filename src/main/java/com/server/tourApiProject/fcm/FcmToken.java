@@ -2,6 +2,7 @@ package com.server.tourApiProject.fcm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.server.tourApiProject.user.User;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,7 +42,7 @@ public class FcmToken {
     private String fcmToken; // 기기에 등록된 FCM token
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", insertable = false, updatable=false)
     private User user;
 

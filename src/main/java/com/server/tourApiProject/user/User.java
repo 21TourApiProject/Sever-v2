@@ -111,7 +111,7 @@ public class User{
     private List<Alarm> myAlarm = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private FcmToken myFcmTokens = new FcmToken();
 
     @Column(nullable = false)
