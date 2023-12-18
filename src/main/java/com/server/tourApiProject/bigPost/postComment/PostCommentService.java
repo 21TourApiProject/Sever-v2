@@ -82,6 +82,8 @@ public class PostCommentService {
                 alarm.setAlarmContent(postComment.getComment());
                 alarm.setAlarmTitle(postComment.getUser().getNickName()+"님이 댓글을 달았어요.");
                 alarm.setAlarmDate(postComment.getTime().toString());
+                alarm.setIsNotice("comment");
+                alarm.setItemId(postComment.getPostId());
                 alarm.setUserId(post.getUserId());//알림은 게시글 User에 맞춰야함(PostComment.getUser/UserId로 설정 x
                 alarm.setUser(post.getUser());
                 alarmService.createAlarm(alarm);

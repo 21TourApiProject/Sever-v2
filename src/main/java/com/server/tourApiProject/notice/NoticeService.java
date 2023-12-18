@@ -74,6 +74,8 @@ public class NoticeService {
         alarm.setAlarmTitle(notice.getNoticeTitle());
         alarm.setAlarmDate(notice.getNoticeDate());
         alarm.setUserId(null);
+        alarm.setIsNotice("notice");
+        alarm.setItemId(notice.getNoticeId());
         alarmService.createAlarm(alarm);
     }
 
