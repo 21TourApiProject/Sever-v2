@@ -17,7 +17,7 @@ import java.util.List;
 public class InterestAreaController {
     private final InterestAreaService interestAreaService;
 
-    @ApiOperation(value = "관심지역 조회", notes = "해당 사용자의 모든 관심지역을 조회한다")
+    @ApiOperation(value = "관심지역 조회", notes = "메인페이지에서 관심지역을 조회한다")
     @GetMapping(value = "interestArea/{userId}")
     public List<InterestAreaDTO> getAllInterestArea(@PathVariable Long userId) {
         return interestAreaService.getAllInterestArea(userId);
@@ -35,9 +35,9 @@ public class InterestAreaController {
         interestAreaService.deleteInterestArea(userId, regionId, regionType);
     }
 
-    @ApiOperation(value = "관심지역 날씨 정보 조회", notes = "관심 지역 상세 페이지의 날씨 정보를 조회한다")
+    @ApiOperation(value = "관심지역 상세 페이지 조회", notes = "관심지역 상세 페이지 정보를 조회한다")
     @GetMapping(value = "interestArea/detail/{regionId}/{regionType}")
-    public InterestAreaWeatherDTO getInterestAreaInfo(@PathVariable Long regionId, @PathVariable Integer regionType) {
-        return interestAreaService.getInterestAreaInfo(regionId, regionType);
+    public InterestAreaDetailDTO getInterestAreaDetailInfo(@PathVariable Long regionId, @PathVariable Integer regionType) {
+        return interestAreaService.getInterestAreaDetailInfo(regionId, regionType);
     }
 }

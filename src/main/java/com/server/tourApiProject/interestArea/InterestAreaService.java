@@ -8,7 +8,6 @@ import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
 import com.server.tourApiProject.weather.observationalFit.ObservationalFitService;
 import com.server.tourApiProject.weather.observationalFit.model.AreaTimeDTO;
-import com.server.tourApiProject.weather.observationalFit.model.WeatherInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,8 @@ public class InterestAreaService {
     public List<InterestAreaDTO> getAllInterestArea(Long userId) {
 
         List<InterestAreaDTO> result = new ArrayList<>();
+        List<AreaTimeDTO> areaTimeList = new ArrayList<>();
+
         for (InterestArea interestArea : interestAreaRepository.findByUserId(userId)) {
 
             InterestAreaDTO interestAreaDTO = InterestAreaDTO.builder().regionName(interestArea.getRegionName())
@@ -64,10 +65,13 @@ public class InterestAreaService {
                 areaTimeDTO.setLat(area.getLatitude());
                 areaTimeDTO.setLon(area.getLongitude());
             }
-
-            interestAreaDTO.setObservationalFit(observationalFitService.getInterestAreaInfo(areaTimeDTO).block());
-
+            areaTimeList.add(areaTimeDTO);
             result.add(interestAreaDTO);
+        }
+
+        List<String> observationalFitList = observationalFitService.getInterestAreaInfo(areaTimeList).collectList().block();
+        for (int i = 0; i < observationalFitList.size(); i++) {
+            result.get(i).setObservationalFit(observationalFitList.get(i));
         }
         return result;
     }
@@ -90,7 +94,7 @@ public class InterestAreaService {
      * @param regionId   : 관측지 또는 지역 id
      * @param regionType : 1 = 관측지, 2 = 지역
      */
-    public InterestAreaWeatherDTO getInterestAreaInfo(Long regionId, Integer regionType) {
+    public InterestAreaDetailDTO getInterestAreaDetailInfo(Long regionId, Integer regionType) {
 
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         Integer hour = Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HH")));
@@ -99,7 +103,7 @@ public class InterestAreaService {
         areaTimeDTO.setDate(date);
         areaTimeDTO.setHour(hour);
 
-        InterestAreaWeatherDTO result = new InterestAreaWeatherDTO();
+        InterestAreaDetailDTO result = new InterestAreaDetailDTO();
         result.setRegionId(regionId);
         result.setRegionType(regionType);
 
@@ -128,11 +132,7 @@ public class InterestAreaService {
             areaTimeDTO.setAreaId(regionId);
         }
 
-        WeatherInfo weatherInfo = observationalFitService.getWeatherInfo(areaTimeDTO).block();
-        result.setBestDay(weatherInfo.getTodayComment1().substring(0, 2));
-        result.setBestHour(weatherInfo.getBestTime());
-        result.setBestObservationalFit(weatherInfo.getBestObservationalFit());
-        result.setWeatherReport("날씨 요약 레포트 날씨 요약 레포트 날씨 요약 레포트 날씨 요약 레포트 날씨 요약 레포트 날씨 요약 레포트 날씨 요약 레포트 날씨 요약 레포트 ");
+        result.setInterestAreaDetailWeatherInfo(observationalFitService.getInterestAreaDetailInfo(areaTimeDTO).block());
         return result;
     }
 }
