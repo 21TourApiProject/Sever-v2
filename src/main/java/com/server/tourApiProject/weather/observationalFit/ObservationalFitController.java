@@ -9,10 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Slf4j
 @Api(tags = {"7.3 날씨 - 관측적합도"})
@@ -49,19 +46,6 @@ public class ObservationalFitController {
     @PostMapping(value = "observationalFit/nearestArea")
     public Mono<MainInfo> getNearestAreaWeatherInfo(@RequestBody NearestAreaDTO nearestAreaDTO) {
         return observationalFitService.getNearestAreaWeatherInfo(nearestAreaDTO);
-    }
-
-    /**
-     * 앱 메인 페이지 관심 지역 관측적합도 제공
-     */
-    @PostMapping("/observationalFit/interestArea")
-    public Mono<String> getInterestAreaInfo(@RequestBody AreaTimeDTO areaTime) {
-        return observationalFitService.getInterestAreaInfo(areaTime);
-    }
-
-    @PostMapping("/observationalFit/interestArea2")
-    public Flux<String> getInterestAreaInfo2(@RequestBody List<AreaTimeDTO> areaTimeDTOList) {
-        return observationalFitService.getInterestAreaInfo2(areaTimeDTOList);
     }
 
 }
