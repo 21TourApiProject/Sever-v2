@@ -111,8 +111,8 @@ public class User{
     private List<Alarm> myAlarm = new ArrayList<>();
 
     @JsonIgnore
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private FcmToken myFcmTokens = new FcmToken();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<FcmToken> myFcmTokens = new ArrayList<>();
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

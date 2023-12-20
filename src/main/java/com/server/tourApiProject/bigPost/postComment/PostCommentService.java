@@ -75,7 +75,7 @@ public class PostCommentService {
             postComment.setYearDate(postCommentParams.getYearDate());
             postComment.setTime(postCommentParams.getTime());
             postCommentRepository.save(postComment);
-            FcmToken token = fcmTokenRepository.findByUserId(post.getUserId());
+            FcmToken token = fcmTokenRepository.findByUserId(post.getUserId()).get(0);
             if(post.getUser()!=postComment.getUser()){ //게시글 작성자와 댓글 작성자가 동일한 경우에는 알림 생성 x
                 fcmService.sendMessageTo(token.getFcmToken(),postComment.getUser().getNickName()+"님이 댓글을 달았어요.",postCommentParams.getComment());
                 Alarm alarm = new Alarm();

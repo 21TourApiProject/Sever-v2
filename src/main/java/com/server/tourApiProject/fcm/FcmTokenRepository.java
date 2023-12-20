@@ -13,5 +13,5 @@ import org.springframework.data.repository.query.Param;
  * ----------------------------------------- 2023-12-03       jinhyeok       최초생성
  */
 public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
-    FcmToken findByUserId (@Param("userId") Long userId);
+    List<FcmToken> findByUserId (@Param("userId") Long userId);
 }
