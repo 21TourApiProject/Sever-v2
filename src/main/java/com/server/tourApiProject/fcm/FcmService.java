@@ -84,6 +84,14 @@ public class FcmService {
         }
     }
 
+    public void createFcmToken(Long userId){
+        FcmToken fcmToken = new FcmToken();
+        fcmToken.setUser(userRepository.findById(userId).orElseThrow(IllegalAccessError::new));
+        fcmToken.setUserId(userId);
+        fcmToken.setFcmToken(null);
+        fcmTokenRepository.save(fcmToken);
+    }
+
     /**
      * description: 사용자 id로 fcm token 찾기
      *
@@ -91,8 +99,8 @@ public class FcmService {
      * @return Boolean (true - 토큰 동일함, false - 토큰 업데이트)
      */
     public Boolean updateFcmToken(Long userId,String fcmToken) {
-        FcmToken token = fcmTokenRepository.findByUserId(userId);
-        if(token==null){
+        List<FcmToken> tokenList = fcmTokenRepository.findByUserId(userId);
+        if(tokenList.isEmpty()){
             FcmToken nToken = new FcmToken();
             nToken.setFcmToken(fcmToken);
             nToken.setUserId(userId);
@@ -100,6 +108,7 @@ public class FcmService {
             fcmTokenRepository.save(nToken);
             return false;
         }else{
+            FcmToken token = tokenList.get(0);
             if(token.getFcmToken() == null ||!token.getFcmToken().equals(fcmToken)){
                 token.setFcmToken(fcmToken);
                 return false;
@@ -129,7 +138,8 @@ public class FcmService {
      * description: fcmToken 삭제하는 메소드.
      */
     public void deleteFcmToken(Long userId){
-        FcmToken fcmToken = fcmTokenRepository.findByUserId(userId);
-        fcmTokenRepository.deleteById(fcmToken.getFcmTokenId());}
+        List<FcmToken> fcmTokenList = fcmTokenRepository.findByUserId(userId);
+
+        fcmTokenRepository.deleteById(fcmTokenList.get(0).getFcmTokenId());}
 
 }

@@ -46,6 +46,7 @@ import com.server.tourApiProject.weather.description.Description;
 import com.server.tourApiProject.weather.description.DescriptionRepository;
 import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
+import java.text.DecimalFormat;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -441,6 +442,17 @@ public class ExcelController {
             data.setSummary(row.getCell(10).getStringCellValue());
             if (data.getSummary().equals("null"))
                 data.setSummary(null);
+            data.setRightAsc((float) row.getCell(11).getNumericCellValue());
+            if(data.getRightAsc().equals(0f))
+                data.setRightAsc(null);
+            data.setDeclination((float)row.getCell(12).getNumericCellValue());
+            Float rawValue = data.getDeclination();
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            float roundedValue = Float.parseFloat(decimalFormat.format(rawValue));
+            data.setDeclination(roundedValue);
+            if (data.getDeclination().equals(0f)) {
+                data.setDeclination(null);
+            }
             constellationRepository.save(data);
         }
         System.out.println("엑셀 완료");

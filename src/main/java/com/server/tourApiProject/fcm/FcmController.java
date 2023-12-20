@@ -1,6 +1,7 @@
 package com.server.tourApiProject.fcm;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.server.tourApiProject.bigPost.postComment.PostCommentParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.io.IOException;
@@ -41,6 +42,11 @@ public class FcmController {
             requestDTO.getTitle(),
             requestDTO.getBody());
         return ResponseEntity.ok().build();
+    }
+    @ApiOperation(value = "fcm 토큰 정보 입력", notes = "fcm 토큰 정보를 입력한다")
+    @PostMapping(value = "fcnToken /{userId}")
+    public void createFcmToken(@PathVariable("userId") Long userId) {
+        firebaseCloudMessageService.createFcmToken(userId);
     }
 
     @ApiOperation(value = "사용자 fcm 토큰 조회", notes = "사용자의 id로 fcm 토큰을 비교한다")

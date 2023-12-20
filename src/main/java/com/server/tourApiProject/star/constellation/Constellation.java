@@ -74,10 +74,10 @@ public class Constellation {
     private String constEng;  //별자리 영어 이름
 
     @Column
-    private Float azimuth;  //별자리 방위각
+    private Float rightAsc;  //별자리 방위각
 
     @Column
-    private Float altitude;  //별자리 고도
+    private Float declination;  //별자리 고도
 
     @JsonIgnore
     @OneToMany(mappedBy = "constellation", cascade = CascadeType.REMOVE, orphanRemoval = true)
