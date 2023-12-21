@@ -699,17 +699,24 @@ public class ObservationalFitService {
                     }
                     lightPollution = area.getLightPollution();
 
+                    Hourly hourly = openWeatherResponse.getHourly().get(0); // 현재 Hour 기준 날씨
+                    Daily daily = openWeatherResponse.getDaily().get(0); // 현재 Date 기준 날씨
+
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
                     Integer hour = nearestAreaDTO.getHour(); // 현재 시각
 
-                    double minObservationalFit = 0D; // 최소 관측적합도
                     double maxObservationalFit = 0D; // 최대 관측적합도
+                    double avgObservationalFit = 0D; // 평균 관측적합도
+                    int[] mainEffectArray = new int[3]; // 관측적합도의 주요 원인
+                    double mainEffectMoonAgeValue = 0D; // 최대 관측적합도의 최고 저해요인이 월령일 때의 월령 값
 
                     int sunrise = getSunHour(H_daily1.getSunrise()); // 일출 시간
                     int sunset = getSunHour(H_daily1.getSunset()); // 일몰 시간
 
+                    // 0   1   2   3   4   5   6   7   8   9   10  11  12
+                    // 18  19  20  21  22  23  0   1   2   3   4   5   6
                     int start = 0;
                     int finish = 12;
                     if (hour >= 18) start = hour - 18; // 현재 시각이 18시 ~ 23시. start = 0,1,2,3,4,5
@@ -748,8 +755,10 @@ public class ObservationalFitService {
                     for (int i = start; i <= finish; i++) {
                         Hourly H_hourly = openWeatherResponse.getHourly().get(i + idx - start);
                         double observationalFit;
+                        int[] effectArray;
+                        double effectMoonAgeValue;
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
-                            double[] observationFit = getObservationFit(
+                            Map<String, Object> observationFit = getInterestObservationFit(
                                     H_hourly.getClouds(),
                                     H_hourly.getFeelsLike(),
                                     H_daily1.getMoonPhase(),
@@ -757,9 +766,11 @@ public class ObservationalFitService {
                                     Double.valueOf(H_hourly.getPop()),
                                     lightPollution
                             );
-                            observationalFit = observationFit[0];
+                            observationalFit = (double) observationFit.get("1");
+                            effectArray = (int[]) observationFit.get("2");
+                            effectMoonAgeValue = (double) observationFit.get("3");
                         } else { // 명일 0시 ~ 6시 (7개)
-                            double[] observationFit = getObservationFit(
+                            Map<String, Object> observationFit = getInterestObservationFit(
                                     H_hourly.getClouds(),
                                     H_hourly.getFeelsLike(),
                                     H_daily2.getMoonPhase(),
@@ -767,20 +778,39 @@ public class ObservationalFitService {
                                     Double.valueOf(H_hourly.getPop()),
                                     lightPollution
                             );
-                            observationalFit = observationFit[0];
+                            observationalFit = (double) observationFit.get("1");
+                            effectArray = (int[]) observationFit.get("2");
+                            effectMoonAgeValue = (double) observationFit.get("3");
                         }
                         if (maxObservationalFit < observationalFit) {
                             maxObservationalFit = observationalFit;
                             bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                            mainEffectArray = effectArray;
+                            mainEffectMoonAgeValue = effectMoonAgeValue;
                         }
-                        if (minObservationalFit > observationalFit) {
-                            minObservationalFit = observationalFit;
-                        }
+                        avgObservationalFit += observationalFit;
                     }
+
+                    String bestTimeForReport;
+                    if (bestTime <= 6) bestTimeForReport = "내일 0" + bestTime + "시";
+                    else bestTimeForReport = "오늘 " + bestTime + "시";
 
                     return Mono.just(MainInfo.builder()
                             .location(location)
-                            .comment(getMainComment(minObservationalFit, maxObservationalFit, bestTime)).build());
+                            .comment(generateWeatherReport(getDescription(hourly.getWeather().get(0).getId()),
+                                    Math.round(daily.getTemp().getMin()),
+                                    Math.round(daily.getTemp().getMax()),
+                                    daily.getMoonPhase(),
+                                    hourly.getClouds(),
+                                    Math.round(Double.parseDouble(hourly.getPop()) * 100),
+                                    hourly.getWindSpeed(),
+                                    fineDust,
+                                    maxObservationalFit,
+                                    avgObservationalFit,
+                                    bestTimeForReport,
+                                    mainEffectArray,
+                                    mainEffectMoonAgeValue
+                            )).build());
                 });
     }
 

@@ -27,5 +27,5 @@ public class WeatherLocationDTO {
 
     private Double longitude;
 
-    private String observationalFit;
+    private Long observationalFit;
 }
