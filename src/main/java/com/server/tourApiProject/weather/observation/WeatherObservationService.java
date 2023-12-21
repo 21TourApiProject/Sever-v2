@@ -57,15 +57,20 @@ public class WeatherObservationService {
             date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
         List<ObservationalFit> observationalFitList;
-//        observationalFitList = observationalFitRepository.findByDate(date);
-        observationalFitList = observationalFitRepository.findByDate("2023-12-15");
+        observationalFitList = observationalFitRepository.findByDate(date);
+//        observationalFitList = observationalFitRepository.findByDate("2023-12-15"); // TODO : 변경 필요
 
         int idx = 0;
         for (WeatherObservation observation : weatherObservationRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))) {
-            String observationalFit = String.valueOf(Math.round(observationalFitList.get(idx++).getBestObservationalFit()));
+            Long observationalFit = Math.round(observationalFitList.get(idx++).getBestObservationalFit());
             result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(),
-                    observation.getLatitude(), observation.getLongitude(), "~" + observationalFit + "%"));
+                    observation.getLatitude(), observation.getLongitude(), observationalFit));
         }
+
+//        result.sort((o1, o2) -> {
+//            if (o1.getObservationalFit() > o2.getObservationalFit()) return 1;
+//            else return 0;
+//        });
 
         for (WeatherArea area : weatherAreaRepository.findAll()) {
             String title = area.getEMD1();
@@ -79,7 +84,7 @@ public class WeatherObservationService {
                 subtitle = area.getSD() + " " + area.getEMD1();
             }
 
-            result.add(new WeatherLocationDTO(title, subtitle, area.getAreaId(), null, area.getLatitude(), area.getLongitude(), ""));
+            result.add(new WeatherLocationDTO(title, subtitle, area.getAreaId(), null, area.getLatitude(), area.getLongitude(), null));
         }
         return result;
     }
