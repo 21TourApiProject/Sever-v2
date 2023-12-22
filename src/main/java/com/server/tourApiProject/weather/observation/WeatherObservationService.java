@@ -56,8 +56,8 @@ public class WeatherObservationService {
             date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
         List<ObservationalFit> observationalFitList;
-//        observationalFitList = observationalFitRepository.findByDate(date);
-        observationalFitList = observationalFitRepository.findByDate("2023-12-15"); // TODO : 변경 필요
+        observationalFitList = observationalFitRepository.findByDate(date);
+//        observationalFitList = observationalFitRepository.findByDate("2023-12-15");
 
         int idx = 0;
         for (WeatherObservation observation : weatherObservationRepository.findAll()) {
