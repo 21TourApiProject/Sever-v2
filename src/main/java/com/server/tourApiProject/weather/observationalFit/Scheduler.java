@@ -19,7 +19,7 @@ public class Scheduler {
      * 실행 주기 : 매일 7시 (18시 이전에만 하면 됩)
      * JOB : 시간별 관측적합도 정보 호출
      */
-    @Scheduled(cron = "0 0 23 40 * *")
+    @Scheduled(cron = "${scheduler.time}")
     public void saveHourObservationalFit() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String today = LocalDate.now().format(formatter);
