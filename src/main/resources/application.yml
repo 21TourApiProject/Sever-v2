@@ -37,7 +37,7 @@ server:
     connection-timeout: 5000
 
 scheduler:
-  time: "0 15 0 * * *"
+  time: "0 0 7 * * *"
 
 
 ---
