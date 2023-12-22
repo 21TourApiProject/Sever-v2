@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Api(tags = {"7.3 날씨 - 관측적합도"})
 @RestController
@@ -48,4 +50,9 @@ public class ObservationalFitController {
         return observationalFitService.getNearestAreaWeatherInfo(nearestAreaDTO);
     }
 
+    @ApiOperation(value = "현재 시간 조회")
+    @GetMapping(value = "time")
+    public LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
 }
