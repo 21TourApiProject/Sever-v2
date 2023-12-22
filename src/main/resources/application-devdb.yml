@@ -5,7 +5,7 @@ spring: #develop DB??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://starsufers.c4vwrboka6op.ap-northeast-2.rds.amazonaws.com:3306/starrynight_dev?serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://starsufers.c4vwrboka6op.ap-northeast-2.rds.amazonaws.com:3306/starsufers?serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     password: 'star0000!'
   jpa:
     show-sql: 'false'
