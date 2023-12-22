@@ -16,7 +16,7 @@ spring: #local DB??
     password: ''
     url: jdbc:h2:tcp://localhost/~/tourApiProject
   jpa:
-    show-sql: 'true'
+    show-sql: 'false'
     hibernate:
       ddl-auto: update
 
@@ -37,7 +37,7 @@ server:
     connection-timeout: 5000
 
 scheduler:
-  time: "0 50 23 * * *"
+  time: "0 15 0 * * *"
 
 
 ---
