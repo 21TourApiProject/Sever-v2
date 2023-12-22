@@ -1,5 +1,8 @@
 package com.server.tourApiProject.interestArea;
 
+import com.server.tourApiProject.interestArea.model.AddInterestAreaDTO;
+import com.server.tourApiProject.interestArea.model.InterestAreaDTO;
+import com.server.tourApiProject.interestArea.model.InterestAreaDetailDTO;
 import com.server.tourApiProject.observation.observeImage.ObserveImage;
 import com.server.tourApiProject.observation.observeImage.ObserveImageRepository;
 import com.server.tourApiProject.weather.area.WeatherArea;

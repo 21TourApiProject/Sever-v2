@@ -1,5 +1,8 @@
 package com.server.tourApiProject.interestArea;
 
+import com.server.tourApiProject.interestArea.model.AddInterestAreaDTO;
+import com.server.tourApiProject.interestArea.model.InterestAreaDTO;
+import com.server.tourApiProject.interestArea.model.InterestAreaDetailDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
