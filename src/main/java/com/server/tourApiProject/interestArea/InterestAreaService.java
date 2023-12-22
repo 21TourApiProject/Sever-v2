@@ -72,9 +72,11 @@ public class InterestAreaService {
             result.add(interestAreaDTO);
         }
 
-        List<String> observationalFitList = observationalFitService.getInterestAreaInfo(areaTimeList).collectList().block();
-        for (int i = 0; i < observationalFitList.size(); i++) {
-            result.get(i).setObservationalFit(observationalFitList.get(i));
+        if (!areaTimeList.isEmpty()) {
+            List<String> observationalFitList = observationalFitService.getInterestAreaInfo(areaTimeList).collectList().block();
+            for (int i = 0; i < observationalFitList.size(); i++) {
+                result.get(i).setObservationalFit(observationalFitList.get(i));
+            }
         }
         return result;
     }
