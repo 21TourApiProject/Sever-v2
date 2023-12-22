@@ -7,7 +7,6 @@ import com.server.tourApiProject.weather.observationalFit.ObservationalFit;
 import com.server.tourApiProject.weather.observationalFit.ObservationalFitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -57,20 +56,17 @@ public class WeatherObservationService {
             date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
         List<ObservationalFit> observationalFitList;
-        observationalFitList = observationalFitRepository.findByDate(date);
-//        observationalFitList = observationalFitRepository.findByDate("2023-12-15"); // TODO : 변경 필요
+//        observationalFitList = observationalFitRepository.findByDate(date);
+        observationalFitList = observationalFitRepository.findByDate("2023-12-15"); // TODO : 변경 필요
 
         int idx = 0;
-        for (WeatherObservation observation : weatherObservationRepository.findAll(Sort.by(Sort.Direction.ASC, "name"))) {
+        for (WeatherObservation observation : weatherObservationRepository.findAll()) {
             Long observationalFit = Math.round(observationalFitList.get(idx++).getBestObservationalFit());
             result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(),
                     observation.getLatitude(), observation.getLongitude(), observationalFit));
         }
 
-//        result.sort((o1, o2) -> {
-//            if (o1.getObservationalFit() > o2.getObservationalFit()) return 1;
-//            else return 0;
-//        });
+        result.sort((o1, o2) -> Long.compare(o2.getObservationalFit(), o1.getObservationalFit()));
 
         for (WeatherArea area : weatherAreaRepository.findAll()) {
             String title = area.getEMD1();

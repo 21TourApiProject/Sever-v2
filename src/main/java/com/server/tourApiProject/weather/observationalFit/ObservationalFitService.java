@@ -1,7 +1,7 @@
 package com.server.tourApiProject.weather.observationalFit;
 
 import com.server.tourApiProject.common.Const;
-import com.server.tourApiProject.interestArea.InterestAreaDetailWeatherInfo;
+import com.server.tourApiProject.interestArea.model.InterestAreaDetailWeatherInfo;
 import com.server.tourApiProject.weather.area.NearestAreaDTO;
 import com.server.tourApiProject.weather.area.WeatherArea;
 import com.server.tourApiProject.weather.area.WeatherAreaService;
@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -399,7 +400,7 @@ public class ObservationalFitService {
         Map<String, String> fineDustMap = fineDustService.getFineDustMap(areaTimeList.get(0).getDate());
 
         return Flux.fromIterable(areaTimeList)
-                .map(areaTime ->
+                .concatMap(areaTime ->
                         getOpenWeather(areaTime.getLat(), areaTime.getLon())
                                 .map(openWeatherResponse -> {
                                     String fineDust = null;
@@ -496,7 +497,7 @@ public class ObservationalFitService {
                                         }
                                     }
                                     return String.valueOf(Math.round(maxObservationalFit));
-                                }).block());
+                                }).subscribeOn(Schedulers.parallel()));
 
     }
 

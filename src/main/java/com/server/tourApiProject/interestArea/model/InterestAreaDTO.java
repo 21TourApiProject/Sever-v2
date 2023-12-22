@@ -1,4 +1,4 @@
-package com.server.tourApiProject.interestArea;
+package com.server.tourApiProject.interestArea.model;
 
 import lombok.*;
 
