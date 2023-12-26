@@ -22,8 +22,8 @@ public class InterestAreaController {
 
     @ApiOperation(value = "관심지역 조회", notes = "메인페이지에서 관심지역을 조회한다")
     @GetMapping(value = "interestArea/{userId}")
-    public List<InterestAreaDTO> getAllInterestArea(@PathVariable Long userId) {
-        return interestAreaService.getAllInterestArea(userId);
+    public List<InterestAreaDTO> getInterestArea(@PathVariable Long userId) {
+        return interestAreaService.getInterestArea(userId);
     }
 
     @ApiOperation(value = "관심지역 추가", notes = "메인페이지에서 관심지역을 추가한다")

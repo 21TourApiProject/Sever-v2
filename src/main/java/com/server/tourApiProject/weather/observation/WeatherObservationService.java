@@ -10,17 +10,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.server.tourApiProject.weather.common.CommonService.getObservationalFitDBBaseDate;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class WeatherObservationService {
+
 
     private final WeatherObservationRepository weatherObservationRepository;
     private final ObservationalFitRepository observationalFitRepository;
@@ -48,25 +51,29 @@ public class WeatherObservationService {
     public List<WeatherLocationDTO> getWeatherLocations() {
         List<WeatherLocationDTO> result = new ArrayList<>();
 
-        int hour = Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HH")));
-        String date;
-        if (hour < 7) {
-            date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        } else {
-            date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }
-        List<ObservationalFit> observationalFitList;
-        observationalFitList = observationalFitRepository.findByDate(date);
-//        observationalFitList = observationalFitRepository.findByDate("2023-12-15");
+        List<ObservationalFit> observationalFitList = observationalFitRepository.findByDate(getObservationalFitDBBaseDate());
 
-        int idx = 0;
         for (WeatherObservation observation : weatherObservationRepository.findAll()) {
-            Long observationalFit = Math.round(observationalFitList.get(idx++).getBestObservationalFit());
-            result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(),
-                    observation.getLatitude(), observation.getLongitude(), observationalFit));
+            boolean findFit = false;
+
+            for (ObservationalFit observationalFit : observationalFitList) {
+                if (Objects.equals(observationalFit.getObservationCode(), observation.getObservationId())) {
+                    findFit = true;
+                    result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(),
+                            observation.getLatitude(), observation.getLongitude(), Math.round(observationalFit.getBestObservationalFit())));
+                    break;
+                }
+            }
+
+            if (!findFit) {
+                result.add(new WeatherLocationDTO(observation.getName(), observation.getSearchAddress(), null, observation.getObservationId(),
+                        observation.getLatitude(), observation.getLongitude(), null));
+            }
         }
 
-        result.sort((o1, o2) -> Long.compare(o2.getObservationalFit(), o1.getObservationalFit()));
+        result = result.stream()
+                .sorted(Comparator.comparing(WeatherLocationDTO::getObservationalFit, Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
 
         for (WeatherArea area : weatherAreaRepository.findAll()) {
             String title = area.getEMD1();

@@ -1,14 +1,13 @@
 package com.server.tourApiProject.interestArea;
 
-import com.server.tourApiProject.interestArea.model.AddInterestAreaDTO;
-import com.server.tourApiProject.interestArea.model.InterestAreaDTO;
-import com.server.tourApiProject.interestArea.model.InterestAreaDetailDTO;
+import com.server.tourApiProject.interestArea.model.*;
 import com.server.tourApiProject.observation.observeImage.ObserveImage;
 import com.server.tourApiProject.observation.observeImage.ObserveImageRepository;
 import com.server.tourApiProject.weather.area.WeatherArea;
 import com.server.tourApiProject.weather.area.WeatherAreaRepository;
 import com.server.tourApiProject.weather.observation.WeatherObservation;
 import com.server.tourApiProject.weather.observation.WeatherObservationRepository;
+import com.server.tourApiProject.weather.observationalFit.ObservationalFitRepository;
 import com.server.tourApiProject.weather.observationalFit.ObservationalFitService;
 import com.server.tourApiProject.weather.observationalFit.model.AreaTimeDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,59 +22,65 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.server.tourApiProject.weather.common.CommonService.getObservationalFitDBBaseDate;
+
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 
 public class InterestAreaService {
-    private final InterestAreaRepository interestAreaRepository;
+
     private final ObservationalFitService observationalFitService;
+    private final InterestAreaRepository interestAreaRepository;
     private final WeatherAreaRepository weatherAreaRepository;
     private final WeatherObservationRepository weatherObservationRepository;
+    private final ObservationalFitRepository observationalFitRepository;
     private final ObserveImageRepository observeImageRepository;
 
-    public List<InterestAreaDTO> getAllInterestArea(Long userId) {
+    public List<InterestAreaDTO> getInterestArea(Long userId) {
 
         List<InterestAreaDTO> result = new ArrayList<>();
         List<AreaTimeDTO> areaTimeList = new ArrayList<>();
 
         for (InterestArea interestArea : interestAreaRepository.findByUserId(userId)) {
-
-            InterestAreaDTO interestAreaDTO = InterestAreaDTO.builder().regionName(interestArea.getRegionName())
+            InterestAreaDTO interestAreaDTO = InterestAreaDTO.builder()
                     .regionId(interestArea.getRegionId())
+                    .regionName(interestArea.getRegionName())
                     .regionType(interestArea.getRegionType()).build();
 
-            AreaTimeDTO areaTimeDTO = new AreaTimeDTO();
-            areaTimeDTO.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            areaTimeDTO.setHour(Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))));
-
-            if (interestArea.getRegionType() == 1) { // 관측지
-
+            if (RegionType.OBSERVATION.getValue() == interestArea.getRegionType()) {
                 // 관측지 이미지
                 List<ObserveImage> imageList = observeImageRepository.findByObservationId(interestArea.getRegionId());
                 if (!imageList.isEmpty()) {
                     interestAreaDTO.setRegionImage(imageList.get(0).getImage());
                 }
 
-                areaTimeDTO.setObservationId(interestArea.getRegionId());
-                WeatherObservation observation = weatherObservationRepository.findById(interestArea.getRegionId()).get();
-                areaTimeDTO.setLat(observation.getLatitude());
-                areaTimeDTO.setLon(observation.getLongitude());
-            } else { // 지역
+                // 관측지 관측적합도
+                observationalFitRepository.findByDateAndObservationCode(getObservationalFitDBBaseDate(), interestArea.getRegionId())
+                        .ifPresent(observationalFit -> interestAreaDTO.setObservationalFit(String.valueOf(Math.round(observationalFit.getBestObservationalFit()))));
+
+                result.add(interestAreaDTO);
+            } else if (RegionType.AREA.getValue() == interestArea.getRegionType()) {
                 WeatherArea area = weatherAreaRepository.findById(interestArea.getRegionId()).get();
-                areaTimeDTO.setAreaId(interestArea.getRegionId());
-                areaTimeDTO.setLat(area.getLatitude());
-                areaTimeDTO.setLon(area.getLongitude());
+                areaTimeList.add(AreaTimeDTO.builder()
+                        .date(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        .hour(Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HH"))))
+                        .lat(area.getLatitude())
+                        .lon(area.getLongitude())
+                        .areaId(interestArea.getRegionId())
+                        .build());
+                result.add(interestAreaDTO);
             }
-            areaTimeList.add(areaTimeDTO);
-            result.add(interestAreaDTO);
         }
 
         if (!areaTimeList.isEmpty()) {
             List<String> observationalFitList = observationalFitService.getInterestAreaInfo(areaTimeList).collectList().block();
-            for (int i = 0; i < observationalFitList.size(); i++) {
-                result.get(i).setObservationalFit(observationalFitList.get(i));
+            int idx = 0;
+            for (InterestAreaDTO interestAreaDTO : result) {
+                if (RegionType.AREA.getValue() == interestAreaDTO.getRegionType()) {
+                    interestAreaDTO.setObservationalFit(observationalFitList.get(idx++));
+                }
             }
         }
         return result;
@@ -112,7 +117,7 @@ public class InterestAreaService {
         result.setRegionId(regionId);
         result.setRegionType(regionType);
 
-        if (regionType == 1) { // 관측지
+        if (RegionType.OBSERVATION.getValue() == regionType) {
             WeatherObservation region = weatherObservationRepository.findById(regionId).get();
             result.setRegionName(region.getName());
             result.setLatitude(region.getLatitude());
@@ -126,7 +131,7 @@ public class InterestAreaService {
             if (!imageList.isEmpty()) {
                 result.setRegionImage(imageList.get(0).getImage());
             }
-        } else { // 지역
+        } else if (RegionType.AREA.getValue() == regionType) {
             WeatherArea region = weatherAreaRepository.findById(regionId).get();
             result.setRegionName(region.getEMD2());
             result.setLatitude(region.getLatitude());
@@ -136,8 +141,18 @@ public class InterestAreaService {
             areaTimeDTO.setLon(region.getLongitude());
             areaTimeDTO.setAreaId(regionId);
         }
+        InterestAreaDetailWeatherInfo interestAreaDetailWeatherInfo = observationalFitService.getInterestAreaDetailInfo(areaTimeDTO).block();
+        result.setInterestAreaDetailWeatherInfo(interestAreaDetailWeatherInfo);
 
-        result.setInterestAreaDetailWeatherInfo(observationalFitService.getInterestAreaDetailInfo(areaTimeDTO).block());
+        // 관측지 최대 관측적합도 갱신
+        if (RegionType.OBSERVATION.getValue() == regionType) {
+            observationalFitRepository.findByDateAndObservationCode(getObservationalFitDBBaseDate(), regionId)
+                    .ifPresent(observationalFit -> {
+                        if (interestAreaDetailWeatherInfo.getBestObservationalFit() != null)
+                            observationalFit.setBestObservationalFit(Double.valueOf(interestAreaDetailWeatherInfo.getBestObservationalFit()));
+                    });
+        }
+
         return result;
     }
 }
