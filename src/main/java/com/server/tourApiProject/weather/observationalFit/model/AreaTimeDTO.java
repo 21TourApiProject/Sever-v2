@@ -7,6 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class AreaTimeDTO {
 
     String date; // 날짜 (2023-05-29)

@@ -749,7 +749,9 @@ public class ObservationalFitService {
                                     bestTimeForReport,
                                     mainEffectArray,
                                     mainEffectMoonAgeValue
-                            )).build());
+                            ))
+                            .regionId(areaId)
+                            .build());
                 });
     }
 
