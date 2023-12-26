@@ -1,5 +1,7 @@
 package com.server.tourApiProject.weather.fineDust;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.server.tourApiProject.common.Const;
 import com.server.tourApiProject.weather.fineDust.model.AirKoreaResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +32,15 @@ public class FineDustService {
     private static final String AIR_KOREA_RETURN_TYPE = "json";
     private static final String AIR_KOREA_INFORM_CODE = "PM10";
 
+    private final ObjectMapper mapper;
     /**
      * 해당 date 의 미세먼지 예보 호출 메서드
      */
     public Map<String, String> getFineDustMap(String date) {
 
         // 오전 6시 이전에 호출하면 실패. -> 오전 6시 이전 요청은 하루 전 날짜로 요청 필요
-        String hour = LocalTime.now().format(DateTimeFormatter.ofPattern("HH"));
-        if (hour.startsWith("0") && Integer.parseInt(hour.substring(1)) < 6)
-            date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String hour = LocalTime.now().format(DateTimeFormatter.ofPattern("H"));
+        if (Integer.parseInt(hour) < 6) date = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(AIR_KOREA_URL);
         uriBuilder.queryParam("searchDate", date);
@@ -59,7 +61,11 @@ public class FineDustService {
                 .retrieve()
                 .toEntity(AirKoreaResponse.class)
                 .doOnNext(response -> {
-//                    log.info("HTTP Response for Air Korea Get | {} | {}", response.getStatusCode(), response.getBody());
+//                    try {
+//                        log.info("HTTP Response for Air Korea Get | {} | {}", response.getStatusCode(), mapper.writeValueAsString(response.getBody()));
+//                    } catch (JsonProcessingException e) {
+//                        throw new RuntimeException(e);
+//                    }
                     AirKoreaResponse airKoreaResponse = response.getBody();
                     String informGrade = airKoreaResponse.getResponse().getBody().getItems().get(0).getInformGrade();
 

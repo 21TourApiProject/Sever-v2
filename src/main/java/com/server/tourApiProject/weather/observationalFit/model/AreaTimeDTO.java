@@ -1,12 +1,12 @@
 package com.server.tourApiProject.weather.observationalFit.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class AreaTimeDTO {
 
     String date; // 날짜 (2023-05-29)

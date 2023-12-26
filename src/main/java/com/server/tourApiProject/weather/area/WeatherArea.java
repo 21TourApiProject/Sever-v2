@@ -27,7 +27,7 @@ public class WeatherArea {
     private String SD; // 시도
 
     @Column
-    private String SD2; // 영동, 영서, 경기북부, 경기남부
+    private String SD2; // 영동, 영서, 경기북부, 경기남부 (미세먼지 값 매핑을 위한 값)
 
     @Column
     private String EMD1;
