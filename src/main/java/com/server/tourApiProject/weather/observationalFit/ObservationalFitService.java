@@ -143,7 +143,6 @@ public class ObservationalFitService {
                         Integer dt = getH(H_hourly.getDt());
                         if ((dt >= 18 && dt < sunset + 2) || (dt <= 6 && dt > sunrise - 1)) continue;
 
-                        System.out.println("dt : " + dt);
                         avgCount++;
                         ObservationFitValue fitValue;
 
@@ -550,13 +549,13 @@ public class ObservationalFitService {
     public double getMoonPhaseValue(Double moonPhase) {
         double moonPhaseValue;
         if (moonPhase <= 0.5) {
-            moonPhaseValue = -((8 * Math.pow(moonPhase, 3.46)) / 0.727 * 100);
+            moonPhaseValue = -Math.round(((8 * Math.pow(moonPhase, 3.46)) / 0.727 * 100) * 100) / 100.0;
         } else if (moonPhase <= 0.5609) {
-            moonPhaseValue = -((75 * Math.pow(moonPhase - 0.5, 2) - 0.727) / 0.727 * 100);
+            moonPhaseValue = -Math.round(((-75 * Math.pow(moonPhase - 0.5, 2) + 0.727) / 0.727 * 100) * 100) / 100.0;
         } else {
-            moonPhaseValue = -((1 / (5.6 * (Math.pow(moonPhase + 0.3493, 10))) - 0.0089) / 0.727 * 100);
+            moonPhaseValue = -Math.round(((1 / (5.6 * Math.pow(moonPhase + 0.3493, 10)) - 0.0089) / 0.727 * 100) * 100) / 100.0;
         }
-        return Math.round(moonPhaseValue * 100) / 100.0;
+        return moonPhaseValue;
     }
 
     public double getFineDustValue(String fineDust) {
@@ -697,7 +696,6 @@ public class ObservationalFitService {
                         Integer dt = getH(H_hourly.getDt());
                         if ((dt >= 18 && dt < sunset + 2) || (dt <= 6 && dt > sunrise - 1)) continue;
 
-                        System.out.println("dt : " + dt);
                         avgCount++;
                         InterestObservationFitValue fitValue;
 
@@ -815,7 +813,6 @@ public class ObservationalFitService {
                         Integer dt = getH(H_hourly.getDt());
                         if ((dt >= 18 && dt < sunset + 2) || (dt <= 6 && dt > sunrise - 1)) continue;
 
-                        System.out.println("dt : " + dt);
                         avgCount++;
                         InterestObservationFitValue fitValue;
                         if (i < 6) { // 금일 18 ~ 23시 (6개)
@@ -1081,7 +1078,6 @@ public class ObservationalFitService {
                         Integer dt = getH(H_hourly.getDt());
                         if ((dt >= 18 && dt < sunset + 2) || (dt <= 6 && dt > sunrise - 1)) continue;
 
-                        System.out.println("dt : " + dt);
                         avgCount++;
                         ObservationFitValue fitValue;
 
