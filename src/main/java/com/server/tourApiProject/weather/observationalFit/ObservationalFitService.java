@@ -257,9 +257,15 @@ public class ObservationalFitService {
         if (min >= 85) {
             return new String[]{"오늘은 하루종일", "별 보기 최고에요"};
         } else if (max >= 70) {
-            return new String[]{"오늘 " + bestTime + "시가", "별 보기 가장 좋아요"};
+            if(bestTime <= 6)
+                return new String[]{"내일 0" + bestTime + "시가", "별 보기 가장 좋아요"};
+            else
+                return new String[]{"오늘 " + bestTime + "시가", "별 보기 가장 좋아요"};
         } else if (max >= 60) {
-            return new String[]{"오늘 " + bestTime + "시가", "별 보기 적당해요"};
+            if(bestTime <= 6)
+                return new String[]{"내일 0" + bestTime + "시가", "별 보기 적당해요"};
+            else
+                return new String[]{"오늘 " + bestTime + "시가", "별 보기 적당해요"};
         } else if (max >= 40) {
             return new String[]{"오늘은 하루종일", "별 보기 조금 아쉬워요", effectMap.get(mainEffect)};
         } else {
@@ -731,7 +737,7 @@ public class ObservationalFitService {
 
                         if (maxObservationalFit < fitValue.getObservationalFit()) {
                             maxObservationalFit = fitValue.getObservationalFit();
-                            bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                            bestTime = dt;
                             mainEffectArray = fitValue.getTop3EffectIdx();
                             mainEffectMoonAgeValue = fitValue.getMoonPhase();
                         }
@@ -850,7 +856,7 @@ public class ObservationalFitService {
                         }
                         if (maxObservationalFit < fitValue.getObservationalFit()) {
                             maxObservationalFit = fitValue.getObservationalFit();
-                            bestTime = i + 18 < 24 ? i + 18 : i - 6;
+                            bestTime = dt;
                             mainEffectArray = fitValue.getTop3EffectIdx();
                             mainEffectMoonAgeValue = fitValue.getMoonPhase();
                         }
@@ -915,20 +921,20 @@ public class ObservationalFitService {
         String s5 = "";
 
         if (maxObservationalFit >= 60D) {
-            if (moonAge >= 0.94D || moonAge <= 0.12D) {
-                s2 = "월령이 매우 낮고";
+            if (moonAge >= 0.94D || moonAge <= 0.1D) {
+                s2 = "월령이 매우 낮고 ";
             } else {
-                if (moonAge >= 0.8D || moonAge <= 0.2D) {
-                    s2 = "월령이 낮은 편이고";
+                if (moonAge >= 0.9D || moonAge <= 0.14D) {
+                    s2 = "월령이 낮은 편이고 ";
                 } else {
-                    s2 = "달빛이 조금 있지만";
+                    s2 = "달빛이 너무 강하지 않고 ";
                 }
             }
 
             if (cloud >= 0.15D) {
-                s3 = "구름이 거의 없어,";
+                s3 = "구름이 거의 없어 ";
             } else {
-                s3 = "구름이 적어,";
+                s3 = "구름이 적어 ";
             }
 
             if (avgObservationalFit >= 85D) {
@@ -938,9 +944,9 @@ public class ObservationalFitService {
                     s4 = "별 보기 아주 좋아요! 추천 관측시간은 " + bestTime + "에요. ";
                 } else {
                     if (maxObservationalFit >= 70D) {
-                        s4 = "별 보기 좋지만, 달빛과 구름이 적은 시간을 잘 확인하세요. 추천 관측 시간은 " + bestTime + "에요. ";
+                        s4 = "별 보기 좋아요. 하지만 달빛과 구름이 적은 시간을 잘 확인하세요. 추천 관측 시간은 " + bestTime + "에요. ";
                     } else {
-                        s4 = "별 보기 적당하지만, " + InterestEffectMap.get(mainEffectArray[0]) + "에 유의하세요. 추천 관측 시간은 " + bestTime + "에요. ";
+                        s4 = "별 보기 적당해요. " + InterestEffectMap.get(mainEffectArray[0]) + "에 유의하세요. 추천 관측 시간은 " + bestTime + "에요. ";
                     }
                 }
             }
@@ -953,15 +959,18 @@ public class ObservationalFitService {
                         + InterestEffectMap.get(mainEffectArray[2]) + "(으)로 별 보기 어려워요. ";
             }
 
-            if (mainEffectArray[0] == 2) {
-                if (weatherText.contains("맑음")) {
-                    if (mainEffectMoonAgeValue <= 0.54D && mainEffectMoonAgeValue >= 0.46D) {
-                        s3 = "하지만 밝은 '보름달'을 볼 수 있는 날이에요! ";
-                    } else {
+            if (weatherText.contains("맑음")) {
+                if (0.54D >= mainEffectMoonAgeValue && mainEffectMoonAgeValue >= 0.46D) {
+                    s3 = "하지만 밝은 '보름달'을 볼 수 있는 날이에요! ";
+                    s4 = "달빛이 줄어드는 " + (int) ((1 - mainEffectMoonAgeValue) / 0.04) + "일 후에 별을 보는 것을 추천해요. ";
+                } else {
+                    if (0.62D >= mainEffectMoonAgeValue && mainEffectMoonAgeValue >= 0.38D) {
                         s3 = "하지만 밝은 달을 보기에는 좋은 날이에요. ";
+                        s4 = "달빛이 줄어드는 " + (int) ((1 - mainEffectMoonAgeValue) / 0.04) + "일 후에 별을 보는 것을 추천해요. ";
+                    } else {
+                        s3 = "날씨가 얼른 나아지면 좋겠어요. ";
                     }
                 }
-                s4 = "달빛이 줄어드는 " + (int) ((1 - mainEffectMoonAgeValue) / 0.04) + "일 후에 별을 보는 것을 추천해요. ";
             } else {
                 if (mainEffectArray[0] == 5) {
                     s3 = "광공해가 적은 주변 지역으로 별을 보러 떠나보는 것은 어떨까요? ";
@@ -975,13 +984,13 @@ public class ObservationalFitService {
             s5 = "눈 소식에 유의하세요!";
         } else {
             if (rainfallProbability >= 50) {
-                s5 = "비 소식이 있어요. 외출할 때 우산을 챙기는 것은 어떨까요?";
+                s5 = "비 소식이 있어요. 외출할 때 우산을 챙겨가세요.";
             } else {
                 if (windSpeed >= 3.4D) {
                     s5 = "바람이 많이 불 수 있으니 조심하세요!";
                 } else {
                     if (fineDust.equals("나쁨")) {
-                        s5 = "미세먼지가 '나쁨'이에요. 마스크를 챙기는 것은 어떨까요?";
+                        s5 = "미세먼지가 '나쁨'이에요. 마스크를 챙겨가세요.";
                     }
                 }
             }
