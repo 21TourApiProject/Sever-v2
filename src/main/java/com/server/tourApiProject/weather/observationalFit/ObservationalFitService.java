@@ -122,8 +122,8 @@ public class ObservationalFitService {
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
-                    double minObservationalFit = 0D; // 최소 관측적합도
-                    double maxObservationalFit = 0D; // 최대 관측적합도
+                    double minObservationalFit = Double.MAX_VALUE; // 최소 관측적합도
+                    double maxObservationalFit = -1D; // 최대 관측적합도
                     double mainEffect = 0D; // 관측적합도의 주요 원인
                     double avgObservationalFit = 0D; // 평균 관측적합도
                     int avgCount = 0;
@@ -425,8 +425,8 @@ public class ObservationalFitService {
                                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
-                                    double minObservationalFit = 0D; // 최소 관측적합도
-                                    double maxObservationalFit = 0D; // 최대 관측적합도
+                                    double minObservationalFit = Double.MAX_VALUE; // 최소 관측적합도
+                                    double maxObservationalFit = -1D; // 최대 관측적합도
                                     int sunset = getH(H_daily1.getSunset()); // 일몰 시간
                                     int sunrise = getH(H_daily1.getSunrise()); // 일출 시간
 
@@ -687,7 +687,7 @@ public class ObservationalFitService {
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
-                    double maxObservationalFit = 0D; // 최대 관측적합도
+                    double maxObservationalFit = -1D; // 최대 관측적합도
                     double avgObservationalFit = 0D; // 평균 관측적합도
                     int avgCount = 0;
                     int bestTime = 0; // 최고 관측적합도 시각
@@ -808,7 +808,7 @@ public class ObservationalFitService {
                     Daily H_daily1 = openWeatherResponse.getDaily().get(0); // +0일
                     Daily H_daily2 = openWeatherResponse.getDaily().get(1); // +1일
 
-                    double maxObservationalFit = 0D; // 최대 관측적합도
+                    double maxObservationalFit = -1D; // 최대 관측적합도
                     double avgObservationalFit = 0D; // 평균 관측적합도
                     int avgCount = 0;
                     int[] mainEffectArray = new int[3]; // 관측적합도의 주요 원인
