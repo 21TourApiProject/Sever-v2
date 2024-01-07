@@ -46,7 +46,7 @@ public class Alarm {
     @Column(nullable = false)
     private String alarmTitle;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String alarmContent;
 
     @Column(nullable = false)
