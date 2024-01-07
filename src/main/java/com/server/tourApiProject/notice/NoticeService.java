@@ -62,13 +62,17 @@ public class NoticeService {
     public void createNotice(NoticeParams noticeParams) throws InterruptedException {
 
         Notice notice = new Notice();
+        String fcmBody=noticeParams.getNoticeContent();
         notice.setNoticeTitle(noticeParams.getNoticeTitle());
         notice.setNoticeContent(noticeParams.getNoticeContent());
         notice.setNoticeDate(noticeParams.getNoticeDate());
         System.out.println(noticeParams.getNoticeTitle()+"그리고" + noticeParams.getNoticeContent());
         noticeRepository.save(notice);
         List<String> tokenList = fcmService.getAllFcmToken(); //푸쉬 알람 관련 코드
-        fcmService.sendMessageAll(tokenList,notice.getNoticeTitle(),notice.getNoticeContent());
+        if(notice.getNoticeContent().length()>199){
+            fcmBody = fcmBody.substring(0,198);
+        }
+        fcmService.sendMessageAll(tokenList,notice.getNoticeTitle(),fcmBody);
         Alarm alarm =new Alarm();
         alarm.setAlarmContent(notice.getNoticeContent());
         alarm.setAlarmTitle(notice.getNoticeTitle());
