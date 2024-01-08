@@ -644,7 +644,7 @@ public class ExcelController {
                 data.setReserve(null);
             data.setSaved((long) row.getCell(19).getNumericCellValue());
 
-            observationRepository.save(data);
+//            observationRepository.save(data);
         }
         System.out.println("엑셀 완료");
         return "excel";
