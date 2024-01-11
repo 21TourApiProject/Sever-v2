@@ -75,19 +75,24 @@ public class PostCommentService {
             postComment.setYearDate(postCommentParams.getYearDate());
             postComment.setTime(postCommentParams.getTime());
             postCommentRepository.save(postComment);
-            FcmToken token = fcmTokenRepository.findByUserId(post.getUserId()).get(0);
-            if(post.getUser()!=postComment.getUser()){ //게시글 작성자와 댓글 작성자가 동일한 경우에는 알림 생성 x
-                fcmService.sendMessageTo(token.getFcmToken(),"내가 쓴 글에 댓글이 달렸어요.",postCommentParams.getComment());
-                Alarm alarm = new Alarm();
-                alarm.setAlarmContent(postComment.getComment());
-                alarm.setAlarmTitle("내가 쓴 글에 댓글이 달렸어요.");
-                alarm.setAlarmDate(postComment.getTime().toString());
-                alarm.setIsNotice("comment");
-                alarm.setItemId(postComment.getPostId());
-                alarm.setUserId(post.getUserId());//알림은 게시글 User에 맞춰야함(PostComment.getUser/UserId로 설정 x
-                alarm.setUser(post.getUser());
-                alarmService.createAlarm(alarm);
+            try{
+                if(post.getUser()!=postComment.getUser()&&!post.getUser().getMyFcmTokens().isEmpty()){ //게시글 작성자와 댓글 작성자가 동일한 경우에는 알림 생성 x
+                    FcmToken token = fcmTokenRepository.findByUserId(post.getUserId()).get(0);
+                    fcmService.sendMessageTo(token.getFcmToken(),"내가 쓴 글에 댓글이 달렸어요.",postCommentParams.getComment());
+                    Alarm alarm = new Alarm();
+                    alarm.setAlarmContent(postComment.getComment());
+                    alarm.setAlarmTitle("내가 쓴 글에 댓글이 달렸어요.");
+                    alarm.setAlarmDate(postComment.getTime().toString());
+                    alarm.setIsNotice("comment");
+                    alarm.setItemId(postComment.getPostId());
+                    alarm.setUserId(post.getUserId());//알림은 게시글 User에 맞춰야함(PostComment.getUser/UserId로 설정 x
+                    alarm.setUser(post.getUser());
+                    alarmService.createAlarm(alarm);
+                }
+            }catch(FirebaseMessagingException e){
+                e.printStackTrace();
             }
+
     }
     /**
      * description:게시물 아이디로 게시물 댓글 가져오는 메소드.
