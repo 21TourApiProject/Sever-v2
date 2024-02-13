@@ -6,8 +6,6 @@ import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.bigPost.postImage.PostImageService;
 import com.server.tourApiProject.observation.Observation;
 import com.server.tourApiProject.observation.ObservationService;
-import com.server.tourApiProject.observation.ObservationServiceImpl;
-import com.server.tourApiProject.search.Filter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +37,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostHashTagService postHashTagService;
-    private final ObservationServiceImpl observationServiceImpl;
+    private final ObservationService observationService;
     private final PostImageService postImageService;
 
 
@@ -71,7 +69,7 @@ public class PostController {
     @ApiOperation(value = "게시물 관측지 조회", notes = "관측지 id로 해당 게시물의 관측지를 조회한다")
     @GetMapping(value = "post/{observationId}/observation")
     public Observation getObservation(@PathVariable("observationId") Long observationId) {
-        return observationServiceImpl.getObservation(observationId);
+        return observationService.getObservation(observationId);
     }
     @ApiOperation(value = "게시물 이미지 조회", notes = "게시물 id로 해당 게시물의 게시물 이미지를 조회한다")
     @GetMapping(value = "post/{postId}/postImage")

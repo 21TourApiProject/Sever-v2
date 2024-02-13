@@ -1,8 +1,7 @@
 package com.server.tourApiProject.search;
 
-import com.server.tourApiProject.bigPost.post.PostParams6;
 import com.server.tourApiProject.bigPost.post.PostService;
-import com.server.tourApiProject.observation.ObservationServiceImpl;
+import com.server.tourApiProject.observation.ObservationService;
 import com.server.tourApiProject.touristPoint.touristData.TouristDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchController {
 
-    private final ObservationServiceImpl observationServiceImpl;
+    private final ObservationService observationService;
     private final TouristDataService touristDataService;
     private final PostService postService;
 
@@ -43,7 +41,7 @@ public class SearchController {
     @PostMapping(value = "search/observation/{pageNo}")
     public List<SearchParams1> getObservationWithFilter(@RequestBody SearchKey searchKey, @PathVariable(required = false) int pageNo){
         Pageable pageable =PageRequest.of(pageNo, 10, Sort.Direction.ASC, "observationId");
-        return observationServiceImpl.getObservationWithFilter(searchKey.getFilter(), searchKey.getKeyword(),pageable);
+        return observationService.getObservationWithFilter(searchKey.getFilter(), searchKey.getKeyword(),pageable);
     }
 
     @ApiOperation(value = "관광지 검색결과 ", notes = "검색어와 필터로 관광지 검색결과를 조회한다")
@@ -66,6 +64,6 @@ public class SearchController {
     @ApiOperation(value = "관측지 검색결과수", notes = "검색어와 필터로 관측지 검색 수를 조회한다")
     @PostMapping(value = "search/observation/count")
     public Long getObservationCountWithFilter(@RequestBody SearchKey searchKey){
-        return observationServiceImpl.getCountWithFilter(searchKey.getFilter(), searchKey.getKeyword());
+        return observationService.getCountWithFilter(searchKey.getFilter(), searchKey.getKeyword());
     }
 }
