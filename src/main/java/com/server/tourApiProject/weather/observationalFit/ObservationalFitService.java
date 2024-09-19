@@ -41,8 +41,8 @@ public class ObservationalFitService {
     private final DescriptionRepository descriptionRepository;
     private final WebClient webClient;
 
-    private static final String OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/onecall";
-    private static final String OPEN_WEATHER_API_KEY = "7c7ba4d9df15258ce566f6592d875413";
+    private static final String OPEN_WEATHER_URL = "https://api.openweathermap.org/data/3.0/onecall";
+    private static final String OPEN_WEATHER_API_KEY = "0c029f24189a0c735381c284d3fa54a0";
     private static final String OPEN_WEATHER_EXCLUDE = "current,minutely,alerts";
     private static final String OPEN_WEATHER_UNITS = "metric";
     private static final String OPEN_WEATHER_LANG = "kr";
