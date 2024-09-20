@@ -12,8 +12,10 @@ import com.server.tourApiProject.weather.observation.WeatherObservationService;
 import com.server.tourApiProject.weather.observationalFit.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
@@ -21,6 +23,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import javax.transaction.Transactional;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -41,8 +44,7 @@ public class ObservationalFitService {
     private final DescriptionRepository descriptionRepository;
     private final WebClient webClient;
 
-    private static final String OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/onecall";
-    private static final String OPEN_WEATHER_API_KEY = "7c7ba4d9df15258ce566f6592d875413";
+    private static final String OPEN_WEATHER_URL = "https://api.openweathermap.org/data/3.0/onecall";
     private static final String OPEN_WEATHER_EXCLUDE = "current,minutely,alerts";
     private static final String OPEN_WEATHER_UNITS = "metric";
     private static final String OPEN_WEATHER_LANG = "kr";
@@ -64,6 +66,20 @@ public class ObservationalFitService {
             3, "나쁜 미세먼지",
             4, "높은 강수확률",
             5, "높은 광공해");
+
+    public String getOpenWeatherApiKey() {
+        ClassPathResource resource = new ClassPathResource("open-weather-api-key.txt");
+
+        try {
+            InputStream inputStream = resource.getInputStream();
+            byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
+            return new String(bytes);
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+
+        return "";
+    }
 
     public Mono<WeatherInfo> getWeatherInfo(AreaTimeDTO areaTime) {
 
@@ -257,12 +273,12 @@ public class ObservationalFitService {
         if (min >= 85) {
             return new String[]{"오늘은 하루종일", "별 보기 최고에요"};
         } else if (max >= 70) {
-            if(bestTime <= 6)
+            if (bestTime <= 6)
                 return new String[]{"내일 0" + bestTime + "시가", "별 보기 가장 좋아요"};
             else
                 return new String[]{"오늘 " + bestTime + "시가", "별 보기 가장 좋아요"};
         } else if (max >= 60) {
-            if(bestTime <= 6)
+            if (bestTime <= 6)
                 return new String[]{"내일 0" + bestTime + "시가", "별 보기 적당해요"};
             else
                 return new String[]{"오늘 " + bestTime + "시가", "별 보기 적당해요"};
@@ -374,8 +390,8 @@ public class ObservationalFitService {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(OPEN_WEATHER_URL);
         uriBuilder.queryParam("lat", lat);
         uriBuilder.queryParam("lon", lon);
+        uriBuilder.queryParam("appid", getOpenWeatherApiKey());
         uriBuilder.queryParam("exclude", OPEN_WEATHER_EXCLUDE);
-        uriBuilder.queryParam("appid", OPEN_WEATHER_API_KEY);
         uriBuilder.queryParam("units", OPEN_WEATHER_UNITS);
 //        uriBuilder.queryParam("lang", OPEN_WEATHER_LANG);
 
@@ -996,21 +1012,6 @@ public class ObservationalFitService {
             }
         }
         return s1 + s2 + s3 + s4 + s5;
-    }
-
-    public Mono<OpenWeatherResponse> getOpenWeather2(Double lat, Double lon) {
-
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8081/onecall");
-
-        return webClient.get()
-                .uri(uriBuilder.build().toUri())
-                .retrieve()
-                .toEntity(OpenWeatherResponse.class)
-                .onErrorReturn(ResponseEntity.ok(new OpenWeatherResponse()))
-                .flatMap(response -> {
-                    log.info("HTTP Response for Open Weather ({}, {}) | {} | {}", lat, lon, response.getStatusCode(), response.getBody());
-                    return Mono.just(Objects.requireNonNull(response.getBody()));
-                });
     }
 }
 
