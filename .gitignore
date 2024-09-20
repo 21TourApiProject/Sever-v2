@@ -40,4 +40,5 @@ application-RSA-KEY.properties
 /src/main/resources-prod/application-proddb.yml
 /src/main/resources-dev/application-devdb.yml
 /src/main/resources/tour-api-project-firebase-adminsdk-uc1bp-c0d9ab355b.json
+/src/main/resources/open-weather-api-key.txt
 /src/main/generated
