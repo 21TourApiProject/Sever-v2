@@ -17,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -234,7 +236,7 @@ public class PostService {
      *
      * @return the list
      */
-    public List<PostParams4>getMainPost() {
+    public List<PostParams4>getMainPost() throws UnsupportedEncodingException {
         // 유저의 희망 해시태그에 따라 우선적 필터로 거르고 가져옴)
         List<PostParams4> result = new ArrayList<>();
         List<Post> posts = postRepository.findAll(Sort.by(Sort.Order.desc("postId")));
@@ -255,7 +257,8 @@ public class PostService {
                 if (!mainImageList.isEmpty()) {
                     ArrayList<String> imageList = new ArrayList<>();
                     for (int i = 0; i < mainImageList.size(); i++) {
-                        imageList.add("https://starry-night.s3.ap-northeast-2.amazonaws.com/postImage/" + mainImageList.get(i).getImageName());
+                        String image = URLEncoder.encode(mainImageList.get(i).getImageName(),"UTF-8");
+                        imageList.add("https://starry-night.s3.ap-northeast-2.amazonaws.com/postImage/" + image);
                     }
                     postParams4.setImages(imageList);
                 } else {

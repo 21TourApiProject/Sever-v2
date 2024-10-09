@@ -5,15 +5,14 @@ import com.server.tourApiProject.bigPost.postHashTag.PostHashTagService;
 import com.server.tourApiProject.bigPost.postImage.PostImage;
 import com.server.tourApiProject.bigPost.postImage.PostImageService;
 import com.server.tourApiProject.observation.Observation;
-import com.server.tourApiProject.observation.ObservationService;
 import com.server.tourApiProject.observation.ObservationServiceImpl;
-import com.server.tourApiProject.search.Filter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j
@@ -102,7 +101,7 @@ public class PostController {
 
     @ApiOperation(value = "메인페이지 게시물 정보 조회", notes = "메인페이지에 띄울 모든 게시물을 조회한다")
     @PostMapping(value = "post/main")
-    public List<PostParams4> getMainPost(){ return postService.getMainPost(); }
+    public List<PostParams4> getMainPost() throws UnsupportedEncodingException { return postService.getMainPost(); }
 
     @ApiOperation(value = "게시물 정보 사이즈로 조회", notes = "게시물 정보를 최신순으로 사이즈만큼 가져온다.")
     @GetMapping(value = "posts/{size}")
