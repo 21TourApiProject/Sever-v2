@@ -343,6 +343,15 @@ public class ObservationalFitService {
         }
     }
 
+    public void deleteObservationFit(String lastMonth, int lengthOfMonth) {
+        for (int i = 1; i <= lengthOfMonth; i++) {
+            String day = String.valueOf(i);
+            if(i < 10) day = "0" + day;
+            String date = lastMonth + "-"+ day;
+            observationalFitRepository.deleteByDate(date);
+        }
+    }
+
     // 관측지의 일일 최고 관측 적합도를 구해 저장하는 메서드
     public void saveBestObservationalFit(String date, String fineDust, WeatherObservation observation) {
         getOpenWeather(observation.getLatitude(), observation.getLongitude())

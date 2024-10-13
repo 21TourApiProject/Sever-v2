@@ -13,4 +13,7 @@ public interface ObservationalFitRepository extends JpaRepository<ObservationalF
     // 날짜, 관측지 id 로 시간별 관측적합도 조회
     Optional<ObservationalFit> findByDateAndObservationCode(String date, Long observationCode);
 
+    // 날짜로 시간별 관측적합도 삭제
+    void deleteByDate(String date);
+
 }

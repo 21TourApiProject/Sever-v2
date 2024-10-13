@@ -37,7 +37,11 @@ server:
     connection-timeout: 5000
 
 scheduler:
-  time: "0 0 7 * * *"
+  observationalFit:
+    save:
+      time: "0 0 7 * * *"
+    delete:
+      time: "0 0 8 1 * *"
 
 
 ---
